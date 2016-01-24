@@ -260,3 +260,8 @@ fastlane/screenshots
 ### Objective-C Patch ###
 *.xcscmblueprint
 
+# Parse
+
+# Parse
+.parse.local
+.parse.project
