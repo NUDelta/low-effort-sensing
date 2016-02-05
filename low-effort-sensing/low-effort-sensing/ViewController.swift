@@ -21,12 +21,46 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // location manager
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
+        for region in locationManager.monitoredRegions {
+            locationManager.stopMonitoringForRegion(region)
+        }
+        print(self.locationManager.monitoredRegions)
+        
+        // pull geolocations from parse
+        var interestingRegions = Array<CLRegion>()
+        let query = PFQuery(className: "TestObject")
+        query.findObjectsInBackgroundWithBlock {
+            (foundObjs: [PFObject]?, error: NSError?) -> Void in
+            if error == nil {
+                if let foundObjs = foundObjs {
+                    for object in foundObjs {
+                        let curr_geopoint = object["regionLoc"] as! PFGeoPoint
+                        let curr_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: curr_geopoint.latitude, longitude: curr_geopoint.longitude),
+                                                           radius: 200, identifier: object["foo"] as! String)
+                        interestingRegions.append(curr_region)
+                        self.locationManager.startMonitoringForRegion(curr_region)
+                    }
+                    print(self.locationManager.monitoredRegions)
+                }
+            } else {
+                print(error)
+            }
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        var currLocation : CLLocation? = nil
+        
+        currLocation = manager.location
+        print(currLocation?.coordinate)
+    }
+    
+    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print(region)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
-
 }
