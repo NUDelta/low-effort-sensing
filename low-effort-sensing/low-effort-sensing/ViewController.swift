@@ -21,23 +21,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // location manager
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
+        
+        // clear all current monitored regions
+        stopMonitoringAllRegions()
+        
+        // pull geolocations from parse and begin monitoring regions
+        beginMonitoringParseRegions()
+    }
+    
+    func stopMonitoringAllRegions() {
         for region in locationManager.monitoredRegions {
             locationManager.stopMonitoringForRegion(region)
         }
         print(self.locationManager.monitoredRegions)
-        
-        // pull geolocations from parse
-        var interestingRegions = Array<CLRegion>()
+    }
+    
+    func beginMonitoringParseRegions() {
         let query = PFQuery(className: "TestObject")
+        
         query.findObjectsInBackgroundWithBlock {
             (foundObjs: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let foundObjs = foundObjs {
                     for object in foundObjs {
                         let curr_geopoint = object["regionLoc"] as! PFGeoPoint
-                        let curr_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: curr_geopoint.latitude, longitude: curr_geopoint.longitude),
-                                                           radius: 200, identifier: object["foo"] as! String)
-                        interestingRegions.append(curr_region)
+                        let curr_lat = curr_geopoint.latitude
+                        let curr_long = curr_geopoint.longitude
+                        
+                        let curr_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: curr_lat, longitude: curr_long),
+                            radius: 200, identifier: object["foo"] as! String)
                         self.locationManager.startMonitoringForRegion(curr_region)
                     }
                     print(self.locationManager.monitoredRegions)
