@@ -10,6 +10,7 @@ import UIKit
 import Parse
 import Bolts
 import CoreLocation
+import WatchConnectivity
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {

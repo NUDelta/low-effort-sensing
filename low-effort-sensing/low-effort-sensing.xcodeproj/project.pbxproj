@@ -109,6 +109,9 @@
 		001A901E1C55D249009F964C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		001A90201C55D252009F964C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		001A90221C55D260009F964C /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
+		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
+		00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +167,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
 				001A8FCC1C55CE6E009F964C /* AppDelegate.swift */,
 				001A8FCE1C55CE6E009F964C /* ViewController.swift */,
 				001A8FD01C55CE6E009F964C /* Main.storyboard */,
@@ -177,6 +181,7 @@
 		001A8FDF1C55CE6E009F964C /* low-effort-sensing WatchKit App */ = {
 			isa = PBXGroup;
 			children = (
+				00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */,
 				001A8FE01C55CE6E009F964C /* Interface.storyboard */,
 				001A8FE31C55CE6E009F964C /* Assets.xcassets */,
 				001A8FE51C55CE6E009F964C /* Info.plist */,
@@ -187,6 +192,7 @@
 		001A8FEE1C55CE6E009F964C /* low-effort-sensing WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
+				00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */,
 				001A8FF11C55CE6E009F964C /* InterfaceController.swift */,
 				001A8FF31C55CE6E009F964C /* ExtensionDelegate.swift */,
 				001A8FF51C55CE6E009F964C /* NotificationController.swift */,
@@ -294,14 +300,29 @@
 					001A8FC81C55CE6E009F964C = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 23NCCP9F44;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					001A8FDA1C55CE6E009F964C = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 23NCCP9F44;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 					001A8FE91C55CE6E009F964C = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 23NCCP9F44;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -507,11 +528,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "low-effort-sensing WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "12a5204a-0a9a-4e25-94f7-6dcc919e498f";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -523,11 +547,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "low-effort-sensing WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "12a5204a-0a9a-4e25-94f7-6dcc919e498f";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -539,12 +566,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				IBSC_MODULE = low_effort_sensing_WatchKit_Extension;
 				INFOPLIST_FILE = "low-effort-sensing WatchKit App/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "fd932dbb-8143-40d5-96f0-0b9b0ce2bede";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -556,12 +586,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				IBSC_MODULE = low_effort_sensing_WatchKit_Extension;
 				INFOPLIST_FILE = "low-effort-sensing WatchKit App/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "fd932dbb-8143-40d5-96f0-0b9b0ce2bede";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
@@ -573,7 +606,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -582,6 +617,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8efa86a5-f5c9-4adf-a379-0df58af68fe6";
 			};
 			name = Debug;
 		};
@@ -589,7 +625,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -598,6 +636,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8efa86a5-f5c9-4adf-a379-0df58af68fe6";
 			};
 			name = Release;
 		};
