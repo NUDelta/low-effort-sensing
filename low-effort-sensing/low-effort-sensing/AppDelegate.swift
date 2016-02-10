@@ -28,6 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
         
+        // setup local notifications
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil))
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        
         return true
     }
 
@@ -52,7 +56,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    
+    func presentNotificationForEnteredRegion(region: CLRegion!) {
+        let message = region.identifier
+        
+        // Show alert if app active, else local notification
+        if UIApplication.sharedApplication().applicationState == .Active {
+            if let viewController = window?.rootViewController {
+                let alert = UIAlertController(title: "Region Entered", message: "You have entered region \(message)", preferredStyle: .Alert)
+                let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+                alert.addAction(action)
+                viewController.presentViewController(alert, animated: true, completion: nil)
+            }
+        } else {
+            let notification = UILocalNotification()
+            notification.alertBody = "You have entered region \(message)"
+            notification.soundName = "Default"
+            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            presentNotificationForEnteredRegion(region)
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            print("User exited monitored region \(region.identifier)")
+        }
+    }
 }
 
