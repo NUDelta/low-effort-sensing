@@ -16,8 +16,35 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YPb-7j-gA8">
+                                <rect key="frame" x="257" y="270" width="86" height="30"/>
+                                <state key="normal" title="Set Location"/>
+                                <connections>
+                                    <action selector="sendNewLocationToParse:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jei-2o-so4"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Clck above to set location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1xC-xC-W8s">
+                                <rect key="frame" x="202" y="308" width="197" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="U5T-3P-Nvb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1xC-xC-W8s" firstAttribute="top" secondItem="YPb-7j-gA8" secondAttribute="bottom" constant="8" symbolic="YES" id="CEN-Oc-j9Y"/>
+                            <constraint firstItem="1xC-xC-W8s" firstAttribute="centerX" secondItem="YPb-7j-gA8" secondAttribute="centerX" id="UFi-hV-qYr"/>
+                            <constraint firstItem="1xC-xC-W8s" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="eC5-cg-1yC"/>
+                            <constraint firstItem="YPb-7j-gA8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="250" id="xDq-7f-YS8"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="locationDebugLabel" destination="1xC-xC-W8s" id="Dh6-ZM-pgH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

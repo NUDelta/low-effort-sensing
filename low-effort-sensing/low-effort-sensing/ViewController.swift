@@ -13,8 +13,11 @@ import WatchConnectivity
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
+    // MARK: Properities
+    @IBOutlet weak var locationDebugLabel: UILabel!
+    
     let locationManager = CLLocationManager()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -79,9 +82,47 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
         print("Location Manager failed with the following error: \(error)")
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func pushLocation() {
+        PFGeoPoint.geoPointForCurrentLocationInBackground {
+            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+            if error == nil {
+                // Get current date to make debug string
+                let dateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
+                let dateString = dateFormatter.stringFromDate(NSDate())
+                
+                // Get location and push to Parse
+                let newMonitoredLocation = PFObject(className: "TestObject")
+                newMonitoredLocation["regionLoc"] = geoPoint
+                newMonitoredLocation["foo"] = "tester_" + dateString
+                newMonitoredLocation.saveInBackgroundWithBlock {
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        print("Pushing data to Parse")
+                        self.locationDebugLabel.text = "Data pushed to parse!"
+                        
+                        // Reset text after delay
+                        let seconds = 3.0
+                        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
+                        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+                        
+                        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+                            self.locationDebugLabel.text = "Click above to set location"
+                        })
+                    }
+                }
+            }
+        }
+    }
+    
+    // MARK: Actions
+    @IBAction func sendNewLocationToParse(sender: AnyObject) {
+        pushLocation()
     }
 }
