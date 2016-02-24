@@ -29,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             
             performShortcutDelegate = false
         }
-
         
         // Initialize Parse.
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
@@ -40,7 +39,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         locationManager.requestAlwaysAuthorization()
         
         // setup local notifications
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil))
+        var categories = Set<UIUserNotificationCategory>()
+        
+        let investigateHotspotAction = UIMutableUserNotificationAction()
+        investigateHotspotAction.title = NSLocalizedString("Investigate", comment: "investigate event")
+        investigateHotspotAction.identifier = "INVESTIGATE_EVENT_IDENTIFIER"
+        investigateHotspotAction.activationMode = UIUserNotificationActivationMode.Foreground
+        investigateHotspotAction.authenticationRequired = false
+        
+        let investigateCategory = UIMutableUserNotificationCategory()
+        investigateCategory.setActions([investigateHotspotAction], forContext: UIUserNotificationActionContext.Default)
+        investigateCategory.identifier = "INVESTIGATE_CATEGORY"
+        
+        categories.insert(investigateCategory)
+        
+        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: categories))
         UIApplication.sharedApplication().cancelAllLocalNotifications()
         
         return performShortcutDelegate
@@ -75,6 +88,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     func presentNotificationForEnteredRegion(region: CLRegion!) {
+        // Get NSUserDefaults
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        let currentRegion = monitoredHotspotDictionary[region.identifier]
         let message = region.identifier
         
         // Show alert if app active, else local notification
@@ -89,6 +105,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             let notification = UILocalNotification()
             notification.alertBody = "You have entered region \(message)"
             notification.soundName = "Default"
+            notification.category = "INVESTIGATE_CATEGORY"
+            notification.userInfo = currentRegion as? Dictionary
             UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         }
     }
@@ -105,6 +123,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
     }
     
+    // Contextual notification handler
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification,
+        completionHandler: () -> Void) {
+            if (notification.category == "INVESTIGATE_CATEGORY") {
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let adderVC : InformationAdderView = mainStoryboard.instantiateViewControllerWithIdentifier("InformationAdderController") as! InformationAdderView
+                let notificationUserInfo = notification.userInfo as? Dictionary<String, AnyObject>
+                adderVC.setCurrentHotspotIdFromView(notificationUserInfo!["id"] as! String)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(adderVC, animated: true, completion: nil)
+            }
+            
+        completionHandler()
+    }
+    
+    // 3D Touch shortcut handler
     func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
         completionHandler(handleShortcut(shortcutItem))
     }

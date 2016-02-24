@@ -93,8 +93,7 @@
                                 <rect key="frame" x="276" y="370" width="49" height="30"/>
                                 <state key="normal" title="Submit"/>
                                 <connections>
-                                    <action selector="pushFilledDataToParse:" destination="HAZ-aJ-wBN" eventType="touchUpInside" id="JKz-FT-pK3"/>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="returnToMain" id="OTR-YR-0IU"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="submitAndToMain" id="OTR-YR-0IU"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GxT-h8-Fti">
@@ -131,7 +130,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1y5-dG-7MA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1639" y="468"/>
+            <point key="canvasLocation" x="2048" y="298"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

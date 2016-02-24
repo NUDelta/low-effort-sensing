@@ -11,6 +11,8 @@ import Parse
 import CoreLocation
 import WatchConnectivity
 
+let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
+
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
     // MARK: Properities
@@ -38,7 +40,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         for region in locationManager.monitoredRegions {
             locationManager.stopMonitoringForRegion(region)
         }
-        print(self.locationManager.monitoredRegions)
     }
     
     func beginMonitoringParseRegions() {
@@ -48,15 +49,27 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             (foundObjs: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let foundObjs = foundObjs {
+                    var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
                     for object in foundObjs {
-                        let curr_geopoint = object["location"] as! PFGeoPoint
-                        let curr_lat = curr_geopoint.latitude
-                        let curr_long = curr_geopoint.longitude
-                        let curr_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: curr_lat, longitude: curr_long),
+                        let currGeopoint = object["location"] as! PFGeoPoint
+                        let currLat = currGeopoint.latitude
+                        let currLong = currGeopoint.longitude
+                        let currRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: currLat, longitude: currLong),
                             radius: self.geofenceRadius, identifier: object.objectId!)
-                        self.locationManager.startMonitoringForRegion(curr_region)
+                        self.locationManager.startMonitoringForRegion(currRegion)
+                        
+                        // Add data to user defaults
+                        var unwrappedEntry = [String : AnyObject]()
+                        unwrappedEntry["latitude"] = currLat
+                        unwrappedEntry["longitude"] = currLong
+                        unwrappedEntry["id"] = object.objectId
+                        unwrappedEntry["tag"] = object["tag"]
+                        let info : Dictionary<String, AnyObject>? = object["info"] as? Dictionary<String, AnyObject>
+                        unwrappedEntry["info"] = info
+                        
+                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
                     }
-                    print(self.locationManager.monitoredRegions)
+                    NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                 }
             } else {
                 print(error)
@@ -66,9 +79,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         var currLocation : CLLocation? = nil
-        
         currLocation = manager.location
-        print(currLocation?.coordinate)
     }
     
     func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
@@ -139,14 +150,30 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                         (success: Bool, error: NSError?) -> Void in
                         if (success) {
                             // add new location to monitored regions
-                            let new_region_lat = newMonitoredLocation["location"].latitude
-                            let new_region_long = newMonitoredLocation["location"].longitude
-                            let new_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: new_region_lat, longitude: new_region_long),
+                            let newRegionLat = newMonitoredLocation["location"].latitude
+                            let newRegionLong = newMonitoredLocation["location"].longitude
+                            let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
                                 radius: self.geofenceRadius, identifier: newMonitoredLocation.objectId!)
-                            self.locationManager.startMonitoringForRegion(new_region)
+                            self.locationManager.startMonitoringForRegion(newRegion)
                             
+                            // Add new region to user defaults
+                            var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                            
+                            // Add data to user defaults
+                            var unwrappedEntry = [String : AnyObject]()
+                            unwrappedEntry["latitude"] = newRegionLat
+                            unwrappedEntry["longitude"] = newRegionLong
+                            unwrappedEntry["id"] = newMonitoredLocation.objectId
+                            unwrappedEntry["tag"] = newMonitoredLocation["tag"]
+                            let info : Dictionary<String, AnyObject>? = newMonitoredLocation["info"] as? Dictionary<String, AnyObject>
+                            unwrappedEntry["info"] = info
+                            
+                            monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
+                            NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                            
+                            // Transition to add detail view
                             let segueToAddDetail = segue.destinationViewController as! InformationAdderView;
-                            segueToAddDetail.hotspotObj = newMonitoredLocation
+                            segueToAddDetail.currentHotspotId = newMonitoredLocation.objectId!
                         }
                     }
                 }

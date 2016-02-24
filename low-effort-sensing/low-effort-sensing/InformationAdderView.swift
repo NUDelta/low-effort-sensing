@@ -33,7 +33,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
     var stillFoodPicker: UIPickerView!
     
     // Passed in arguments
-    var hotspotObj: PFObject!
+    var currentHotspotId: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -116,11 +116,29 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         stillFood.inputAccessoryView = stillFoodToolBar
         
         self.stillFood.delegate = self
+        
+        // Initialize default values with user defaults
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        
+        
+        if var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as? Dictionary<String, AnyObject> {
+            if (currentHotspot["info"] != nil) {
+                if let currentHotspotInfo = currentHotspot["info"] as? [String: String] {
+                    foodType.text = currentHotspotInfo["foodType"]
+                    foodDuration.text = currentHotspotInfo["foodDuration"]
+                    stillFood.text = currentHotspotInfo["stillFood"]
+                }
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func setCurrentHotspotIdFromView(id: String) {
+        self.currentHotspotId = id
     }
     
     // The number of columns of data
@@ -205,27 +223,41 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         stillFood.resignFirstResponder()
     }
     
-    @IBAction func pushFilledDataToParse(sender: AnyObject) {
-
-    }
-    
     // MARK: Actions
     override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         if (identifier == "submitAndToMain") {
-            // Get latest values and add to Parse object
+            // Get current hotspot from stored hotspots
+            var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+            var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
+            
+            // Get latest values and update user defaults
             var filledDataDict = [String : AnyObject]()
             filledDataDict["foodType"] = foodType.text
             filledDataDict["foodDuration"] = foodDuration.text
             filledDataDict["stillFood"] = stillFood.text
+            print(filledDataDict)
             
-            hotspotObj["info"] = filledDataDict
-            hotspotObj.saveInBackground()
+            currentHotspot["info"] = filledDataDict
+            monitoredHotspotDictionary[currentHotspotId] = currentHotspot
+            NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
             
-            print("Pushing data to parse")
-            print(hotspotObj)
-            
+            // Push data to parse
+            let query = PFQuery(className:"hotspot")
+            query.getObjectInBackgroundWithId(self.currentHotspotId) {
+                (hotspot: PFObject?, error: NSError?) -> Void in
+                if error != nil {
+                    print(error)
+                } else if let hotspot = hotspot {
+                    hotspot["info"] = filledDataDict
+                    hotspot.saveInBackground()
+                    
+                    print("Pushing data to parse")
+                    print(hotspot)
+                }
+            }
             return true
         } else if (identifier == "backToMain") {
+            print("back to main")
             return true
         }
         return true
