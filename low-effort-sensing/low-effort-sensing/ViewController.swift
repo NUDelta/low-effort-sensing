@@ -17,6 +17,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var locationDebugLabel: UILabel!
     
     let locationManager = CLLocationManager()
+    let geofenceRadius = 50.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,19 +42,18 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func beginMonitoringParseRegions() {
-        let query = PFQuery(className: "TestObject")
+        let query = PFQuery(className: "hotspot")
         
         query.findObjectsInBackgroundWithBlock {
             (foundObjs: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let foundObjs = foundObjs {
                     for object in foundObjs {
-                        let curr_geopoint = object["regionLoc"] as! PFGeoPoint
+                        let curr_geopoint = object["location"] as! PFGeoPoint
                         let curr_lat = curr_geopoint.latitude
                         let curr_long = curr_geopoint.longitude
-                        
                         let curr_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: curr_lat, longitude: curr_long),
-                            radius: 200, identifier: object["foo"] as! String)
+                            radius: self.geofenceRadius, identifier: object.objectId!)
                         self.locationManager.startMonitoringForRegion(curr_region)
                     }
                     print(self.locationManager.monitoredRegions)
@@ -98,23 +98,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 let dateString = dateFormatter.stringFromDate(NSDate())
                 
                 // Get location and push to Parse
-                let newMonitoredLocation = PFObject(className: "TestObject")
-                newMonitoredLocation["regionLoc"] = geoPoint
-                newMonitoredLocation["foo"] = "tester_" + dateString
+                let newMonitoredLocation = PFObject(className: "hotspot")
+                newMonitoredLocation["location"] = geoPoint
+                newMonitoredLocation["debug"] = "tester_" + dateString
                 newMonitoredLocation.saveInBackgroundWithBlock {
                     (success: Bool, error: NSError?) -> Void in
                     if (success) {
+                        // add new location to monitored regions
+                        let new_region_lat = newMonitoredLocation["location"].latitude
+                        let new_region_long = newMonitoredLocation["location"].longitude
+                        let new_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: new_region_lat, longitude: new_region_long),
+                            radius: self.geofenceRadius, identifier: newMonitoredLocation.objectId!)
+                        self.locationManager.startMonitoringForRegion(new_region)
+                        
+                        // notify user data has been pushed
                         print("Pushing data to Parse")
-                        self.locationDebugLabel.text = "Data pushed to parse!"
-                        
-                        // Reset text after delay
-                        let seconds = 3.0
-                        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-                        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-                        
-                        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-                            self.locationDebugLabel.text = "Click above to set location"
-                        })
+                        let alertController = UIAlertController(title: "New Location Marked", message: "Location marked for tracking and uploaded to Parse!", preferredStyle: .Alert)
+                        let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
+                            return true
+                        }
+                        alertController.addAction(okAction)
+                        self.presentViewController(alertController, animated: true) {
+                            return true
+                        }
                     }
                 }
             }

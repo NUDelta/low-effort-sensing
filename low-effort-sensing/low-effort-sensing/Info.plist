@@ -2,6 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Mark Location</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>Monitor new location</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.delta.low-effort-sensing.mark-location</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>key</key>
+				<string>value</string>
+			</dict>
+		</dict>
+	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Low Effort Sensing requires access to your phone&apos;s location to notify you when you enter or leave a monitored region</string>
 	<key>CFBundleDevelopmentRegion</key>

@@ -16,10 +16,20 @@ import WatchConnectivity
 class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
+    var shortcutItem: UIApplicationShortcutItem?
     let locationManager = CLLocationManager()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        // Check active state for 3D Touch Home actions
+        var performShortcutDelegate = true
+        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
+            
+            print("Application launched via shortcut")
+            self.shortcutItem = shortcutItem
+            
+            performShortcutDelegate = false
+        }
+
         
         // Initialize Parse.
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
@@ -33,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: nil))
         UIApplication.sharedApplication().cancelAllLocalNotifications()
         
-        return true
+        return performShortcutDelegate
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -52,6 +62,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        print("Application did become active")
+        
+        guard let shortcut = shortcutItem else { return }
+        print("- Shortcut property has been set")
+        handleShortcut(shortcut)
+        self.shortcutItem = nil
     }
 
     func applicationWillTerminate(application: UIApplication) {
@@ -87,6 +103,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if region is CLCircularRegion {
             print("User exited monitored region \(region.identifier)")
         }
+    }
+    
+    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        completionHandler(handleShortcut(shortcutItem))
+    }
+    
+    func handleShortcut( shortcutItem:UIApplicationShortcutItem ) -> Bool {
+        print("Handling shortcut")
+        
+        var succeeded = false
+        if(shortcutItem.type == "com.delta.low-effort-sensing.mark-location") {
+            print("- Handling \(shortcutItem.type)")
+            
+            let mainStoryBoard = UIStoryboard(name: "Main", bundle: nil)
+            let mainVC = mainStoryBoard.instantiateViewControllerWithIdentifier("MainViewController") as! ViewController
+            mainVC.pushLocation()
+            
+            succeeded = true
+        }
+        
+        return succeeded
     }
 }
 
