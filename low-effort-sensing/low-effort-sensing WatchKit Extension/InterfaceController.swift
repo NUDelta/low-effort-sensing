@@ -8,7 +8,9 @@
 
 import WatchKit
 import Foundation
+import WatchConnectivity
 
+let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 
 class InterfaceController: WKInterfaceController {
 
