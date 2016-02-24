@@ -110,17 +110,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                         let new_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: new_region_lat, longitude: new_region_long),
                             radius: self.geofenceRadius, identifier: newMonitoredLocation.objectId!)
                         self.locationManager.startMonitoringForRegion(new_region)
-                        
-                        // notify user data has been pushed
-                        print("Pushing data to Parse")
-                        let alertController = UIAlertController(title: "New Location Marked", message: "Location marked for tracking and uploaded to Parse!", preferredStyle: .Alert)
-                        let okAction = UIAlertAction(title: "OK", style: .Default) { (action) in
-                            return true
-                        }
-                        alertController.addAction(okAction)
-                        self.presentViewController(alertController, animated: true) {
-                            return true
-                        }
                     }
                 }
             }
@@ -128,7 +117,37 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     // MARK: Actions
-    @IBAction func sendNewLocationToParse(sender: AnyObject) {
-        pushLocation()
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "addDetailsForLocation") {
+            PFGeoPoint.geoPointForCurrentLocationInBackground {
+                (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+                if error == nil {
+                    // Get current date to make debug string
+                    let dateFormatter = NSDateFormatter()
+                    dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
+                    let dateString = dateFormatter.stringFromDate(NSDate())
+                    
+                    // Get location and push to Parse
+                    let newMonitoredLocation = PFObject(className: "hotspot")
+                    newMonitoredLocation["location"] = geoPoint
+                    newMonitoredLocation["debug"] = "tester_" + dateString
+                    newMonitoredLocation.saveInBackgroundWithBlock {
+                        (success: Bool, error: NSError?) -> Void in
+                        if (success) {
+                            // add new location to monitored regions
+                            let new_region_lat = newMonitoredLocation["location"].latitude
+                            let new_region_long = newMonitoredLocation["location"].longitude
+                            let new_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: new_region_lat, longitude: new_region_long),
+                                radius: self.geofenceRadius, identifier: newMonitoredLocation.objectId!)
+                            self.locationManager.startMonitoringForRegion(new_region)
+                            
+                            let segueToAddDetail = segue.destinationViewController as! InformationAdderView;
+                            segueToAddDetail.hotspotObj = newMonitoredLocation
+                        }
+                    }
+                }
+            }
+            
+        }
     }
 }

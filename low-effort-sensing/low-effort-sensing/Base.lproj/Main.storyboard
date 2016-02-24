@@ -21,7 +21,7 @@
                                 <rect key="frame" x="257" y="270" width="86" height="30"/>
                                 <state key="normal" title="Set Location"/>
                                 <connections>
-                                    <action selector="sendNewLocationToParse:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jei-2o-so4"/>
+                                    <segue destination="HAZ-aJ-wBN" kind="show" identifier="addDetailsForLocation" id="21N-rz-izv"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Clck above to set location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1xC-xC-W8s">
@@ -30,7 +30,7 @@
                                     <constraint firstAttribute="height" constant="21" id="U5T-3P-Nvb"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -48,6 +48,93 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="891" y="468"/>
+        </scene>
+        <!--Information Adder View-->
+        <scene sceneID="xnj-T0-bVC">
+            <objects>
+                <viewController id="HAZ-aJ-wBN" customClass="InformationAdderView" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="qBv-Ky-VSY"/>
+                        <viewControllerLayoutGuide type="bottom" id="exM-dh-xb3"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="58h-iB-dG1">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="What type of food?" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qKM-Rk-DTd">
+                                <rect key="frame" x="193" y="237" width="215" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="215" id="gcT-xh-Na7"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="How long will there be food?" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Eh8-tc-bGJ">
+                                <rect key="frame" x="192" y="285" width="216" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Is there still food?" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Un7-RQ-Bfc">
+                                <rect key="frame" x="193" y="332" width="215" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click on the field to enter data" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6cM-LD-58t">
+                                <rect key="frame" x="185" y="208" width="230" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="ka0-aN-bon"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LQD-85-HcH">
+                                <rect key="frame" x="276" y="370" width="49" height="30"/>
+                                <state key="normal" title="Submit"/>
+                                <connections>
+                                    <action selector="pushFilledDataToParse:" destination="HAZ-aJ-wBN" eventType="touchUpInside" id="JKz-FT-pK3"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="returnToMain" id="OTR-YR-0IU"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GxT-h8-Fti">
+                                <rect key="frame" x="283" y="399" width="34" height="30"/>
+                                <state key="normal" title="Back"/>
+                                <connections>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="backToMain" id="bDK-RU-w8o"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="qKM-Rk-DTd" firstAttribute="leading" secondItem="Un7-RQ-Bfc" secondAttribute="leading" id="1GX-Ah-zpV"/>
+                            <constraint firstItem="Un7-RQ-Bfc" firstAttribute="trailing" secondItem="Eh8-tc-bGJ" secondAttribute="trailing" id="CTT-61-Lw6"/>
+                            <constraint firstItem="GxT-h8-Fti" firstAttribute="top" secondItem="Un7-RQ-Bfc" secondAttribute="bottom" constant="37" id="HKo-HN-aWE"/>
+                            <constraint firstItem="LQD-85-HcH" firstAttribute="top" secondItem="Un7-RQ-Bfc" secondAttribute="bottom" constant="8" symbolic="YES" id="HXN-2t-ukm"/>
+                            <constraint firstItem="Eh8-tc-bGJ" firstAttribute="centerY" secondItem="58h-iB-dG1" secondAttribute="centerY" id="INa-IS-SDZ"/>
+                            <constraint firstItem="Un7-RQ-Bfc" firstAttribute="top" secondItem="Eh8-tc-bGJ" secondAttribute="bottom" constant="17" id="LqK-F9-3rG"/>
+                            <constraint firstItem="GxT-h8-Fti" firstAttribute="centerX" secondItem="LQD-85-HcH" secondAttribute="centerX" id="Qf0-Fz-jfe"/>
+                            <constraint firstItem="Un7-RQ-Bfc" firstAttribute="centerX" secondItem="Eh8-tc-bGJ" secondAttribute="centerX" id="U7N-eS-ogs"/>
+                            <constraint firstItem="qKM-Rk-DTd" firstAttribute="top" secondItem="6cM-LD-58t" secondAttribute="bottom" constant="8" symbolic="YES" id="b2a-xx-wHj"/>
+                            <constraint firstItem="LQD-85-HcH" firstAttribute="centerX" secondItem="Un7-RQ-Bfc" secondAttribute="centerX" id="eZc-on-QYb"/>
+                            <constraint firstItem="Un7-RQ-Bfc" firstAttribute="centerX" secondItem="58h-iB-dG1" secondAttribute="centerX" id="k0Z-0T-fVQ"/>
+                            <constraint firstItem="Eh8-tc-bGJ" firstAttribute="top" secondItem="qKM-Rk-DTd" secondAttribute="bottom" constant="18" id="kOI-Il-jqU"/>
+                            <constraint firstItem="6cM-LD-58t" firstAttribute="centerX" secondItem="qKM-Rk-DTd" secondAttribute="centerX" id="lUB-fm-nrp"/>
+                            <constraint firstItem="Eh8-tc-bGJ" firstAttribute="trailing" secondItem="qKM-Rk-DTd" secondAttribute="trailing" id="mCn-tj-77h"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="foodDuration" destination="Eh8-tc-bGJ" id="ld9-QG-rbN"/>
+                        <outlet property="foodType" destination="qKM-Rk-DTd" id="gcS-AQ-O8T"/>
+                        <outlet property="stillFood" destination="Un7-RQ-Bfc" id="EBh-Yq-cV1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1y5-dG-7MA" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1639" y="468"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="bDK-RU-w8o"/>
+    </inferredMetricsTieBreakers>
 </document>
