@@ -116,6 +116,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
+    func answerShortcut() {
+        self.performSegueWithIdentifier("addDetailsForLocation", sender: self)
+    }
+    
     // MARK: Actions
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if (segue.identifier == "addDetailsForLocation") {
@@ -147,7 +151,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                     }
                 }
             }
-            
         }
     }
 }

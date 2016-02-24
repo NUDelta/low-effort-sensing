@@ -53,7 +53,7 @@
         <!--Information Adder View-->
         <scene sceneID="xnj-T0-bVC">
             <objects>
-                <viewController id="HAZ-aJ-wBN" customClass="InformationAdderView" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InformationAdderController" id="HAZ-aJ-wBN" customClass="InformationAdderView" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="qBv-Ky-VSY"/>
                         <viewControllerLayoutGuide type="bottom" id="exM-dh-xb3"/>

@@ -116,9 +116,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         if(shortcutItem.type == "com.delta.low-effort-sensing.mark-location") {
             print("- Handling \(shortcutItem.type)")
             
-            let mainStoryBoard = UIStoryboard(name: "Main", bundle: nil)
-            let mainVC = mainStoryBoard.instantiateViewControllerWithIdentifier("MainViewController") as! ViewController
-            mainVC.pushLocation()
+            let mainVC = self.window!.rootViewController as! ViewController
+            mainVC.performSegueWithIdentifier("addDetailsForLocation", sender: self)
             
             succeeded = true
         }
