@@ -34,6 +34,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
         guard let newLocationInstance = context as! [String : AnyObject]? else {return}
         locationInstanceDictionary = newLocationInstance
         questions = [String]((newLocationInstance["info"] as! [String : String]).keys)
+        let infoDict = newLocationInstance["info"] as! [String : String]
         
         // set values for location and ID labels
         locationIDLabel.setText("ID: " + (newLocationInstance["id"] as? String)!)
@@ -43,7 +44,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
         questionsTable.setNumberOfRows(questions.count, withRowType: "QuestionRow")
         for index in 0..<questionsTable.numberOfRows {
             if let controller = questionsTable.rowControllerAtIndex(index) as? QuestionRowController {
-                var currentQuestion = ["question": "", "answer": ""]
+                var currentQuestion = ["question": "", "answer": infoDict[questions[index]]!]
                 switch(questions[index]) {
                     case "foodDuration":
                         currentQuestion["question"] = "Food until?"

@@ -34,7 +34,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     }
 
     @IBAction func reportLocation() {
-        watchSession.sendMessage(["command": "reportLocation"],
+        watchSession.sendMessage(["command": "reportLocation", "value": ""],
             replyHandler: {replyDict in
                 guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
                 self.presentControllerWithName("getInfoController", context: responseDictionary)
@@ -45,11 +45,17 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     
     // handle notification
     override func handleActionWithIdentifier(identifier: String?, forLocalNotification localNotification: UILocalNotification) {
-        print(localNotification)
         switch(identifier!) {
             case "INVESTIGATE_EVENT_IDENTIFIER":
                 let locationID = localNotification.userInfo!["id"] as! String
-                print(locationID)
+                watchSession.sendMessage(["command": "notificationOccured", "value": locationID],
+                    replyHandler: {replyDict in
+                        guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
+                        print(responseDictionary)
+                        self.presentControllerWithName("getInfoController", context: responseDictionary)
+                    }, errorHandler: {error in
+                        print("error")
+                })
                 break
             default:
                 break

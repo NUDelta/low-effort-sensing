@@ -261,6 +261,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                     }
                 }
                 break
+            case "notificationOccured":
+                // Get location id from Watch app
+                guard let locationID = message["value"] as! String? else {return}
+                
+                // Get current hotspot from stored hotspots
+                var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
+                
+                // return information to apple watch
+                replyHandler(["response": currentHotspot])
+                break
             default:
                 break
         }
