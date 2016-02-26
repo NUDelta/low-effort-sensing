@@ -1,52 +1,80 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="AgC-eL-Hgc">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="zrK-VE-a6q">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="9515"/>
     </dependencies>
     <scenes>
-        <!--Interface Controller-->
+        <!--LES-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller id="AgC-eL-Hgc" customClass="InterfaceController" customModule="low_effort_sensing_WatchKit_App" customModuleProvider="target">
+                <controller title="LES" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="low_effort_sensing_WatchKit_App" customModuleProvider="target">
                     <items>
                         <label width="136" height="29.5" alignment="left" text="Begin Sensing" textAlignment="center" id="Tbq-X2-5xy"/>
-                        <button width="1" height="37.5" alignment="left" title="Set Location" id="DZs-LY-vn2"/>
+                        <button width="1" height="37.5" alignment="left" title="Set Location" id="DZs-LY-vn2">
+                            <connections>
+                                <action selector="reportLocation" destination="AgC-eL-Hgc" id="h4j-GT-Ucg"/>
+                            </connections>
+                        </button>
                     </items>
                 </controller>
             </objects>
             <point key="canvasLocation" x="235" y="347"/>
         </scene>
-        <!--getInfoController-->
+        <!--LES-->
         <scene sceneID="ofS-ah-onO">
             <objects>
-                <controller identifier="getInfoController" id="zrK-VE-a6q">
+                <controller identifier="getInfoController" title="LES" id="zrK-VE-a6q" customClass="GetInformationInterfaceController" customModule="low_effort_sensing_WatchKit_Extension">
                     <items>
                         <label width="136" alignment="left" text="Location ID" textAlignment="center" id="ESf-pf-eEx"/>
                         <label width="136" alignment="left" text="ID Label" textAlignment="center" id="Sjy-aT-NGi"/>
+                        <separator alignment="left" id="59B-zz-b7Y"/>
                         <table alignment="left" id="YYr-HG-5WD">
                             <items>
-                                <tableRow id="rli-W5-IKc">
-                                    <group key="rootItem" width="1" alignment="left" id="mXl-YS-Rkr"/>
+                                <tableRow identifier="QuestionRow" id="rli-W5-IKc" customClass="QuestionRowController" customModule="low_effort_sensing_WatchKit_Extension">
+                                    <group key="rootItem" width="1" alignment="left" id="mXl-YS-Rkr">
+                                        <items>
+                                            <separator height="1" heightAdjustment="-3" alignment="left" verticalAlignment="center" id="eWT-Df-INT">
+                                                <color key="color" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </separator>
+                                            <group height="102" alignment="left" layout="vertical" spacing="0.0" id="HKZ-b2-jwC">
+                                                <items>
+                                                    <group width="1" height="32" alignment="left" verticalAlignment="center" spacing="4" id="lZk-Kt-xR1">
+                                                        <items>
+                                                            <label width="1" height="1" alignment="center" verticalAlignment="center" text="Question Answer" textAlignment="left" baselineAdjustment="alignCenters" id="GYo-Ao-slu"/>
+                                                        </items>
+                                                        <edgeInsets key="margins" left="4" right="0.0" top="0.0" bottom="0.0"/>
+                                                    </group>
+                                                </items>
+                                            </group>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="questionLabel" destination="GYo-Ao-slu" id="aAL-pW-ukJ"/>
+                                        <outlet property="separator" destination="eWT-Df-INT" id="1ta-M6-1zg"/>
+                                    </connections>
                                 </tableRow>
                             </items>
                         </table>
                     </items>
+                    <connections>
+                        <outlet property="questionsTable" destination="YYr-HG-5WD" id="qJb-0V-fLZ"/>
+                    </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="457" y="347"/>
+            <point key="canvasLocation" x="553" y="347"/>
         </scene>
-        <!--Interface Controller-->
+        <!--LES-->
         <scene sceneID="Bas-HB-xCa">
             <objects>
-                <controller id="kBh-iK-2a2">
+                <controller title="LES" id="kBh-iK-2a2">
                     <items>
                         <label width="136" height="19.5" alignment="left" text="Question Label" textAlignment="center" id="rGL-0k-Od7"/>
                         <picker height="100" alignment="left" id="Y7O-u1-8D2"/>
                     </items>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="675" y="347"/>
+            <point key="canvasLocation" x="838" y="347"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="BOz-TT-tkC">

@@ -70,6 +70,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                         monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
                     }
                     NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                    print(self.locationManager.monitoredRegions.count)
                 }
             } else {
                 print(error)

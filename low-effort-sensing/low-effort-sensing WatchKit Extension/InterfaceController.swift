@@ -12,7 +12,7 @@ import WatchConnectivity
 
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 
-class InterfaceController: WKInterfaceController {
+class InterfaceController: WKInterfaceController, WCSessionDelegate, CLLocationManagerDelegate {
 
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
@@ -30,4 +30,6 @@ class InterfaceController: WKInterfaceController {
         super.didDeactivate()
     }
 
+    @IBAction func reportLocation() {
+    }
 }

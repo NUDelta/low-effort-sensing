@@ -181,12 +181,15 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         switch (pickerView) {
         case self.foodTypePicker:
             foodType.text = foodTypeData[row]
+            break
         case self.foodDurationPicker:
             foodDuration.text = foodDurationData[row]
+            break
         case self.stillFoodPicker:
             stillFood.text = stillFoodData[row]
+            break
         default:
-            return
+            break
         }
     }
     

@@ -140,6 +140,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     }
     
     // 3D Touch shortcut handler
+    // TO DO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
     func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
         completionHandler(handleShortcut(shortcutItem))
     }

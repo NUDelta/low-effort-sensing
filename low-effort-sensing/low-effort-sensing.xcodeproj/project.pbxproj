@@ -33,6 +33,8 @@
 		001A901F1C55D249009F964C /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901E1C55D249009F964C /* SystemConfiguration.framework */; };
 		001A90211C55D252009F964C /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90201C55D252009F964C /* libz.tbd */; };
 		001A90231C55D260009F964C /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
+		001F5CF41C80387900CD0045 /* GetInformationInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */; };
+		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00305B051C7DA8F1003242F2 /* InformationAdderView.swift */; };
 /* End PBXBuildFile section */
 
@@ -110,6 +112,8 @@
 		001A901E1C55D249009F964C /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		001A90201C55D252009F964C /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		001A90221C55D260009F964C /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetInformationInterfaceController.swift; sourceTree = "<group>"; };
+		001F5CF51C803A8900CD0045 /* QuestionRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionRowController.swift; sourceTree = "<group>"; };
 		00305B051C7DA8F1003242F2 /* InformationAdderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationAdderView.swift; sourceTree = "<group>"; };
 		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
 		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
@@ -196,6 +200,8 @@
 			isa = PBXGroup;
 			children = (
 				00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */,
+				001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */,
+				001F5CF51C803A8900CD0045 /* QuestionRowController.swift */,
 				001A8FF11C55CE6E009F964C /* InterfaceController.swift */,
 				001A8FF31C55CE6E009F964C /* ExtensionDelegate.swift */,
 				001A8FF51C55CE6E009F964C /* NotificationController.swift */,
@@ -397,8 +403,10 @@
 				001A8FF61C55CE6E009F964C /* NotificationController.swift in Sources */,
 				001A8FF41C55CE6E009F964C /* ExtensionDelegate.swift in Sources */,
 				001A8FFA1C55CE6E009F964C /* ComplicationController.swift in Sources */,
+				001F5CF41C80387900CD0045 /* GetInformationInterfaceController.swift in Sources */,
 				001A8FF21C55CE6E009F964C /* InterfaceController.swift in Sources */,
 				001A8FF81C55CE6E009F964C /* GlanceController.swift in Sources */,
+				001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
