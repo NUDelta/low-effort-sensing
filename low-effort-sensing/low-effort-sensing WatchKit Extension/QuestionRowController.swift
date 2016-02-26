@@ -15,10 +15,8 @@ class QuestionRowController: NSObject {
     var question: Dictionary<String, String>? {
         didSet {
             if let question = question {
-                print(question["question"])
                 if question["answer"] == "" {
                     if let newQuestionLabel = question["question"] {
-                        print(newQuestionLabel)
                         questionLabel.setText(newQuestionLabel)
                         separator.setColor(UIColor.redColor())
                     }

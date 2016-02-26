@@ -12,12 +12,18 @@ import Bolts
 import CoreLocation
 import WatchConnectivity
 
+let geofenceRadius = 50.0
+let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
+
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLocationManagerDelegate {
 
     var window: UIWindow?
+    let watchSession = WCSession.defaultSession()
     var shortcutItem: UIApplicationShortcutItem?
     let locationManager = CLLocationManager()
+    
+    let appUserDefaults = NSUserDefaults(suiteName: "group.com.delta.low-effort-sensing")
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Check active state for 3D Touch Home actions
@@ -29,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
             
             performShortcutDelegate = false
         }
+        
+        // Initalize WatchSession
+        watchSession.delegate = self
+        watchSession.activateSession()
         
         // Initialize Parse.
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
@@ -89,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
     
     func presentNotificationForEnteredRegion(region: CLRegion!) {
         // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
         let currentRegion = monitoredHotspotDictionary[region.identifier]
         let message = region.identifier
         
@@ -159,6 +169,101 @@ class AppDelegate: UIResponder, UIApplicationDelegate, CLLocationManagerDelegate
         }
         
         return succeeded
+    }
+    
+    // WatchSession communication handler
+    func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
+        guard let command = message["command"] as! String! else {return}
+        
+        // Run command and return data to watch
+        switch (command) {
+            case "reportLocation":
+                PFGeoPoint.geoPointForCurrentLocationInBackground {
+                    (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+                    if error == nil {
+                        // Get current date to make debug string
+                        let dateFormatter = NSDateFormatter()
+                        dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
+                        let dateString = dateFormatter.stringFromDate(NSDate())
+                        
+                        // Get location and push to Parse
+                        let newMonitoredLocation = PFObject(className: "hotspot")
+                        newMonitoredLocation["location"] = geoPoint
+                        newMonitoredLocation["tag"] = "free food!"
+                        newMonitoredLocation["debug"] = "tester_" + dateString
+                        newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+                        
+                        newMonitoredLocation.saveInBackgroundWithBlock {
+                            (success: Bool, error: NSError?) -> Void in
+                            if (success) {
+                                // add new location to monitored regions
+                                let newRegionLat = newMonitoredLocation["location"].latitude
+                                let newRegionLong = newMonitoredLocation["location"].longitude
+                                let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
+                                    radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
+                                self.locationManager.startMonitoringForRegion(newRegion)
+                                
+                                // Add new region to user defaults
+                                var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                                
+                                // Add data to user defaults
+                                var unwrappedEntry = [String : AnyObject]()
+                                unwrappedEntry["latitude"] = newRegionLat
+                                unwrappedEntry["longitude"] = newRegionLong
+                                unwrappedEntry["id"] = newMonitoredLocation.objectId
+                                unwrappedEntry["tag"] = newMonitoredLocation["tag"]
+                                let info : Dictionary<String, AnyObject>? = newMonitoredLocation["info"] as? Dictionary<String, AnyObject>
+                                unwrappedEntry["info"] = info
+                                
+                                monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
+                                self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                                self.appUserDefaults?.synchronize()
+                                
+                                // return information to apple watch
+                                replyHandler(["response": unwrappedEntry])
+                            }
+                        }
+                    }
+                }
+                break
+            case "pushToParse":
+                // Get dictionary from Watch app
+                guard let watchDict = message["value"] as! [String : AnyObject]? else {return}
+                let currentHotspotId = watchDict["id"] as! String
+                
+                // Get current hotspot from stored hotspots
+                var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
+                
+                currentHotspot["info"] = watchDict["info"]
+                monitoredHotspotDictionary[currentHotspotId] = currentHotspot
+                self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                self.appUserDefaults?.synchronize()
+                
+                // Push data to parse
+                let query = PFQuery(className:"hotspot")
+                query.getObjectInBackgroundWithId(currentHotspotId) {
+                    (hotspot: PFObject?, error: NSError?) -> Void in
+                    if error != nil {
+                        print(error)
+                        
+                        // return information to apple watch
+                        replyHandler(["response": false])
+                    } else if let hotspot = hotspot {
+                        hotspot["info"] = watchDict["info"]
+                        hotspot.saveInBackground()
+                        
+                        print("Pushing data to parse")
+                        print(hotspot)
+                        
+                        // return information to apple watch
+                        replyHandler(["response": true])
+                    }
+                }
+                break
+            default:
+                break
+        }
     }
 }
 

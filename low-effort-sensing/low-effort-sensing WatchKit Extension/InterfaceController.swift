@@ -10,14 +10,17 @@ import WatchKit
 import Foundation
 import WatchConnectivity
 
-let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
-
-class InterfaceController: WKInterfaceController, WCSessionDelegate, CLLocationManagerDelegate {
+class InterfaceController: WKInterfaceController, WCSessionDelegate {
+    
+    // session for communicating with iphone
+    let watchSession = WCSession.defaultSession()
 
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
         // Configure interface objects here.
+        watchSession.delegate = self
+        watchSession.activateSession()
     }
 
     override func willActivate() {
@@ -31,5 +34,25 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate, CLLocationM
     }
 
     @IBAction func reportLocation() {
+        watchSession.sendMessage(["command": "reportLocation"],
+            replyHandler: {replyDict in
+                guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
+                self.presentControllerWithName("getInfoController", context: responseDictionary)
+            }, errorHandler: {error in
+                print("error")
+            })
+    }
+    
+    // handle notification
+    override func handleActionWithIdentifier(identifier: String?, forLocalNotification localNotification: UILocalNotification) {
+        print(localNotification)
+        switch(identifier!) {
+            case "INVESTIGATE_EVENT_IDENTIFIER":
+                let locationID = localNotification.userInfo!["id"] as! String
+                print(locationID)
+                break
+            default:
+                break
+        }
     }
 }

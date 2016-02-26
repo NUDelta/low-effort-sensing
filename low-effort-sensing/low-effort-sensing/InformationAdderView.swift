@@ -32,6 +32,8 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
     var foodDurationPicker: UIPickerView!
     var stillFoodPicker: UIPickerView!
     
+    let appUserDefaults = NSUserDefaults(suiteName: "group.com.delta.low-effort-sensing")
+    
     // Passed in arguments
     var currentHotspotId: String = ""
     
@@ -118,7 +120,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         self.stillFood.delegate = self
         
         // Initialize default values with user defaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
         
         
         if var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as? Dictionary<String, AnyObject> {
@@ -230,7 +232,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
     override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         if (identifier == "submitAndToMain") {
             // Get current hotspot from stored hotspots
-            var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+            var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
             var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
             
             // Get latest values and update user defaults
@@ -242,7 +244,8 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
             
             currentHotspot["info"] = filledDataDict
             monitoredHotspotDictionary[currentHotspotId] = currentHotspot
-            NSUserDefaults.init(suiteName: "group.hotspotDictionary")?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+            self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+            self.appUserDefaults?.synchronize()
             
             // Push data to parse
             let query = PFQuery(className:"hotspot")
