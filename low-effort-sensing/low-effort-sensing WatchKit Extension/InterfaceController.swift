@@ -11,10 +11,12 @@ import Foundation
 import WatchConnectivity
 
 class InterfaceController: WKInterfaceController, WCSessionDelegate {
+    // MARK: Class Variables
     
     // session for communicating with iphone
     let watchSession = WCSession.defaultSession()
-
+    
+    // MARK: Class Functions
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
     }
@@ -28,16 +30,17 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
         // This method is called when watch view controller is no longer visible
         super.didDeactivate()
     }
-
+    
+    // MARK: - UI and Notification Functions
     @IBAction func reportLocation() {
         watchSession.delegate = self
         watchSession.activateSession()
         
         watchSession.sendMessage(["command": "reportLocation", "value": ""],
-            replyHandler: {replyDict in
+            replyHandler: { replyDict in
                 guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
                 self.presentControllerWithName("getInfoController", context: responseDictionary)
-            }, errorHandler: {error in
+            }, errorHandler: { error in
                 print("Error in reporting location notification: \(error)")
             })
     }
@@ -51,12 +54,10 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
                 watchSession.activateSession()
                 
                 watchSession.sendMessage(["command": "notificationOccured", "value": locationID],
-                    replyHandler: {replyDict in
-                        print(replyDict)
+                    replyHandler: { replyDict in
                         guard let responseDictionary = replyDict["response"] as! Dictionary<String, AnyObject>? else {return}
-                        print(responseDictionary)
                         self.presentControllerWithName("getInfoController", context: responseDictionary)
-                    }, errorHandler: {error in
+                    }, errorHandler: { error in
                         print("Error in handling notification: \(error)")
                 })
                 break

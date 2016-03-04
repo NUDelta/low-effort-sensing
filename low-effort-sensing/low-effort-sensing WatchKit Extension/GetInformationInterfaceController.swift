@@ -12,7 +12,7 @@ import WatchConnectivity
 
 class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegate {
     
-    // MARK: Attributes
+    // MARK: Class Variables
     @IBOutlet var questionsTable: WKInterfaceTable!
     @IBOutlet var locationIDLabel: WKInterfaceLabel!
     @IBOutlet var idLabel: WKInterfaceLabel!
@@ -23,10 +23,9 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
     // session for communicating with iphone
     let watchSession = WCSession.defaultSession()
     
+    // MARK: Class Functions
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-        print(context)
-        
         // setup watch session
         watchSession.delegate = self
         watchSession.activateSession()
@@ -63,7 +62,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
             }
         }
     }
-
+    
     override func willActivate() {
         // This method is called when watch view controller is about to be visible to user
         super.willActivate()
@@ -74,6 +73,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
         super.didDeactivate()
     }
     
+    // MARK: - UI Functions
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create suggestion array based on question selected
         var suggestionArray = [String]()
@@ -116,7 +116,6 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
                 guard let pushedSuccessfully = response["response"] as! Bool? else {return}
                 
                 if pushedSuccessfully {
-//                    self.presentControllerWithName("beginSensing", context: nil)
                     self.dismissController()
                 } else {
                     return

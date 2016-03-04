@@ -9,9 +9,11 @@
 import WatchKit
 
 class QuestionRowController: NSObject {
+    // MARK: Class Variables
     @IBOutlet var separator: WKInterfaceSeparator!
     @IBOutlet var questionLabel: WKInterfaceLabel!
     
+    // MARK: Class Functions
     var question: Dictionary<String, String>? {
         didSet {
             if let question = question {

@@ -12,13 +12,14 @@ import CoreLocation
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
-    // MARK: Properities
+    // MARK: Class Variables
     @IBOutlet weak var locationDebugLabel: UILabel!
     
     let locationManager = CLLocationManager()
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     
+    // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -33,11 +34,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - UI and Other Functions
     func answerShortcut() {
         self.performSegueWithIdentifier("addDetailsForLocation", sender: self)
     }
     
-    // MARK: Actions
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
         if (segue.identifier == "addDetailsForLocation") {
             PFGeoPoint.geoPointForCurrentLocationInBackground {

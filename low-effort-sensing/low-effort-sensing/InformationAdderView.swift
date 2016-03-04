@@ -15,7 +15,7 @@ import Foundation
 
 class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource, CLLocationManagerDelegate {
     
-    // MARK: Properities
+    // MARK: Class Variables
     @IBOutlet weak var foodType: UITextField!
     @IBOutlet weak var foodDuration: UITextField!
     @IBOutlet weak var stillFood: UITextField!
@@ -37,6 +37,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
     // Passed in arguments
     var currentHotspotId: String = ""
     
+    // MARK: Class Variables
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -139,6 +140,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - UI and Other Functions
     func setCurrentHotspotIdFromView(id: String) {
         self.currentHotspotId = id
     }
@@ -227,8 +229,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         stillFood.text = oldStillFoodSelection
         stillFood.resignFirstResponder()
     }
-    
-    // MARK: Actions
+
     override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
         if (identifier == "submitAndToMain") {
             // Get current hotspot from stored hotspots

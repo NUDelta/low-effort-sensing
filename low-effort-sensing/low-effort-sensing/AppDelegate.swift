@@ -122,7 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
     }
     
     func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
-        print("Monitoring failed for region with identifier: \(region?.identifier)")
+        print("Monitoring failed for region with identifier \(region?.identifier) with error \(error)")
     }
     
     func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
@@ -169,7 +169,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                     print(self.locationManager.monitoredRegions.count)
                 }
             } else {
-                print(error)
+                print("Error in querying regions from Parse: \(error)")
             }
         }
     }
@@ -310,7 +310,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                 query.getObjectInBackgroundWithId(currentHotspotId) {
                     (hotspot: PFObject?, error: NSError?) -> Void in
                     if error != nil {
-                        print(error)
+                        print("Error in pushing data to Parse: \(error)")
                         
                         // return information to apple watch
                         replyHandler(["response": false])
