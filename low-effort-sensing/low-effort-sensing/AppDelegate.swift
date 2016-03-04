@@ -17,14 +17,15 @@ let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched 
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLocationManagerDelegate {
-
+    // MARK: Class Variables
     var window: UIWindow?
     let watchSession = WCSession.defaultSession()
     var shortcutItem: UIApplicationShortcutItem?
     let locationManager = CLLocationManager()
     
     let appUserDefaults = NSUserDefaults(suiteName: "group.com.delta.low-effort-sensing")
-
+    
+    // MARK: - AppDelegate Functions
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Check active state for 3D Touch Home actions
         var performShortcutDelegate = true
@@ -44,10 +45,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
-        // location manager
+        // location manager and setting up monitored locations
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
         locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        locationManager.startMonitoringSignificantLocationChanges()
+        
+        stopMonitoringAllRegions()      // clear all current monitored regions
+        beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
         
         // setup local notifications
         var categories = Set<UIUserNotificationCategory>()
@@ -98,6 +103,76 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
+    // MARK: - Location Functions
+    // TODO: Pull new geofences when significant change is detected
+    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        print("Significant change detected")
+    }
+    
+    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            presentNotificationForEnteredRegion(region)
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if region is CLCircularRegion {
+            print("User exited monitored region \(region.identifier)")
+        }
+    }
+    
+    func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
+        print("Monitoring failed for region with identifier: \(region?.identifier)")
+    }
+    
+    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("Location Manager failed with the following error: \(error)")
+    }
+    
+    func stopMonitoringAllRegions() {
+        for region in locationManager.monitoredRegions {
+            locationManager.stopMonitoringForRegion(region)
+        }
+    }
+    
+    func beginMonitoringParseRegions() {
+        let query = PFQuery(className: "hotspot")
+        
+        query.findObjectsInBackgroundWithBlock {
+            (foundObjs: [PFObject]?, error: NSError?) -> Void in
+            if error == nil {
+                if let foundObjs = foundObjs {
+                    var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                    for object in foundObjs {
+                        let currGeopoint = object["location"] as! PFGeoPoint
+                        let currLat = currGeopoint.latitude
+                        let currLong = currGeopoint.longitude
+                        let currRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: currLat, longitude: currLong),
+                            radius: geofenceRadius, identifier: object.objectId!)
+                        self.locationManager.startMonitoringForRegion(currRegion)
+                        
+                        // Add data to user defaults
+                        var unwrappedEntry = [String : AnyObject]()
+                        unwrappedEntry["latitude"] = currLat
+                        unwrappedEntry["longitude"] = currLong
+                        unwrappedEntry["id"] = object.objectId
+                        unwrappedEntry["tag"] = object["tag"]
+                        let info : Dictionary<String, AnyObject>? = object["info"] as? Dictionary<String, AnyObject>
+                        unwrappedEntry["info"] = info
+                        
+                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
+                    }
+                    self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                    self.appUserDefaults?.synchronize()
+                    print(self.locationManager.monitoredRegions)
+                    print(self.locationManager.monitoredRegions.count)
+                }
+            } else {
+                print(error)
+            }
+        }
+    }
+    
     func presentNotificationForEnteredRegion(region: CLRegion!) {
         // Get NSUserDefaults
         var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
@@ -122,19 +197,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
         }
     }
     
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            presentNotificationForEnteredRegion(region)
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            print("User exited monitored region \(region.identifier)")
-        }
-    }
-    
-    // Contextual notification handler
+    //MARK: - Contextual Notification Handler
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification,
         completionHandler: () -> Void) {
             if (notification.category == "INVESTIGATE_CATEGORY") {
@@ -150,8 +213,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
         completionHandler()
     }
     
-    // 3D Touch shortcut handler
-    // TO DO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
+    // MARK: 3D Touch shortcut handler
+    // TODO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
     func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
         completionHandler(handleShortcut(shortcutItem))
     }
@@ -172,7 +235,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
         return succeeded
     }
     
-    // WatchSession communication handler
+    // MARK: WatchSession communication handler
     func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         guard let command = message["command"] as! String! else {return}
         
