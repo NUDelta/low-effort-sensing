@@ -50,7 +50,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
                 let locationID = localNotification.userInfo!["id"] as! String
                 watchSession.sendMessage(["command": "notificationOccured", "value": locationID],
                     replyHandler: {replyDict in
-                        guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
+                        guard let responseDictionary = replyDict["response"] as! Dictionary<String, AnyObject>? else {return}
                         print(responseDictionary)
                         self.presentControllerWithName("getInfoController", context: responseDictionary)
                     }, errorHandler: {error in

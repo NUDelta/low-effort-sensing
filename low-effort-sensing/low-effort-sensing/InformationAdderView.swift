@@ -248,7 +248,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
             self.appUserDefaults?.synchronize()
             
             // Push data to parse
-            let query = PFQuery(className:"hotspot")
+            let query = PFQuery(className: "hotspot")
             query.getObjectInBackgroundWithId(self.currentHotspotId) {
                 (hotspot: PFObject?, error: NSError?) -> Void in
                 if error != nil {

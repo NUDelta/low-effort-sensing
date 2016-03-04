@@ -17,7 +17,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     
     let locationManager = CLLocationManager()
     
-    let appUserDefaults = NSUserDefaults(suiteName: "group.com.delta.low-effort-sensing")
+    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +45,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 if error == nil {
                     // Get current date to make debug string
                     let dateFormatter = NSDateFormatter()
-                    dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
+                    dateFormatter.dateFormat = "MM-dd-YY_HH:mm"
                     let dateString = dateFormatter.stringFromDate(NSDate())
                     
                     // Get location and push to Parse

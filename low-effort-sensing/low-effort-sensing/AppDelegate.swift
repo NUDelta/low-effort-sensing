@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
     var shortcutItem: UIApplicationShortcutItem?
     let locationManager = CLLocationManager()
     
-    let appUserDefaults = NSUserDefaults(suiteName: "group.com.delta.low-effort-sensing")
+    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     
     // MARK: - AppDelegate Functions
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -142,7 +142,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
             (foundObjs: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let foundObjs = foundObjs {
-                    var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+//                    var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                    var monitoredHotspotDictionary = Dictionary<String, AnyObject>()
                     for object in foundObjs {
                         let currGeopoint = object["location"] as! PFGeoPoint
                         let currLat = currGeopoint.latitude
@@ -164,6 +165,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                     }
                     self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                     self.appUserDefaults?.synchronize()
+                    print((self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()).count)
                     print(self.locationManager.monitoredRegions)
                     print(self.locationManager.monitoredRegions.count)
                 }
@@ -305,7 +307,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                 self.appUserDefaults?.synchronize()
                 
                 // Push data to parse
-                let query = PFQuery(className:"hotspot")
+                let query = PFQuery(className: "hotspot")
                 query.getObjectInBackgroundWithId(currentHotspotId) {
                     (hotspot: PFObject?, error: NSError?) -> Void in
                     if error != nil {
@@ -332,6 +334,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                 // Get current hotspot from stored hotspots
                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
                 let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
+                print(currentHotspot)
                 
                 // return information to apple watch
                 replyHandler(["response": currentHotspot])
