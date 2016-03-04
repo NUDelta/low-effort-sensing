@@ -142,7 +142,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
             (foundObjs: [PFObject]?, error: NSError?) -> Void in
             if error == nil {
                 if let foundObjs = foundObjs {
-//                    var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
                     var monitoredHotspotDictionary = Dictionary<String, AnyObject>()
                     for object in foundObjs {
                         let currGeopoint = object["location"] as! PFGeoPoint
