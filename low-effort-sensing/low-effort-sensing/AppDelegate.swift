@@ -47,6 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
         // location manager
         locationManager.delegate = self
         locationManager.requestAlwaysAuthorization()
+        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         
         // setup local notifications
         var categories = Set<UIUserNotificationCategory>()

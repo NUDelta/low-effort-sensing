@@ -24,10 +24,21 @@
                                     <segue destination="HAZ-aJ-wBN" kind="show" identifier="addDetailsForLocation" id="21N-rz-izv"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Clck above to set location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1xC-xC-W8s">
-                                <rect key="frame" x="202" y="308" width="197" height="21"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8fj-6H-08g">
+                                <rect key="frame" x="235" y="521" width="132" height="39"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="21" id="U5T-3P-Nvb"/>
+                                    <constraint firstAttribute="height" constant="39" id="kSs-OD-5Gp"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="Test Notification"/>
+                                <connections>
+                                    <action selector="debugSendNotification:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0vX-1e-scD"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click above to set location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1xC-xC-W8s">
+                                <rect key="frame" x="200" y="308" width="201" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="iuY-vv-N8U"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -36,10 +47,12 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="1xC-xC-W8s" firstAttribute="top" secondItem="YPb-7j-gA8" secondAttribute="bottom" constant="8" symbolic="YES" id="CEN-Oc-j9Y"/>
-                            <constraint firstItem="1xC-xC-W8s" firstAttribute="centerX" secondItem="YPb-7j-gA8" secondAttribute="centerX" id="UFi-hV-qYr"/>
-                            <constraint firstItem="1xC-xC-W8s" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="eC5-cg-1yC"/>
-                            <constraint firstItem="YPb-7j-gA8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="250" id="xDq-7f-YS8"/>
+                            <constraint firstItem="1xC-xC-W8s" firstAttribute="top" secondItem="YPb-7j-gA8" secondAttribute="bottom" constant="8" symbolic="YES" id="Lsq-zS-hrq"/>
+                            <constraint firstItem="1xC-xC-W8s" firstAttribute="centerX" secondItem="8fj-6H-08g" secondAttribute="centerX" id="XZj-kM-sbf"/>
+                            <constraint firstItem="YPb-7j-gA8" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="250" id="Yb6-Va-Dep"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="8fj-6H-08g" secondAttribute="bottom" constant="40" id="bAN-bU-Nhx"/>
+                            <constraint firstItem="YPb-7j-gA8" firstAttribute="centerX" secondItem="1xC-xC-W8s" secondAttribute="centerX" id="bPT-CN-Ndj"/>
+                            <constraint firstItem="1xC-xC-W8s" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="moJ-lW-l2G"/>
                         </constraints>
                     </view>
                     <connections>

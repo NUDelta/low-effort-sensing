@@ -100,35 +100,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func pushLocation() {
-        PFGeoPoint.geoPointForCurrentLocationInBackground {
-            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
-            if error == nil {
-                // Get current date to make debug string
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-                let dateString = dateFormatter.stringFromDate(NSDate())
-                
-                // Get location and push to Parse
-                let newMonitoredLocation = PFObject(className: "hotspot")
-                newMonitoredLocation["location"] = geoPoint
-                newMonitoredLocation["tag"] = "free food!"
-                newMonitoredLocation["debug"] = "tester_" + dateString
-                newMonitoredLocation.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        // add new location to monitored regions
-                        let new_region_lat = newMonitoredLocation["location"].latitude
-                        let new_region_long = newMonitoredLocation["location"].longitude
-                        let new_region = CLCircularRegion(center: CLLocationCoordinate2D(latitude: new_region_lat, longitude: new_region_long),
-                            radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
-                        self.locationManager.startMonitoringForRegion(new_region)
-                    }
-                }
-            }
-        }
-    }
-    
     func answerShortcut() {
         self.performSegueWithIdentifier("addDetailsForLocation", sender: self)
     }
@@ -184,5 +155,26 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 }
             }
         }
+    }
+    
+    @IBAction func debugSendNotification(sender: AnyObject) {
+        print("Preparing notification")
+        // Get NSUserDefaults
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        
+        // Get first region in monitored regions to use
+        let region = Array(monitoredHotspotDictionary.keys)[0]
+        let currentRegion = monitoredHotspotDictionary[region]
+        let message = region
+        
+        // Display notification after short time
+        let notification = UILocalNotification()
+        notification.alertBody = "You have entered region \(message)"
+        notification.soundName = "Default"
+        notification.category = "INVESTIGATE_CATEGORY"
+        notification.userInfo = currentRegion as? Dictionary
+        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+        
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
     }
 }
