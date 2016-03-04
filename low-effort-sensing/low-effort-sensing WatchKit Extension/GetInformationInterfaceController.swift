@@ -18,20 +18,21 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
     @IBOutlet var idLabel: WKInterfaceLabel!
     
     var questions = [String]()
-    var locationInstanceDictionary = [String : AnyObject]()
+    var locationInstanceDictionary = Dictionary<String, AnyObject>()
     
     // session for communicating with iphone
     let watchSession = WCSession.defaultSession()
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
+        print(context)
         
         // setup watch session
         watchSession.delegate = self
         watchSession.activateSession()
         
         // Configure interface objects here.
-        guard let newLocationInstance = context as! [String : AnyObject]? else {return}
+        guard let newLocationInstance = context as! Dictionary<String, AnyObject>? else {return}
         locationInstanceDictionary = newLocationInstance
         questions = [String]((newLocationInstance["info"] as! [String : String]).keys)
         let infoDict = newLocationInstance["info"] as! [String : String]
@@ -115,12 +116,13 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
                 guard let pushedSuccessfully = response["response"] as! Bool? else {return}
                 
                 if pushedSuccessfully {
-                    self.presentControllerWithName("beginSensing", context: nil)
+//                    self.presentControllerWithName("beginSensing", context: nil)
+                    self.dismissController()
                 } else {
                     return
                 }
             }, errorHandler: {error in
-                print("error")
+                print("Error in pushing data to Parse: \(error)")
         })
     }
 }

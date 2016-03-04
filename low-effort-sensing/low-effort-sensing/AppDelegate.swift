@@ -333,7 +333,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                 // Get current hotspot from stored hotspots
                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
                 let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
-                print(currentHotspot)
                 
                 // return information to apple watch
                 replyHandler(["response": currentHotspot])

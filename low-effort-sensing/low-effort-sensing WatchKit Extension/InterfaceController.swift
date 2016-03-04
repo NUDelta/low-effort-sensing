@@ -17,10 +17,6 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
 
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-        
-        // Configure interface objects here.
-        watchSession.delegate = self
-        watchSession.activateSession()
     }
 
     override func willActivate() {
@@ -34,12 +30,15 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     }
 
     @IBAction func reportLocation() {
+        watchSession.delegate = self
+        watchSession.activateSession()
+        
         watchSession.sendMessage(["command": "reportLocation", "value": ""],
             replyHandler: {replyDict in
                 guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
                 self.presentControllerWithName("getInfoController", context: responseDictionary)
             }, errorHandler: {error in
-                print("error")
+                print("Error in reporting location notification: \(error)")
             })
     }
     
@@ -48,13 +47,17 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
         switch(identifier!) {
             case "INVESTIGATE_EVENT_IDENTIFIER":
                 let locationID = localNotification.userInfo!["id"] as! String
+                watchSession.delegate = self
+                watchSession.activateSession()
+                
                 watchSession.sendMessage(["command": "notificationOccured", "value": locationID],
                     replyHandler: {replyDict in
+                        print(replyDict)
                         guard let responseDictionary = replyDict["response"] as! Dictionary<String, AnyObject>? else {return}
                         print(responseDictionary)
                         self.presentControllerWithName("getInfoController", context: responseDictionary)
                     }, errorHandler: {error in
-                        print("error")
+                        print("Error in handling notification: \(error)")
                 })
                 break
             default:
