@@ -106,14 +106,14 @@
                                 <rect key="frame" x="276" y="370" width="49" height="30"/>
                                 <state key="normal" title="Submit"/>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="submitAndToMain" id="OTR-YR-0IU"/>
+                                    <action selector="submitDataToParse:" destination="HAZ-aJ-wBN" eventType="touchUpInside" id="grN-N1-bWi"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GxT-h8-Fti">
                                 <rect key="frame" x="283" y="399" width="34" height="30"/>
                                 <state key="normal" title="Back"/>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="backToMain" id="bDK-RU-w8o"/>
+                                    <action selector="backToMain:" destination="HAZ-aJ-wBN" eventType="touchUpInside" id="zqZ-BL-0XM"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -139,6 +139,7 @@
                         <outlet property="foodDuration" destination="Eh8-tc-bGJ" id="ld9-QG-rbN"/>
                         <outlet property="foodType" destination="qKM-Rk-DTd" id="gcS-AQ-O8T"/>
                         <outlet property="stillFood" destination="Un7-RQ-Bfc" id="EBh-Yq-cV1"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="backToMain" id="aGy-H1-5aG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1y5-dG-7MA" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -146,7 +147,4 @@
             <point key="canvasLocation" x="2048" y="298"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="bDK-RU-w8o"/>
-    </inferredMetricsTieBreakers>
 </document>

@@ -229,45 +229,64 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         stillFood.text = oldStillFoodSelection
         stillFood.resignFirstResponder()
     }
-
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
-        if (identifier == "submitAndToMain") {
-            // Get current hotspot from stored hotspots
-            var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-            var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
-            
-            // Get latest values and update user defaults
-            var filledDataDict = [String : AnyObject]()
-            filledDataDict["foodType"] = foodType.text
-            filledDataDict["foodDuration"] = foodDuration.text
-            filledDataDict["stillFood"] = stillFood.text
-            print(filledDataDict)
-            
-            currentHotspot["info"] = filledDataDict
-            monitoredHotspotDictionary[currentHotspotId] = currentHotspot
-            self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-            self.appUserDefaults?.synchronize()
-            
-            // Push data to parse
-            let query = PFQuery(className: "hotspot")
-            query.getObjectInBackgroundWithId(self.currentHotspotId) {
-                (hotspot: PFObject?, error: NSError?) -> Void in
-                if error != nil {
-                    print(error)
-                } else if let hotspot = hotspot {
-                    hotspot["info"] = filledDataDict
-                    hotspot.saveInBackground()
-                    
-                    print("Pushing data to parse")
-                    print(hotspot)
-                }
+    
+    @IBAction func submitDataToParse(sender: AnyObject) {
+        // Get current hotspot from stored hotspots
+        var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
+        
+        // Get latest values and update user defaults
+        var filledDataDict = [String : AnyObject]()
+        filledDataDict["foodType"] = foodType.text
+        filledDataDict["foodDuration"] = foodDuration.text
+        filledDataDict["stillFood"] = stillFood.text
+        print(filledDataDict)
+        
+        currentHotspot["info"] = filledDataDict
+        monitoredHotspotDictionary[currentHotspotId] = currentHotspot
+        self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+        self.appUserDefaults?.synchronize()
+        
+        // Push data to parse
+        let query = PFQuery(className: "hotspot")
+        query.getObjectInBackgroundWithId(self.currentHotspotId) {
+            (hotspot: PFObject?, error: NSError?) -> Void in
+            if error != nil {
+                print(error)
+            } else if let hotspot = hotspot {
+                hotspot["info"] = filledDataDict
+                hotspot.saveInBackground()
+                
+                print("Pushing data to parse")
+                print(hotspot)
             }
-            return true
-        } else if (identifier == "backToMain") {
-            print("back to main")
-            return true
         }
-        return true
+        
+        // Inform user data has been saved
+        let alertController = UIAlertController(title: "Data Saved!", message: "Yay! You will now return to the home screen", preferredStyle: .Alert)
+        
+        let okAction = UIAlertAction(title: "OK!", style: .Default) { (action:UIAlertAction!) in
+            self.performSegueWithIdentifier("backToMain", sender: nil)
+        }
+        alertController.addAction(okAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
+    }
+
+    
+    @IBAction func backToMain(sender: AnyObject) {
+        // Ask user if they are sure they want to go back to main screen
+        let alertController = UIAlertController(title: "Warning: Data Is Not Saved", message: "Are you sure you want to go back without saving data?", preferredStyle: .Alert)
+        
+        let yesAction = UIAlertAction(title: "Yes", style: .Default) { (action:UIAlertAction!) in
+            self.performSegueWithIdentifier("backToMain", sender: nil)
+        }
+        let noAction = UIAlertAction(title: "No", style: .Default) { (action:UIAlertAction!) in
+            return
+        }
+        
+        alertController.addAction(yesAction)
+        alertController.addAction(noAction)
+        self.presentViewController(alertController, animated: true, completion: nil)
     }
 }
 
