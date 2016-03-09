@@ -24,9 +24,9 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
     var oldFoodDurationSelection = ""
     var oldStillFoodSelection = ""
     
-    let foodTypeData = ["pizza", "noodles", "milkshakes", "sandwiches"]
-    let foodDurationData = ["< 30 mins", "1 hour", "2 hours"]
-    let stillFoodData = ["Yes-a lot", "Some-going fast!", "None"]
+    let foodTypeData = ["", "pizza", "noodles", "milkshakes", "sandwiches"]
+    let foodDurationData = ["", "< 30 mins", "1 hour", "2 hours", "> 2 hours"]
+    let stillFoodData = ["", "Yes-a lot", "Some-going fast!", "None"]
     
     var foodTypePicker: UIPickerView!
     var foodDurationPicker: UIPickerView!
