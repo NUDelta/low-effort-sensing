@@ -21,10 +21,10 @@
             </objects>
             <point key="canvasLocation" x="235" y="347"/>
         </scene>
-        <!--LES-->
+        <!--Cancel-->
         <scene sceneID="ofS-ah-onO">
             <objects>
-                <controller identifier="getInfoController" title="LES" id="zrK-VE-a6q" customClass="GetInformationInterfaceController" customModule="low_effort_sensing_WatchKit_Extension">
+                <controller identifier="getInfoController" title="Cancel" id="zrK-VE-a6q" customClass="GetInformationInterfaceController" customModule="low_effort_sensing_WatchKit_Extension">
                     <items>
                         <label width="136" alignment="center" text="Location ID" textAlignment="center" id="ESf-pf-eEx"/>
                         <label width="136" alignment="left" text="ID Label" textAlignment="center" id="Sjy-aT-NGi"/>
