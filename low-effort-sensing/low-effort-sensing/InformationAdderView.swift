@@ -123,7 +123,6 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         // Initialize default values with user defaults
         var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
         
-        
         if var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as? Dictionary<String, AnyObject> {
             if (currentHotspot["info"] != nil) {
                 if let currentHotspotInfo = currentHotspot["info"] as? [String: String] {
@@ -272,10 +271,23 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         self.presentViewController(alertController, animated: true, completion: nil)
     }
 
+    func fieldsAreChanged() -> Bool {
+        // Get current hotspot from stored hotspots
+        var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        var currentHotspotInfo = (monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>)["info"] as! Dictionary<String, String>
+        
+        // return if information has been modified
+        if (currentHotspotInfo["foodType"] != foodType.text && currentHotspotInfo["foodDuration"] != foodDuration.text && currentHotspotInfo["stillFood"] != stillFood.text) {
+            return true
+        } else {
+            return false
+        }
+        
+    }
     
     @IBAction func backToMain(sender: AnyObject) {
         // Ask user if they are sure they want to go back to main screen
-        let alertController = UIAlertController(title: "Warning: Data Is Not Saved", message: "Are you sure you want to go back without saving data?", preferredStyle: .Alert)
+        let alertController = UIAlertController(title: "Are you sure you want to back?", message: "You cannot return to this screen and any unsaved data will be lost.", preferredStyle: .Alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .Default) { (action:UIAlertAction!) in
             self.performSegueWithIdentifier("backToMain", sender: nil)
