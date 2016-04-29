@@ -1,0 +1,6 @@
+framework module Pretracking {
+  umbrella header "Pretracking-umbrella.h"
+
+  export *
+  module * { export * }
+}

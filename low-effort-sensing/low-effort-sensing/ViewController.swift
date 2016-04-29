@@ -15,7 +15,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     // MARK: Class Variables
     @IBOutlet weak var locationDebugLabel: UILabel!
     
-    let locationManager = CLLocationManager()
+//    let locationManager = CLLocationManager()
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     
@@ -25,8 +25,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         
         // location manager
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
+//        locationManager.delegate = self
+//        locationManager.requestAlwaysAuthorization()
     }
     
     override func didReceiveMemoryWarning() {
@@ -61,9 +61,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                             // add new location to monitored regions
                             let newRegionLat = newMonitoredLocation["location"].latitude
                             let newRegionLong = newMonitoredLocation["location"].longitude
-                            let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
-                                radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
-                            self.locationManager.startMonitoringForRegion(newRegion)
+                            let newRegionId = newMonitoredLocation.objectId!
+//                            let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
+//                                radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
+//                            self.locationManager.startMonitoringForRegion(newRegion)
+                            MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
                             
                             // Add new region to user defaults
                             var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()

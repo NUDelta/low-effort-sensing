@@ -12,7 +12,8 @@ import Bolts
 import CoreLocation
 import WatchConnectivity
 
-let geofenceRadius = 50.0
+let distanceFromTarget = 10.0
+let geofenceRadius = 100.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 
 @UIApplicationMain
@@ -21,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
     var window: UIWindow?
     let watchSession = WCSession.defaultSession()
     var shortcutItem: UIApplicationShortcutItem?
-    let locationManager = CLLocationManager()
+//    let locationManager = CLLocationManager()
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     
@@ -46,10 +47,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
         // location manager and setting up monitored locations
-        locationManager.delegate = self
-        locationManager.requestAlwaysAuthorization()
-        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        locationManager.startMonitoringSignificantLocationChanges()
+//        locationManager.delegate = self
+//        locationManager.requestAlwaysAuthorization()
+//        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+//        locationManager.startMonitoringSignificantLocationChanges()
+        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, latitude: 0.0, longitude: 0.0, radius: geofenceRadius, accuracy: kCLLocationAccuracyHundredMeters, name: "init_loc")
+        MyPretracker.mySharedManager.initLocationManager()
+        
+        MyPretracker.mySharedManager.removeLocation("init_loc")
         
         stopMonitoringAllRegions()      // clear all current monitored regions
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
@@ -130,8 +135,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
     }
     
     func stopMonitoringAllRegions() {
-        for region in locationManager.monitoredRegions {
-            locationManager.stopMonitoringForRegion(region)
+//        for region in locationManager.monitoredRegions {
+//            locationManager.stopMonitoringForRegion(region)
+//        }
+        let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        for (id, _) in monitoredHotspotDictionary {
+            MyPretracker.mySharedManager.removeLocation(id)
         }
     }
     
@@ -147,9 +156,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                         let currGeopoint = object["location"] as! PFGeoPoint
                         let currLat = currGeopoint.latitude
                         let currLong = currGeopoint.longitude
-                        let currRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: currLat, longitude: currLong),
-                            radius: geofenceRadius, identifier: object.objectId!)
-                        self.locationManager.startMonitoringForRegion(currRegion)
+                        let id = object.objectId!
+//                        let currRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: currLat, longitude: currLong),
+//                            radius: geofenceRadius, identifier: object.objectId!)
+//                        self.locationManager.startMonitoringForRegion(currRegion)
+                        MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: currLat, longitude: currLong, radius: geofenceRadius, name: id)
                         
                         // Add data to user defaults
                         var unwrappedEntry = [String : AnyObject]()
@@ -165,8 +176,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                     self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                     self.appUserDefaults?.synchronize()
                     print((self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()).count)
-                    print(self.locationManager.monitoredRegions)
-                    print(self.locationManager.monitoredRegions.count)
+//                    print(self.locationManager.monitoredRegions)
+//                    print(self.locationManager.monitoredRegions.count)
+                    
                 }
             } else {
                 print("Error in querying regions from Parse: \(error)")
@@ -264,9 +276,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                                 // add new location to monitored regions
                                 let newRegionLat = newMonitoredLocation["location"].latitude
                                 let newRegionLong = newMonitoredLocation["location"].longitude
-                                let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
-                                    radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
-                                self.locationManager.startMonitoringForRegion(newRegion)
+                                let newRegionId = newMonitoredLocation.objectId!
+//                                let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
+//                                    radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
+//                                self.locationManager.startMonitoringForRegion(newRegion)
+                                 MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
                                 
                                 // Add new region to user defaults
                                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
