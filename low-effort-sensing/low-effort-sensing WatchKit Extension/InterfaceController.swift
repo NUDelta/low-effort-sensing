@@ -33,8 +33,10 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     
     // MARK: - UI and Notification Functions
     @IBAction func reportLocation() {
+        print("reporting location")
         watchSession.delegate = self
         watchSession.activateSession()
+        print(watchSession.reachable)
         
         watchSession.sendMessage(["command": "reportLocation", "value": ""],
             replyHandler: { replyDict in
@@ -47,11 +49,14 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     
     // handle notification
     override func handleActionWithIdentifier(identifier: String?, forLocalNotification localNotification: UILocalNotification) {
+        let watchSession = WCSession.defaultSession()
+        watchSession.delegate = self
+        watchSession.activateSession()
+        print(watchSession.reachable)
+        
         switch(identifier!) {
             case "INVESTIGATE_EVENT_IDENTIFIER":
                 let locationID = localNotification.userInfo!["id"] as! String
-                watchSession.delegate = self
-                watchSession.activateSession()
                 
                 watchSession.sendMessage(["command": "notificationOccured", "value": locationID],
                     replyHandler: { replyDict in
