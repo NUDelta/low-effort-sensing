@@ -12,12 +12,12 @@ import Bolts
 import CoreLocation
 import WatchConnectivity
 
-let distanceFromTarget = 10.0
-let geofenceRadius = 100.0
+let distanceFromTarget = 15.0
+let geofenceRadius = 130.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLocationManagerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     // MARK: Class Variables
     var window: UIWindow?
     let watchSession = WCSession.defaultSession()
@@ -47,16 +47,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
         // location manager and setting up monitored locations
-//        locationManager.delegate = self
-//        locationManager.requestAlwaysAuthorization()
-//        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-//        locationManager.startMonitoringSignificantLocationChanges()
-        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, latitude: 0.0, longitude: 0.0, radius: geofenceRadius, accuracy: kCLLocationAccuracyHundredMeters, name: "init_loc")
+        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, radius: geofenceRadius, accuracy: kCLLocationAccuracyHundredMeters)
         MyPretracker.mySharedManager.initLocationManager()
         
-        MyPretracker.mySharedManager.removeLocation("init_loc")
-        
-        stopMonitoringAllRegions()      // clear all current monitored regions
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
         
         // setup local notifications
@@ -83,15 +76,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+        print("App will resign active")
     }
 
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        print("App will enter background")
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+        print("App will enter foreground")
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -106,38 +102,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        print("App will terminate")
     }
+    
     
     // MARK: - Location Functions
     // TODO: Pull new geofences when significant change is detected
-    func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("Significant change detected")
-    }
-    
-    func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            presentNotificationForEnteredRegion(region)
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if region is CLCircularRegion {
-            print("User exited monitored region \(region.identifier)")
-        }
-    }
-    
-    func locationManager(manager: CLLocationManager, monitoringDidFailForRegion region: CLRegion?, withError error: NSError) {
-        print("Monitoring failed for region with identifier \(region?.identifier) with error \(error)")
-    }
-    
-    func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
-        print("Location Manager failed with the following error: \(error)")
-    }
     
     func stopMonitoringAllRegions() {
-//        for region in locationManager.monitoredRegions {
-//            locationManager.stopMonitoringForRegion(region)
-//        }
         let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
         for (id, _) in monitoredHotspotDictionary {
             MyPretracker.mySharedManager.removeLocation(id)
@@ -157,10 +129,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                         let currLat = currGeopoint.latitude
                         let currLong = currGeopoint.longitude
                         let id = object.objectId!
-//                        let currRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: currLat, longitude: currLong),
-//                            radius: geofenceRadius, identifier: object.objectId!)
-//                        self.locationManager.startMonitoringForRegion(currRegion)
-                        MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: currLat, longitude: currLong, radius: geofenceRadius, name: id)
+                        MyPretracker.mySharedManager.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
                         
                         // Add data to user defaults
                         var unwrappedEntry = [String : AnyObject]()
@@ -175,9 +144,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, CLLoca
                     }
                     self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                     self.appUserDefaults?.synchronize()
-                    print((self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()).count)
-//                    print(self.locationManager.monitoredRegions)
-//                    print(self.locationManager.monitoredRegions.count)
                     
                 }
             } else {

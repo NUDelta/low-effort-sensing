@@ -10,7 +10,7 @@ import UIKit
 import Parse
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController {
     
     // MARK: Class Variables
     @IBOutlet weak var locationDebugLabel: UILabel!

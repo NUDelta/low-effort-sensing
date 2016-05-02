@@ -1,10 +1,10 @@
 PODS:
-  - Pretracking (0.1.5)
+  - Pretracking (0.1.9)
 
 DEPENDENCIES:
   - Pretracking
 
 SPEC CHECKSUMS:
-  Pretracking: 780016344583eb5a8e17e93710fae87bcede2400
+  Pretracking: 66658874135679c38bdc4faac1c3b4875a581109
 
 COCOAPODS: 0.39.0
