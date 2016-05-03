@@ -13,7 +13,7 @@ import CoreLocation
 import WatchConnectivity
 
 let distanceFromTarget = 15.0
-let geofenceRadius = 130.0
+let geofenceRadius = 200.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 var vendorId: String = ""
 
@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
         // location manager and setting up monitored locations
-        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, radius: geofenceRadius, accuracy: kCLLocationAccuracyNearestTenMeters)
+        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, radius: geofenceRadius, accuracy: kCLLocationAccuracyHundredMeters)
         MyPretracker.mySharedManager.initLocationManager()
         
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
