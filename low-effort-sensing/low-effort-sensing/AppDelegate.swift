@@ -60,14 +60,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // setup local notifications
         var categories = Set<UIUserNotificationCategory>()
         
-        let investigateHotspotAction = UIMutableUserNotificationAction()
-        investigateHotspotAction.title = NSLocalizedString("Investigate", comment: "investigate event")
-        investigateHotspotAction.identifier = "INVESTIGATE_EVENT_IDENTIFIER"
-        investigateHotspotAction.activationMode = UIUserNotificationActivationMode.Foreground
-        investigateHotspotAction.authenticationRequired = false
+        let option1HotspotAction = UIMutableUserNotificationAction()
+        option1HotspotAction.title = NSLocalizedString("Option 1", comment: "click for option 1")
+        option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
+        option1HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+        option1HotspotAction.authenticationRequired = false
+        
+        let option2HotspotAction = UIMutableUserNotificationAction()
+        option2HotspotAction.title = NSLocalizedString("Option 2", comment: "click for option 2")
+        option2HotspotAction.identifier = "OPTION2_EVENT_IDENTIFIER"
+        option2HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+        option2HotspotAction.authenticationRequired = false
         
         let investigateCategory = UIMutableUserNotificationCategory()
-        investigateCategory.setActions([investigateHotspotAction], forContext: UIUserNotificationActionContext.Default)
+        investigateCategory.setActions([option2HotspotAction, option1HotspotAction],
+                                       forContext: UIUserNotificationActionContext.Default)
         investigateCategory.identifier = "INVESTIGATE_CATEGORY"
         
         categories.insert(investigateCategory)
@@ -184,16 +191,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     //MARK: - Contextual Notification Handler
     func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification,
         completionHandler: () -> Void) {
-            if (notification.category == "INVESTIGATE_CATEGORY") {
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let adderVC : InformationAdderView = mainStoryboard.instantiateViewControllerWithIdentifier("InformationAdderController") as! InformationAdderView
-                let notificationUserInfo = notification.userInfo as? Dictionary<String, AnyObject>
-                adderVC.setCurrentHotspotIdFromView(notificationUserInfo!["id"] as! String)
-                
-                let rootViewController = self.window!.rootViewController
-                rootViewController?.presentViewController(adderVC, animated: true, completion: nil)
+            var notificationId = ""
+            if let unwrappedNotificationId = notification.userInfo!["id"] {
+                notificationId = unwrappedNotificationId as! String
             }
-            
+        
+            // Get info from response and push to Parse
+            let newResponse = PFObject(className: "pingResponse")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = notificationId
+            newResponse["question"] = "default"
+
+            if (notification.category == "INVESTIGATE_CATEGORY") {
+                if (identifier == "OPTION1_EVENT_IDENTIFIER") {
+                    newResponse["response"] = "option_1"
+                } else if (identifier == "OPTION2_EVENT_IDENTIFIER") {
+                    newResponse["response"] = "option_2"
+                }
+            }
+            newResponse.saveInBackground()
         completionHandler()
     }
     
