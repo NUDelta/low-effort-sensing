@@ -9,8 +9,13 @@
 import Foundation
 import Pretracking
 import CoreLocation
+import Parse
 
 class MyPretracker: Tracker {
+    var currentHeading: Double = 0.0
+    var currentElevation: Double = 0.0
+    var currentAccuracy: Double = 0.0
+    
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     var window: UIWindow?
     
@@ -39,7 +44,31 @@ class MyPretracker: Tracker {
             notification.userInfo = currentRegion as? Dictionary
             UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         }
-
     }
     
+    override func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let lastLocation = locations.last!
+        notifyIfWithinDistance(lastLocation)
+        
+        // save course and elevation information
+        currentHeading = lastLocation.course as Double
+        currentElevation = lastLocation.altitude as Double
+        currentAccuracy = super.accuracy
+        
+        // push location data to parse for tracking 
+        // TODO: disable in final release
+        saveLocationWithMetaData(lastLocation)
+    }
+    
+    func saveLocationWithMetaData(location: CLLocation) {
+        let newLocationSave = PFObject(className: "location_debug")
+        newLocationSave["timestamp"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLocationSave["vendorId"] = vendorId
+        newLocationSave["trackingAccuracy"] = currentAccuracy
+        newLocationSave["location"] = PFGeoPoint.init(location: location)
+        newLocationSave["heading"] = currentHeading
+        newLocationSave["elevation"] = currentElevation
+        
+        newLocationSave.saveEventually()
+    }
 }

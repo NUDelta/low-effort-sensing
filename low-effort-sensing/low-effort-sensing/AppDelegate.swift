@@ -15,6 +15,7 @@ import WatchConnectivity
 let distanceFromTarget = 15.0
 let geofenceRadius = 130.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
+var vendorId: String = ""
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
@@ -22,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     var window: UIWindow?
     let watchSession = WCSession.defaultSession()
     var shortcutItem: UIApplicationShortcutItem?
-//    let locationManager = CLLocationManager()
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
     
@@ -36,6 +36,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             self.shortcutItem = shortcutItem
             
             performShortcutDelegate = false
+        }
+        
+        // Capture device's unique vendor id
+        if let uuid = UIDevice.currentDevice().identifierForVendor?.UUIDString {
+            vendorId = uuid
         }
         
         // Initalize WatchSession
