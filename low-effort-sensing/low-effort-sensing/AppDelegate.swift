@@ -204,19 +204,68 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     func handleShortcut( shortcutItem:UIApplicationShortcutItem ) -> Bool {
-        print("Handling shortcut")
+        print("Handling \(shortcutItem.type)")
         
-        var succeeded = false
-        if(shortcutItem.type == "com.delta.low-effort-sensing.mark-location") {
-            print("- Handling \(shortcutItem.type)")
-            
-            let mainVC = self.window!.rootViewController as! ViewController
-            mainVC.performSegueWithIdentifier("addDetailsForLocation", sender: self)
-            
-            succeeded = true
+        PFGeoPoint.geoPointForCurrentLocationInBackground {
+            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+            if error == nil {
+                // Get current date to make debug string
+                let dateFormatter = NSDateFormatter()
+                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
+                let dateString = dateFormatter.stringFromDate(NSDate())
+                
+                // create tag based on shortcut
+                var tag = ""
+                switch(shortcutItem.type) {
+                    case "com.delta.low-effort-sensing.mark-food-location":
+                        tag = "food"
+                    case "com.delta.low-effort-sensing.mark-infrastructure-location":
+                        tag = "infrastructure"
+                    case "com.delta.low-effort-sensing.mark-queue-location":
+                        tag = "queue"
+                    case "com.delta.low-effort-sensing.mark-space-location":
+                        tag = "space"
+                    default:
+                        return
+                }
+                
+                // Get location and push to Parse
+                let newMonitoredLocation = PFObject(className: "hotspot")
+                newMonitoredLocation["vendorId"] = vendorId
+                newMonitoredLocation["location"] = geoPoint
+                newMonitoredLocation["tag"] = tag
+                newMonitoredLocation["debug"] = "tester_" + dateString
+                newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+                
+                newMonitoredLocation.saveInBackgroundWithBlock {
+                    (success: Bool, error: NSError?) -> Void in
+                    if (success) {
+                        // add new location to monitored regions
+                        let newRegionLat = newMonitoredLocation["location"].latitude
+                        let newRegionLong = newMonitoredLocation["location"].longitude
+                        let newRegionId = newMonitoredLocation.objectId!
+                        MyPretracker.mySharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
+                        
+                        // Add new region to user defaults
+                        var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                        
+                        // Add data to user defaults
+                        var unwrappedEntry = [String : AnyObject]()
+                        unwrappedEntry["latitude"] = newRegionLat
+                        unwrappedEntry["longitude"] = newRegionLong
+                        unwrappedEntry["id"] = newMonitoredLocation.objectId
+                        unwrappedEntry["tag"] = newMonitoredLocation["tag"]
+                        let info : Dictionary<String, AnyObject>? = newMonitoredLocation["info"] as? Dictionary<String, AnyObject>
+                        unwrappedEntry["info"] = info
+                        
+                        monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
+                        self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                        self.appUserDefaults?.synchronize()
+                    }
+                }
+            }
         }
-        
-        return succeeded
+        return true
     }
     
     // MARK: WatchSession communication handler

@@ -31,12 +31,57 @@
 		<dict>
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeAdd</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>Monitor new location</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>Mark Location</string>
+			<string>Space Availability</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>How busy is this place?</string>
 			<key>UIApplicationShortcutItemType</key>
-			<string>com.delta.low-effort-sensing.mark-location</string>
+			<string>com.delta.low-effort-sensing.mark-space-location</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>key</key>
+				<string>value</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Queue Status</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>How long is the line?</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.delta.low-effort-sensing.mark-queue-location</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>key</key>
+				<string>value</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Food</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>What is the food here?</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.delta.low-effort-sensing.mark-food-location</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>key</key>
+				<string>value</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>City Infrastructure</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>What structure is here?</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.delta.low-effort-sensing.mark-infrastructure-location</string>
 			<key>UIApplicationShortcutItemUserInfo</key>
 			<dict>
 				<key>key</key>
