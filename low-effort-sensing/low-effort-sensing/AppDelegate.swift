@@ -47,7 +47,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
         // location manager and setting up monitored locations
-        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, radius: geofenceRadius, accuracy: kCLLocationAccuracyHundredMeters)
+        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, radius: geofenceRadius, accuracy: kCLLocationAccuracyNearestTenMeters)
         MyPretracker.mySharedManager.initLocationManager()
         
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
@@ -243,10 +243,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                 let newRegionLat = newMonitoredLocation["location"].latitude
                                 let newRegionLong = newMonitoredLocation["location"].longitude
                                 let newRegionId = newMonitoredLocation.objectId!
-//                                let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
-//                                    radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
-//                                self.locationManager.startMonitoringForRegion(newRegion)
-                                 MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
+                                MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
                                 
                                 // Add new region to user defaults
                                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()

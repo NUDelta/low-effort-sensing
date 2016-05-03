@@ -62,10 +62,7 @@ class ViewController: UIViewController {
                             let newRegionLat = newMonitoredLocation["location"].latitude
                             let newRegionLong = newMonitoredLocation["location"].longitude
                             let newRegionId = newMonitoredLocation.objectId!
-//                            let newRegion = CLCircularRegion(center: CLLocationCoordinate2D(latitude: newRegionLat, longitude: newRegionLong),
-//                                radius: geofenceRadius, identifier: newMonitoredLocation.objectId!)
-//                            self.locationManager.startMonitoringForRegion(newRegion)
-                            MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
+                            MyPretracker.mySharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
                             
                             // Add new region to user defaults
                             var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
