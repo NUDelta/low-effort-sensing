@@ -12,7 +12,7 @@ import Bolts
 import CoreLocation
 import WatchConnectivity
 
-let distanceFromTarget = 15.0
+let distanceFromTarget = 25.0
 let geofenceRadius = 200.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 var vendorId: String = ""
@@ -52,7 +52,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
         // location manager and setting up monitored locations
-        MyPretracker.mySharedManager.setupParameters(distanceFromTarget, radius: geofenceRadius, accuracy: kCLLocationAccuracyHundredMeters)
+        MyPretracker.mySharedManager.setupParameters(distanceFromTarget,
+                                                     radius: geofenceRadius,
+                                                     accuracy: kCLLocationAccuracyNearestTenMeters,
+                                                     distanceFilter: nil)
         MyPretracker.mySharedManager.initLocationManager()
         
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
@@ -95,11 +98,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         print("App will enter background")
+        
+        if #available(iOS 9.0, *) {
+            MyPretracker.mySharedManager.changeTrackingMethod(true, state: "background")
+        } else {
+            MyPretracker.mySharedManager.changeTrackingMethod(false, state: "background")
+        }
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         print("App will enter foreground")
+        if #available(iOS 9.0, *) {
+            MyPretracker.mySharedManager.changeTrackingMethod(true, state: "foreground")
+        } else {
+            MyPretracker.mySharedManager.changeTrackingMethod(false, state: "foreground")
+        }
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -115,6 +129,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         print("App will terminate")
+        if #available(iOS 9.0, *) {
+            MyPretracker.mySharedManager.changeTrackingMethod(true, state: "terminate")
+        } else {
+            MyPretracker.mySharedManager.changeTrackingMethod(false, state: "terminate")
+        }
     }
     
     
@@ -159,7 +178,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                     
                 }
             } else {
-                print("Error in querying regions from Parse: \(error)")
+                print("Error in querying regions from Parse: \(error). Trying again.")
+                self.beginMonitoringParseRegions()
             }
         }
     }
