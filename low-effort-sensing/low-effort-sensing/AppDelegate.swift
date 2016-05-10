@@ -48,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         watchSession.activateSession()
         
         // Initialize Parse.
+        Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.low-effort-sensing")
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         

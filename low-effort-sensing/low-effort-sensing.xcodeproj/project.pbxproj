@@ -37,6 +37,22 @@
 		001F5CF41C80387900CD0045 /* GetInformationInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */; };
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00305B051C7DA8F1003242F2 /* InformationAdderView.swift */; };
+		00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */; };
+		00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D06D741CE1A92A002E8CCA /* TodayViewController.swift */; };
+		00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */; };
+		00D06D7C1CE1A92A002E8CCA /* LES Widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00D06D701CE1A92A002E8CCA /* LES Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		00D06D821CE1AD0F002E8CCA /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90101C55D105009F964C /* Bolts.framework */; };
+		00D06D831CE1AD0F002E8CCA /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A900E1C55D0FB009F964C /* Parse.framework */; };
+		00D06D841CE1AD33002E8CCA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90121C55D12A009F964C /* AudioToolbox.framework */; };
+		00D06D851CE1AD3B002E8CCA /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90141C55D131009F964C /* CFNetwork.framework */; };
+		00D06D871CE1AD43002E8CCA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */; };
+		00D06D881CE1AD4D002E8CCA /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90161C55D13C009F964C /* CoreLocation.framework */; };
+		00D06D891CE1AD55002E8CCA /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90181C55D235009F964C /* QuartzCore.framework */; };
+		00D06D8A1CE1AD5B002E8CCA /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901A1C55D23D009F964C /* Security.framework */; };
+		00D06D8B1CE1AD62002E8CCA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901C1C55D243009F964C /* StoreKit.framework */; };
+		00D06D8C1CE1AD69002E8CCA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901E1C55D249009F964C /* SystemConfiguration.framework */; };
+		00D06D8D1CE1AD7C002E8CCA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90201C55D252009F964C /* libz.tbd */; };
+		00D06D8E1CE1AD85002E8CCA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
 		D44E1C3F8A5D536DC81E1E0C /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73963F8E2E2B8B7B95FA6F76 /* Pods_low_effort_sensing.framework */; };
 /* End PBXBuildFile section */
 
@@ -54,6 +70,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 001A8FE91C55CE6E009F964C;
 			remoteInfo = "low-effort-sensing WatchKit Extension";
+		};
+		00D06D7A1CE1A92A002E8CCA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 001A8FC11C55CE6E009F964C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00D06D6F1CE1A92A002E8CCA;
+			remoteInfo = "LES Widget";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -78,6 +101,17 @@
 				001A8FDC1C55CE6E009F964C /* low-effort-sensing WatchKit App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00D06D801CE1A92B002E8CCA /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				00D06D7C1CE1A92A002E8CCA /* LES Widget.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -118,6 +152,13 @@
 		001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetInformationInterfaceController.swift; sourceTree = "<group>"; };
 		001F5CF51C803A8900CD0045 /* QuestionRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionRowController.swift; sourceTree = "<group>"; };
 		00305B051C7DA8F1003242F2 /* InformationAdderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationAdderView.swift; sourceTree = "<group>"; };
+		00D06D701CE1A92A002E8CCA /* LES Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LES Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		00D06D741CE1A92A002E8CCA /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
+		00D06D771CE1A92A002E8CCA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		00D06D791CE1A92A002E8CCA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00D06D811CE1AC1B002E8CCA /* LES Widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "LES Widget.entitlements"; sourceTree = "<group>"; };
+		00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
 		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
 		00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension.entitlements"; sourceTree = "<group>"; };
@@ -153,12 +194,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00D06D6D1CE1A92A002E8CCA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00D06D8E1CE1AD85002E8CCA /* libsqlite3.tbd in Frameworks */,
+				00D06D8D1CE1AD7C002E8CCA /* libz.tbd in Frameworks */,
+				00D06D8C1CE1AD69002E8CCA /* SystemConfiguration.framework in Frameworks */,
+				00D06D8B1CE1AD62002E8CCA /* StoreKit.framework in Frameworks */,
+				00D06D8A1CE1AD5B002E8CCA /* Security.framework in Frameworks */,
+				00D06D891CE1AD55002E8CCA /* QuartzCore.framework in Frameworks */,
+				00D06D881CE1AD4D002E8CCA /* CoreLocation.framework in Frameworks */,
+				00D06D871CE1AD43002E8CCA /* CoreGraphics.framework in Frameworks */,
+				00D06D851CE1AD3B002E8CCA /* CFNetwork.framework in Frameworks */,
+				00D06D841CE1AD33002E8CCA /* AudioToolbox.framework in Frameworks */,
+				00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */,
+				00D06D821CE1AD0F002E8CCA /* Bolts.framework in Frameworks */,
+				00D06D831CE1AD0F002E8CCA /* Parse.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		001A8FC01C55CE6E009F964C = {
 			isa = PBXGroup;
 			children = (
+				00D06D731CE1A92A002E8CCA /* LES Widget */,
 				001A900B1C55D0B6009F964C /* Frameworks */,
 				001A8FCB1C55CE6E009F964C /* low-effort-sensing */,
 				001A8FDF1C55CE6E009F964C /* low-effort-sensing WatchKit App */,
@@ -174,6 +236,7 @@
 				001A8FC91C55CE6E009F964C /* low-effort-sensing.app */,
 				001A8FDB1C55CE6E009F964C /* low-effort-sensing WatchKit App.app */,
 				001A8FEA1C55CE6E009F964C /* low-effort-sensing WatchKit Extension.appex */,
+				00D06D701CE1A92A002E8CCA /* LES Widget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -234,6 +297,7 @@
 		001A900B1C55D0B6009F964C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */,
 				001A90221C55D260009F964C /* libsqlite3.tbd */,
 				001A90201C55D252009F964C /* libz.tbd */,
 				001A901E1C55D249009F964C /* SystemConfiguration.framework */,
@@ -246,8 +310,20 @@
 				001A90101C55D105009F964C /* Bolts.framework */,
 				001A900E1C55D0FB009F964C /* Parse.framework */,
 				73963F8E2E2B8B7B95FA6F76 /* Pods_low_effort_sensing.framework */,
+				00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		00D06D731CE1A92A002E8CCA /* LES Widget */ = {
+			isa = PBXGroup;
+			children = (
+				00D06D811CE1AC1B002E8CCA /* LES Widget.entitlements */,
+				00D06D741CE1A92A002E8CCA /* TodayViewController.swift */,
+				00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */,
+				00D06D791CE1A92A002E8CCA /* Info.plist */,
+			);
+			path = "LES Widget";
 			sourceTree = "<group>";
 		};
 		B463E109B16796411434409B /* Pods */ = {
@@ -273,11 +349,13 @@
 				001A90071C55CE6E009F964C /* Embed Watch Content */,
 				13FD2F073397365DB6BFB1B8 /* Embed Pods Frameworks */,
 				E7F04335A9F236EB7EB04578 /* Copy Pods Resources */,
+				00D06D801CE1A92B002E8CCA /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				001A8FDE1C55CE6E009F964C /* PBXTargetDependency */,
+				00D06D7B1CE1A92A002E8CCA /* PBXTargetDependency */,
 			);
 			name = "low-effort-sensing";
 			productName = "low-effort-sensing";
@@ -318,13 +396,30 @@
 			productReference = 001A8FEA1C55CE6E009F964C /* low-effort-sensing WatchKit Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
+		00D06D6F1CE1A92A002E8CCA /* LES Widget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00D06D7F1CE1A92B002E8CCA /* Build configuration list for PBXNativeTarget "LES Widget" */;
+			buildPhases = (
+				00D06D6C1CE1A92A002E8CCA /* Sources */,
+				00D06D6D1CE1A92A002E8CCA /* Frameworks */,
+				00D06D6E1CE1A92A002E8CCA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "LES Widget";
+			productName = "LES Widget";
+			productReference = 00D06D701CE1A92A002E8CCA /* LES Widget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		001A8FC11C55CE6E009F964C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0720;
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Kapil Garg";
 				TargetAttributes = {
@@ -336,6 +431,9 @@
 								enabled = 1;
 							};
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
 								enabled = 1;
 							};
 						};
@@ -358,6 +456,18 @@
 							};
 						};
 					};
+					00D06D6F1CE1A92A002E8CCA = {
+						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = 23NCCP9F44;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
+					};
 				};
 			};
 			buildConfigurationList = 001A8FC41C55CE6E009F964C /* Build configuration list for PBXProject "low-effort-sensing" */;
@@ -376,6 +486,7 @@
 				001A8FC81C55CE6E009F964C /* low-effort-sensing */,
 				001A8FDA1C55CE6E009F964C /* low-effort-sensing WatchKit App */,
 				001A8FE91C55CE6E009F964C /* low-effort-sensing WatchKit Extension */,
+				00D06D6F1CE1A92A002E8CCA /* LES Widget */,
 			);
 		};
 /* End PBXProject section */
@@ -405,6 +516,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				001A8FFC1C55CE6E009F964C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00D06D6E1CE1A92A002E8CCA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,6 +603,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		00D06D6C1CE1A92A002E8CCA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -496,6 +623,11 @@
 			isa = PBXTargetDependency;
 			target = 001A8FE91C55CE6E009F964C /* low-effort-sensing WatchKit Extension */;
 			targetProxy = 001A8FEC1C55CE6E009F964C /* PBXContainerItemProxy */;
+		};
+		00D06D7B1CE1A92A002E8CCA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00D06D6F1CE1A92A002E8CCA /* LES Widget */;
+			targetProxy = 00D06D7A1CE1A92A002E8CCA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -522,6 +654,14 @@
 				001A8FE11C55CE6E009F964C /* Base */,
 			);
 			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+		00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				00D06D771CE1A92A002E8CCA /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -696,6 +836,7 @@
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -718,6 +859,7 @@
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -729,6 +871,46 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		00D06D7D1CE1A92B002E8CCA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = "LES Widget/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing.LES-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		00D06D7E1CE1A92B002E8CCA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				INFOPLIST_FILE = "LES Widget/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.delta.low-effort-sensing.LES-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -770,6 +952,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		00D06D7F1CE1A92B002E8CCA /* Build configuration list for PBXNativeTarget "LES Widget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00D06D7D1CE1A92B002E8CCA /* Debug */,
+				00D06D7E1CE1A92B002E8CCA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
