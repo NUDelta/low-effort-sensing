@@ -16,12 +16,12 @@ class MyPretracker: Tracker {
     var currentElevation: Double = 0.0
     var currentAccuracy: Double = 0.0
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
+    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     var window: UIWindow?
     
     static let mySharedManager = MyPretracker()
     
-    override func notifyPeople(region: CLRegion) {
+    override func notifyPeople(region: CLRegion, locationWhenNotified: CLLocation) {
         print("notify for region id \(region.identifier)")
         // Get NSUserDefaults
         var monitoredHotspotDictionary = appUserDefaults!.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
@@ -49,26 +49,26 @@ class MyPretracker: Tracker {
     override func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let lastLocation = locations.last!
         notifyIfWithinDistance(lastLocation)
-//        
-//        // save course and elevation information
-//        currentHeading = lastLocation.course as Double
-//        currentElevation = lastLocation.altitude as Double
-//        currentAccuracy = super.currentTrackerAccuracy
-//        
-//        // push location data to parse for tracking every minute
-//        // TODO: disable in final release
-//        saveLocationWithMetaData(lastLocation)
+        
+        // save course, elevation, and current accuracy information
+        currentHeading = lastLocation.course as Double
+        currentElevation = lastLocation.altitude as Double
+        currentAccuracy = manager.desiredAccuracy
+        
+        // push location data to parse for tracking every minute
+        // TODO: disable in final release
+        saveLocationWithMetaData(lastLocation)
     }
     
-//    func saveLocationWithMetaData(location: CLLocation) {
-//        let newLocationSave = PFObject(className: "location_debug")
-//        newLocationSave["timestamp"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
-//        newLocationSave["vendorId"] = vendorId
-//        newLocationSave["trackingAccuracy"] = currentAccuracy
-//        newLocationSave["location"] = PFGeoPoint.init(location: location)
-//        newLocationSave["heading"] = currentHeading
-//        newLocationSave["elevation"] = currentElevation
-//        
-//        newLocationSave.saveEventually()
-//    }
+    func saveLocationWithMetaData(location: CLLocation) {
+        let newLocationSave = PFObject(className: "location_debug")
+        newLocationSave["timestamp"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLocationSave["vendorId"] = vendorId
+        newLocationSave["trackingAccuracy"] = currentAccuracy
+        newLocationSave["location"] = PFGeoPoint.init(location: location)
+        newLocationSave["heading"] = currentHeading
+        newLocationSave["elevation"] = currentElevation
+        
+        newLocationSave.saveEventually()
+    }
 }

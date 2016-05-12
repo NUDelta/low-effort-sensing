@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     
 //    let locationManager = CLLocationManager()
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
+    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     
     // MARK: Class Functions
     override func viewDidLoad() {
@@ -93,21 +93,23 @@ class ViewController: UIViewController {
     @IBAction func debugSendNotification(sender: AnyObject) {
         print("Preparing notification")
         // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
         
         // Get first region in monitored regions to use
-        let region = Array(monitoredHotspotDictionary.keys)[0]
-        let currentRegion = monitoredHotspotDictionary[region]
-        let message = region
-        
-        // Display notification after short time
-        let notification = UILocalNotification()
-        notification.alertBody = "You have entered region \(message)"
-        notification.soundName = "Default"
-        notification.category = "INVESTIGATE_CATEGORY"
-        notification.userInfo = currentRegion as? Dictionary
-        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
-        
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        if  monitoredHotspotDictionary.keys.count > 0 {
+            let region = Array(monitoredHotspotDictionary.keys)[0]
+            let currentRegion = monitoredHotspotDictionary[region]
+            let message = region
+            
+            // Display notification after short time
+            let notification = UILocalNotification()
+            notification.alertBody = "You have entered region \(message)"
+            notification.soundName = "Default"
+            notification.category = "INVESTIGATE_CATEGORY"
+            notification.userInfo = currentRegion as? Dictionary
+            notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+            
+            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        }
     }
 }
