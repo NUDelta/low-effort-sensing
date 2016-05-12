@@ -12,8 +12,8 @@ import Bolts
 import CoreLocation
 import WatchConnectivity
 
-let distanceFromTarget = 25.0
-let geofenceRadius = 200.0
+let distanceFromTarget = 20.0
+let geofenceRadius = 125.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 var vendorId: String = ""
 
@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     let watchSession = WCSession.defaultSession()
     var shortcutItem: UIApplicationShortcutItem?
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")
+    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     
     // MARK: - AppDelegate Functions
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -48,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         watchSession.activateSession()
         
         // Initialize Parse.
-        Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.low-effort-sensing")
+        Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.les")
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
@@ -99,22 +99,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         print("App will enter background")
-        
-        if #available(iOS 9.0, *) {
-            MyPretracker.mySharedManager.changeTrackingMethod(true, state: "background")
-        } else {
-            MyPretracker.mySharedManager.changeTrackingMethod(false, state: "background")
-        }
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         print("App will enter foreground")
-        if #available(iOS 9.0, *) {
-            MyPretracker.mySharedManager.changeTrackingMethod(true, state: "foreground")
-        } else {
-            MyPretracker.mySharedManager.changeTrackingMethod(false, state: "foreground")
-        }
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -130,11 +119,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         print("App will terminate")
-        if #available(iOS 9.0, *) {
-            MyPretracker.mySharedManager.changeTrackingMethod(true, state: "terminate")
-        } else {
-            MyPretracker.mySharedManager.changeTrackingMethod(false, state: "terminate")
-        }
     }
     
     
@@ -187,7 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     
     func presentNotificationForEnteredRegion(region: CLRegion!) {
         // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.low-effort-sensing")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
         let currentRegion = monitoredHotspotDictionary[region.identifier]
         let message = region.identifier
         
@@ -210,27 +194,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     //MARK: - Contextual Notification Handler
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification,
-        completionHandler: () -> Void) {
-            var notificationId = ""
-            if let unwrappedNotificationId = notification.userInfo!["id"] {
-                notificationId = unwrappedNotificationId as! String
-            }
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
+                     forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+        var notificationId = ""
+        print(notification.userInfo)
         
-            // Get info from response and push to Parse
-            let newResponse = PFObject(className: "pingResponse")
-            newResponse["vendorId"] = vendorId
-            newResponse["hotspotId"] = notificationId
-            newResponse["question"] = "default"
+        if let unwrappedNotificationId = notification.userInfo!["id"] {
+            notificationId = unwrappedNotificationId as! String
+        }
+    
+        // Get info from response and push to Parse
+        let newResponse = PFObject(className: "pingResponse")
+        newResponse["vendorId"] = vendorId
+        newResponse["hotspotId"] = notificationId
+        newResponse["question"] = "default"
 
-            if (notification.category == "INVESTIGATE_CATEGORY") {
-                if (identifier == "OPTION1_EVENT_IDENTIFIER") {
-                    newResponse["response"] = "option_1"
-                } else if (identifier == "OPTION2_EVENT_IDENTIFIER") {
-                    newResponse["response"] = "option_2"
-                }
+        if (notification.category == "INVESTIGATE_CATEGORY") {
+            if (identifier == "OPTION1_EVENT_IDENTIFIER") {
+                newResponse["response"] = "option_1"
+            } else if (identifier == "OPTION2_EVENT_IDENTIFIER") {
+                newResponse["response"] = "option_2"
             }
-            newResponse.saveInBackground()
+        }
+        newResponse.saveInBackground()
         completionHandler()
     }
     

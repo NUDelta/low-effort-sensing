@@ -26,8 +26,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         // Do any additional setup after loading the view from its nib.
         if (Parse.isLocalDatastoreEnabled() == false) {
             Parse.enableLocalDatastore()
-            Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.low-effort-sensing",
-                                                                  containingApplication: "com.delta.low-effort-sensing.LES-Widget")
+            Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.les",
+                                                                  containingApplication: "edu.northwestern.delta.les.widget")
             Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
                                    clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         }
