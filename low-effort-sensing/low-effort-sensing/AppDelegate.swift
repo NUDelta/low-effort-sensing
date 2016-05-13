@@ -55,7 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // location manager and setting up monitored locations
         MyPretracker.mySharedManager.setupParameters(distanceFromTarget,
                                                      radius: geofenceRadius,
-                                                     accuracy: kCLLocationAccuracyNearestTenMeters,
+                                                     accuracy: kCLLocationAccuracyBestForNavigation,
                                                      distanceFilter: nil)
         MyPretracker.mySharedManager.initLocationManager()
         
