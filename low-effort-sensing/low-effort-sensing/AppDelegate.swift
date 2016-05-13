@@ -13,7 +13,7 @@ import CoreLocation
 import WatchConnectivity
 
 let distanceFromTarget = 20.0
-let geofenceRadius = 125.0
+let geofenceRadius = 200.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 var vendorId: String = ""
 
@@ -99,11 +99,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         print("App will enter background")
+        
+        // Log app going into background
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = "App entering background"
+        newLog.saveInBackground()
     }
 
     func applicationWillEnterForeground(application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         print("App will enter foreground")
+        
+        // Log app going into foreground
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = "App entering foreground"
+        newLog.saveInBackground()
+
     }
 
     func applicationDidBecomeActive(application: UIApplication) {
@@ -119,8 +146,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         print("App will terminate")
+        
+        // Log app about to terminate
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = "App about to terminate"
+        do {
+            try newLog.save()
+        } catch _ {
+            print("Error")
+        }
     }
-    
     
     // MARK: - Location Functions
     // TODO: Pull new geofences when significant change is detected

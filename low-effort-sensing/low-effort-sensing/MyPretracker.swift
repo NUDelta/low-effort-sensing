@@ -28,17 +28,40 @@ class MyPretracker: Tracker {
         let currentRegion = monitoredHotspotDictionary[region.identifier]
         let message = region.identifier
         
+        // Log notification to parse
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        var distanceToLocation: Double = 0.0
+        var notificationString: String = ""
+        if let monitorRegion = region as? CLCircularRegion {
+            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+            distanceToLocation = locationWhenNotified.distanceFromLocation(monitorLocation)
+            notificationString = "Notified for \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude)) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance \(distanceToLocation)"
+        } else {
+            notificationString = "Notified for \(region.identifier) (nil, nil) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance nil"
+        }
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = notificationString
+        newLog.saveInBackground()
+        
         // Show alert if app active, else local notification
         if UIApplication.sharedApplication().applicationState == .Active {
             if let viewController = window?.rootViewController {
-                let alert = UIAlertController(title: "Region Entered", message: "You have entered region \(message)", preferredStyle: .Alert)
+                let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .Alert)
                 let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
                 alert.addAction(action)
                 viewController.presentViewController(alert, animated: true, completion: nil)
             }
         } else {
             let notification = UILocalNotification()
-            notification.alertBody = "You have entered region \(message)"
+            notification.alertBody = "You are near \(message)"
             notification.soundName = "Default"
             notification.category = "INVESTIGATE_CATEGORY"
             notification.userInfo = currentRegion as? Dictionary
@@ -48,27 +71,45 @@ class MyPretracker: Tracker {
     
     override func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let lastLocation = locations.last!
-        notifyIfWithinDistance(lastLocation)
-        
+        let debugDictionary = notifyIfWithinDistance(lastLocation)
+
         // save course, elevation, and current accuracy information
         currentHeading = lastLocation.course as Double
         currentElevation = lastLocation.altitude as Double
         currentAccuracy = manager.desiredAccuracy
         
-        // push location data to parse for tracking every minute
+        // push debug log to parse
         // TODO: disable in final release
-        saveLocationWithMetaData(lastLocation)
+        saveLocationWithMetaData(debugDictionary)
     }
     
-    func saveLocationWithMetaData(location: CLLocation) {
-        let newLocationSave = PFObject(className: "location_debug")
-        newLocationSave["timestamp"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
-        newLocationSave["vendorId"] = vendorId
-        newLocationSave["trackingAccuracy"] = currentAccuracy
-        newLocationSave["location"] = PFGeoPoint.init(location: location)
-        newLocationSave["heading"] = currentHeading
-        newLocationSave["elevation"] = currentElevation
+    func saveLocationWithMetaData(data: [String: [String: String]]) {
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
         
-        newLocationSave.saveEventually()
+        if let unwrappedCurrentLocationParameters = data["currentLocationParameters"] {
+            let newLog = PFObject(className: "pretracking_debug")
+            newLog["vendor_id"] = vendorId
+            newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+            newLog["timestamp_string"] = currentDateString
+            newLog["console_string"] = "Location has updated"
+            
+            newLog["location"] = unwrappedCurrentLocationParameters["location"]
+            newLog["audio_playing"] = unwrappedCurrentLocationParameters["audioPlaying"]
+            newLog["tracking_accuracy"] = unwrappedCurrentLocationParameters["locationManagerAccuracy"]
+            newLog["horizontal_accuracy"] = unwrappedCurrentLocationParameters["horizontalAccuracy"]
+            newLog["heading"] = unwrappedCurrentLocationParameters["heading"]
+            newLog["elevation"] = unwrappedCurrentLocationParameters["elevation"]
+            
+            if let unwrappedDistanceToRegions =  data["distanceToRegions"] {
+                newLog["distance_to_regions"] = String(unwrappedDistanceToRegions)
+                
+                if unwrappedDistanceToRegions.count > 0 {
+                    newLog.saveInBackground()
+                }
+            }
+        }
     }
 }
