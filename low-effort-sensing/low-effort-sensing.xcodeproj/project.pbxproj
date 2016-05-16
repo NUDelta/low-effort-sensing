@@ -54,6 +54,7 @@
 		00D06D8D1CE1AD7C002E8CCA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90201C55D252009F964C /* libz.tbd */; };
 		00D06D8E1CE1AD85002E8CCA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
 		00D06D901CE3E332002E8CCA /* silence.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 00D06D8F1CE3E332002E8CCA /* silence.mp3 */; };
+		00E1D56C1CE94A5800E34A2F /* silence_shortened.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 00E1D56B1CE94A5800E34A2F /* silence_shortened.mp3 */; };
 		D44E1C3F8A5D536DC81E1E0C /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73963F8E2E2B8B7B95FA6F76 /* Pods_low_effort_sensing.framework */; };
 /* End PBXBuildFile section */
 
@@ -161,6 +162,7 @@
 		00D06D811CE1AC1B002E8CCA /* LES Widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "LES Widget.entitlements"; sourceTree = "<group>"; };
 		00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		00D06D8F1CE3E332002E8CCA /* silence.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silence.mp3; sourceTree = "<group>"; };
+		00E1D56B1CE94A5800E34A2F /* silence_shortened.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = silence_shortened.mp3; sourceTree = "<group>"; };
 		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
 		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
 		00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension.entitlements"; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				00E1D56B1CE94A5800E34A2F /* silence_shortened.mp3 */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
 				001A8FCC1C55CE6E009F964C /* AppDelegate.swift */,
 				000447451CD3AB830033DCD3 /* MyPretracker.swift */,
@@ -502,6 +505,7 @@
 				00D06D901CE3E332002E8CCA /* silence.mp3 in Resources */,
 				001A8FD71C55CE6E009F964C /* LaunchScreen.storyboard in Resources */,
 				001A8FD41C55CE6E009F964C /* Assets.xcassets in Resources */,
+				00E1D56C1CE94A5800E34A2F /* silence_shortened.mp3 in Resources */,
 				001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
