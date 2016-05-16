@@ -15,8 +15,14 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     @IBOutlet weak var foodButton: UIButton!
     @IBOutlet weak var queueButton: UIButton!
     @IBOutlet weak var spaceButton: UIButton!
-    @IBOutlet weak var infrastructureButton: UIButton!
     @IBOutlet weak var submittedLabel: UILabel!
+    
+    var foodSelected: Bool = false
+    var queueSelected: Bool = false
+    var spaceSelected: Bool = false
+    
+    let brightGreenColor: UIColor = UIColor.init(red: 83.0 / 255.0, green: 215.0 / 255.0, blue: 105.0 / 255.0, alpha: 1.0)
+    let defaultAlpha: CGFloat = 0.4
     
     var vendorId: String = ""
     
@@ -56,76 +62,108 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         completionHandler(NCUpdateResult.NewData)
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        if foodSelected {
+            pushDataToParse("food")
+            unmarkLocation("food")
+            submittedLabel.text = ""
+        } else if queueSelected {
+            pushDataToParse("queue")
+            unmarkLocation("queue")
+            submittedLabel.text = ""
+        } else if spaceSelected {
+            pushDataToParse("space")
+            unmarkLocation("space")
+            submittedLabel.text = ""
+        }
+    }
+    
     @IBAction func markLocationForFood(sender: AnyObject) {
-        foodButton.backgroundColor = UIColor.greenColor()
-        submittedLabel.text = "Location marked for food tracking"
+        // show user that button has been selected/deselected
+        if !foodSelected {
+            foodButton.alpha = 1
+            foodButton.backgroundColor = brightGreenColor
+            foodButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            submittedLabel.text = "Location will be marked for Food tracking! \n\nClick Food again to untrack or\nclick another button to change the category"
+            
+            foodSelected = true
+        } else {
+            unmarkLocation("food")
+            submittedLabel.text = ""
+        }
         
-        // send data to parse
-        pushDataToParse("food")
-        
-        // reset color after short delay
-        let seconds = 2.0
-        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-            self.foodButton.backgroundColor = UIColor.whiteColor()
-            self.submittedLabel.text = ""
-        })
+        // reset any other buttons selected
+        if queueSelected {
+            unmarkLocation("queue")
+        } else if spaceSelected {
+            unmarkLocation("space")
+        }
     }
     
     @IBAction func markLocationForQueue(sender: AnyObject) {
-        queueButton.backgroundColor = UIColor.greenColor()
-        submittedLabel.text = "Location marked for queue tracking"
+        // show user that button has been selected/deselected
+        if !queueSelected {
+            queueButton.alpha = 1
+            queueButton.backgroundColor = brightGreenColor
+            queueButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            submittedLabel.text = "Location will be marked for Queue tracking! \n\nClick Queue again to untrack or\nclick another button to change the category"
+            
+            queueSelected = true
+        } else {
+            unmarkLocation("queue")
+            submittedLabel.text = ""
+        }
         
-        // send data to parse
-        pushDataToParse("queue")
-        
-        // reset color after short delay
-        let seconds = 2.0
-        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-            self.queueButton.backgroundColor = UIColor.whiteColor()
-            self.submittedLabel.text = ""
-        })
+        // reset any other buttons selected
+        if foodSelected {
+            unmarkLocation("food")
+        } else if spaceSelected {
+            unmarkLocation("space")
+        }
     }
     
     @IBAction func markLocationForSpace(sender: AnyObject) {
-        spaceButton.backgroundColor = UIColor.greenColor()
-        submittedLabel.text = "Location marked for space tracking"
+        // show user that button has been selected/deselected
+        if !spaceSelected {
+            spaceButton.alpha = 1
+            spaceButton.backgroundColor = brightGreenColor
+            spaceButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            submittedLabel.text = "Location will be marked for Space tracking! \n\nClick Space again to untrack or\nclick another button to change the category"
+            
+            spaceSelected = true
+        } else {
+            unmarkLocation("space")
+            submittedLabel.text = ""
+        }
         
-        // send data to parse
-        pushDataToParse("space")
-        
-        // reset color after short delay
-        let seconds = 2.0
-        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-            self.spaceButton.backgroundColor = UIColor.whiteColor()
-            self.submittedLabel.text = ""
-        })
+        // reset any other buttons selected
+        if foodSelected {
+            unmarkLocation("food")
+        } else if queueSelected {
+            unmarkLocation("queue")
+        }
     }
     
-    @IBAction func markLocationForInfrastructure(sender: AnyObject) {
-        infrastructureButton.backgroundColor = UIColor.greenColor()
-        submittedLabel.text = "Location marked for city infrastructure"
-        
-        // send data to parse
-        pushDataToParse("infrastructure")
-        
-        // reset color after short delay
-        let seconds = 2.0
-        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-            self.infrastructureButton.backgroundColor = UIColor.whiteColor()
-            self.submittedLabel.text = ""
-        })
+    func unmarkLocation(location: String) {
+        if location == "food" {
+            foodButton.alpha = defaultAlpha
+            foodButton.backgroundColor = UIColor.whiteColor()
+            foodButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            
+            foodSelected = false
+        } else if location == "queue" {
+            queueButton.alpha = defaultAlpha
+            queueButton.backgroundColor = UIColor.whiteColor()
+            queueButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            
+            queueSelected = false
+        } else if location == "space" {
+            spaceButton.alpha = defaultAlpha
+            spaceButton.backgroundColor = UIColor.whiteColor()
+            spaceButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            
+            spaceSelected = false
+        }
     }
     
     func pushDataToParse(tag: String) {
