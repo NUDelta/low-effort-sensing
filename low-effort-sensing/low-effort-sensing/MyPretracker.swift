@@ -7,14 +7,13 @@
 //
 
 import Foundation
-import Pretracking
 import CoreLocation
 import Parse
 
 public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // tracker parameters and storage variables
     var distance: Double = 20.0
-    var radius: Double = 200.0
+    var radius: Double = 150.0
     var accuracy: Double = kCLLocationAccuracyBestForNavigation
     var distanceFilter: Double = 20.0
     
@@ -31,9 +30,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     // background task
     let backgroundTaskManager = BackgroundTaskManager()
+    let bgTask: BackgroundTaskManager = BackgroundTaskManager.sharedBackgroundTaskManager()
+    
     var timer: NSTimer? = NSTimer()
     var delay10Seconds: NSTimer? = NSTimer()
-    let bgTask: BackgroundTaskManager = BackgroundTaskManager.sharedBackgroundTaskManager()
     
     // MARK: Initializations, getters, and setters
     required public override init() {
@@ -138,6 +138,51 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    // MARK: Pre-tracking algorithm and notifications
+    public func notifyIfWithinDistance(lastLocation: CLLocation) -> [String: [String: String]] {
+        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude)")
+        
+        // check if location update is recent and accurate enough
+        let age = -lastLocation.timestamp.timeIntervalSinceNow
+        if (lastLocation.horizontalAccuracy < 0 || lastLocation.horizontalAccuracy > 65.0 || age > 20) {
+            return [:]
+        }
+        
+        // compute distance from current point to all monitored regions and notifiy if close enough
+        var distanceToRegions: [String: String] = [:]
+        var currentLocationParameters: [String: String] = ["location": "(\(lastLocation.coordinate.latitude), \(lastLocation.coordinate.longitude))"]
+        currentLocationParameters["horizontalAccuracy"] = String(lastLocation.horizontalAccuracy)
+        currentLocationParameters["heading"] = String(lastLocation.course)
+        currentLocationParameters["elevation"] = String(lastLocation.altitude)
+        currentLocationParameters["audioPlaying"] = String("nil")
+        currentLocationParameters["locationManagerAccuracy"] = String(locationManager!.desiredAccuracy)
+        
+        for region in locationManager!.monitoredRegions {
+            if let monitorRegion = region as? CLCircularRegion {
+                let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                let distanceToLocation = lastLocation.distanceFromLocation(monitorLocation)
+                
+                distanceToRegions[monitorRegion.identifier] = String(distanceToLocation)
+                
+                if let currentLocationInfo = self.locationDic[monitorRegion.identifier] {
+                    let distance = currentLocationInfo["distance"] as! Double
+                    let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
+                    
+                    if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
+                        print(distanceToLocation)
+                        self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
+                        self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
+                        
+                        notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                    }
+                }
+            }
+        }
+        
+        let outputDict: [String: [String: String]] = ["distanceToRegions": distanceToRegions, "currentLocationParameters": currentLocationParameters]
+        return outputDict
+    }
+    
     public func notifyPeople(region: CLRegion, locationWhenNotified: CLLocation) {
         print("notify for region id \(region.identifier)")
         // Get NSUserDefaults
@@ -184,50 +229,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             notification.userInfo = currentRegion as? Dictionary
             UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         }
-    }
-    
-    public func notifyIfWithinDistance(lastLocation: CLLocation) -> [String: [String: String]] {
-        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude)")
-        
-        // check if location update is recent and accurate enough
-        let age = -lastLocation.timestamp.timeIntervalSinceNow
-        if (lastLocation.horizontalAccuracy < 0 || lastLocation.horizontalAccuracy > 65.0 || age > 20) {
-            return [:]
-        }
-        
-        // compute distance from current point to all monitored regions and notifiy if close enough
-        var distanceToRegions: [String: String] = [:]
-        var currentLocationParameters: [String: String] = ["location": "(\(lastLocation.coordinate.latitude), \(lastLocation.coordinate.longitude))"]
-        currentLocationParameters["horizontalAccuracy"] = String(lastLocation.horizontalAccuracy)
-        currentLocationParameters["heading"] = String(lastLocation.course)
-        currentLocationParameters["elevation"] = String(lastLocation.altitude)
-        currentLocationParameters["audioPlaying"] = String("nil")
-        currentLocationParameters["locationManagerAccuracy"] = String(locationManager!.desiredAccuracy)
-        
-        for region in locationManager!.monitoredRegions {
-            if let monitorRegion = region as? CLCircularRegion {
-                let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-                let distanceToLocation = lastLocation.distanceFromLocation(monitorLocation)
-                
-                distanceToRegions[monitorRegion.identifier] = String(distanceToLocation)
-                
-                if let currentLocationInfo = self.locationDic[monitorRegion.identifier] {
-                    let distance = currentLocationInfo["distance"] as! Double
-                    let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
-                    
-                    if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
-                        print(distanceToLocation)
-                        self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
-                        self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
-                        
-                        notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
-                    }
-                }
-            }
-        }
-        
-        let outputDict: [String: [String: String]] = ["distanceToRegions": distanceToRegions, "currentLocationParameters": currentLocationParameters]
-        return outputDict
     }
     
     //MARK: Background Task Functions

@@ -13,7 +13,7 @@ import CoreLocation
 import WatchConnectivity
 
 let distanceFromTarget = 20.0
-let geofenceRadius = 200.0
+let geofenceRadius = 150.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 var vendorId: String = ""
 
