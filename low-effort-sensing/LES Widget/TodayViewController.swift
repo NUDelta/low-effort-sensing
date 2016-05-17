@@ -84,7 +84,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             foodButton.alpha = 1
             foodButton.backgroundColor = brightGreenColor
             foodButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            submittedLabel.text = "Location will be marked for Food tracking! \n\nClick Food again to untrack or\nclick another button to change the category"
+            submittedLabel.text = "Location will be marked for Food tracking\nwhen you exit the notification center \n\nClick Food again to untrack or\nclick another button to change the category"
             
             foodSelected = true
         } else {
@@ -106,7 +106,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             queueButton.alpha = 1
             queueButton.backgroundColor = brightGreenColor
             queueButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            submittedLabel.text = "Location will be marked for Queue tracking! \n\nClick Queue again to untrack or\nclick another button to change the category"
+            submittedLabel.text = "Location will be marked for Queue tracking\nwhen you exit the notification center \n\nClick Queue again to untrack or\nclick another button to change the category"
             
             queueSelected = true
         } else {
@@ -128,7 +128,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             spaceButton.alpha = 1
             spaceButton.backgroundColor = brightGreenColor
             spaceButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            submittedLabel.text = "Location will be marked for Space tracking! \n\nClick Space again to untrack or\nclick another button to change the category"
+            submittedLabel.text = "Location will be marked for Space tracking\nwhen you exit the notification center \n\nClick Space again to untrack or\nclick another button to change the category"
             
             spaceSelected = true
         } else {

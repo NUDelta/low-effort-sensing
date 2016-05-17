@@ -22,7 +22,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="210"/>
                                 <subviews>
                                     <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j6A-MA-ymn">
-                                        <rect key="frame" x="8" y="98" width="275" height="33"/>
+                                        <rect key="frame" x="8" y="90" width="275" height="33"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -40,7 +40,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tdj-P0-ZLv">
-                                        <rect key="frame" x="8" y="136" width="275" height="33"/>
+                                        <rect key="frame" x="8" y="128" width="275" height="33"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -58,7 +58,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2Jk-j9-Gie">
-                                        <rect key="frame" x="8" y="58" width="275" height="33"/>
+                                        <rect key="frame" x="8" y="50" width="275" height="33"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -75,14 +75,14 @@
                                             <action selector="markLocationForFood:" destination="M4Y-Lb-cyx" eventType="touchUpInside" id="RKy-Kz-Jdc"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xwC-SX-BEe">
-                                        <rect key="frame" x="8" y="177" width="275" height="33"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="8" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xwC-SX-BEe">
+                                        <rect key="frame" x="8" y="169" width="275" height="33"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click one of the categories below to mark your current location for tracking" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R6P-Ip-BK8">
-                                        <rect key="frame" x="8" y="8" width="275" height="52"/>
+                                        <rect key="frame" x="8" y="0.0" width="275" height="52"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
@@ -96,12 +96,12 @@
                                     <constraint firstAttribute="trailing" secondItem="2Jk-j9-Gie" secondAttribute="trailing" constant="37" id="NJg-VE-bMj"/>
                                     <constraint firstItem="xwC-SX-BEe" firstAttribute="top" secondItem="Tdj-P0-ZLv" secondAttribute="bottom" constant="8" symbolic="YES" id="Pr1-V6-dPP"/>
                                     <constraint firstItem="j6A-MA-ymn" firstAttribute="trailing" secondItem="Tdj-P0-ZLv" secondAttribute="trailing" id="UjA-PX-Tpo"/>
-                                    <constraint firstItem="2Jk-j9-Gie" firstAttribute="top" secondItem="5cA-n2-nDO" secondAttribute="topMargin" constant="50" id="W8L-tS-czg"/>
+                                    <constraint firstItem="2Jk-j9-Gie" firstAttribute="top" secondItem="5cA-n2-nDO" secondAttribute="topMargin" constant="42" id="W8L-tS-czg"/>
                                     <constraint firstItem="Tdj-P0-ZLv" firstAttribute="top" secondItem="j6A-MA-ymn" secondAttribute="bottom" constant="5" id="bo6-aX-ORo"/>
                                     <constraint firstItem="xwC-SX-BEe" firstAttribute="centerX" secondItem="Tdj-P0-ZLv" secondAttribute="centerX" id="esK-vM-9Ud"/>
                                     <constraint firstItem="j6A-MA-ymn" firstAttribute="top" secondItem="2Jk-j9-Gie" secondAttribute="bottom" constant="7" id="fdI-pz-xay"/>
                                     <constraint firstItem="R6P-Ip-BK8" firstAttribute="leading" secondItem="2Jk-j9-Gie" secondAttribute="leading" id="hUV-ZY-fGY"/>
-                                    <constraint firstItem="R6P-Ip-BK8" firstAttribute="top" secondItem="5cA-n2-nDO" secondAttribute="topMargin" id="sYV-ET-A0d"/>
+                                    <constraint firstItem="R6P-Ip-BK8" firstAttribute="top" secondItem="5cA-n2-nDO" secondAttribute="topMargin" constant="-8" id="sYV-ET-A0d"/>
                                     <constraint firstItem="2Jk-j9-Gie" firstAttribute="leading" secondItem="5cA-n2-nDO" secondAttribute="leadingMargin" id="vLY-1O-SdI"/>
                                     <constraint firstItem="R6P-Ip-BK8" firstAttribute="trailing" secondItem="2Jk-j9-Gie" secondAttribute="trailing" id="wRe-9U-13m"/>
                                     <constraint firstItem="j6A-MA-ymn" firstAttribute="top" secondItem="R6P-Ip-BK8" secondAttribute="bottom" constant="38" id="zGq-R7-x1Y"/>
