@@ -54,7 +54,9 @@
 		00D06D8C1CE1AD69002E8CCA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901E1C55D249009F964C /* SystemConfiguration.framework */; };
 		00D06D8D1CE1AD7C002E8CCA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90201C55D252009F964C /* libz.tbd */; };
 		00D06D8E1CE1AD85002E8CCA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
-		D44E1C3F8A5D536DC81E1E0C /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73963F8E2E2B8B7B95FA6F76 /* Pods_low_effort_sensing.framework */; };
+		355D2452F18278C76DDEB6E0 /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */; };
+		D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */; };
+		DBD28EDA5A4D3C3A59B70E5E /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -166,9 +168,15 @@
 		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
 		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
 		00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension.entitlements"; sourceTree = "<group>"; };
-		73963F8E2E2B8B7B95FA6F76 /* Pods_low_effort_sensing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7C792D001F77771C4BC4A5EA /* Pods-low-effort-sensing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.release.xcconfig"; sourceTree = "<group>"; };
-		E6E244BF28D2CFDCF389DED2 /* Pods-low-effort-sensing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.debug.xcconfig"; sourceTree = "<group>"; };
+		1F054FFE31E72067FC700FFA /* Pods-low-effort-sensing WatchKit App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit App.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App.release.xcconfig"; sourceTree = "<group>"; };
+		40E888C9F348E031B6FC9FC8 /* Pods-low-effort-sensing WatchKit Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit Extension.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension.release.xcconfig"; sourceTree = "<group>"; };
+		4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		674E991FB331CC094C713AF4 /* Pods-low-effort-sensing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.debug.xcconfig"; sourceTree = "<group>"; };
+		774A8511AA0852A8508216AA /* Pods-low-effort-sensing WatchKit Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension.debug.xcconfig"; sourceTree = "<group>"; };
+		7AC0232147E86A95B90D88FD /* Pods-low-effort-sensing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.release.xcconfig"; sourceTree = "<group>"; };
+		94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C812A51A6B9D2E15DAC2A725 /* Pods-low-effort-sensing WatchKit App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,7 +195,7 @@
 				001A90131C55D12A009F964C /* AudioToolbox.framework in Frameworks */,
 				001A900F1C55D0FB009F964C /* Parse.framework in Frameworks */,
 				001A90111C55D105009F964C /* Bolts.framework in Frameworks */,
-				D44E1C3F8A5D536DC81E1E0C /* Pods_low_effort_sensing.framework in Frameworks */,
+				D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,6 +203,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBD28EDA5A4D3C3A59B70E5E /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,6 +227,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3965693C7FECBF3E5F89FBD1 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				355D2452F18278C76DDEB6E0 /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -230,7 +247,7 @@
 				001A8FDF1C55CE6E009F964C /* low-effort-sensing WatchKit App */,
 				001A8FEE1C55CE6E009F964C /* low-effort-sensing WatchKit Extension */,
 				001A8FCA1C55CE6E009F964C /* Products */,
-				B463E109B16796411434409B /* Pods */,
+				5CD65CEC838A81E03B179DF5 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -316,8 +333,10 @@
 				001A90121C55D12A009F964C /* AudioToolbox.framework */,
 				001A90101C55D105009F964C /* Bolts.framework */,
 				001A900E1C55D0FB009F964C /* Parse.framework */,
-				73963F8E2E2B8B7B95FA6F76 /* Pods_low_effort_sensing.framework */,
 				00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */,
+				B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */,
+				4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */,
+				94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -333,11 +352,15 @@
 			path = "LES Widget";
 			sourceTree = "<group>";
 		};
-		B463E109B16796411434409B /* Pods */ = {
+		5CD65CEC838A81E03B179DF5 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				E6E244BF28D2CFDCF389DED2 /* Pods-low-effort-sensing.debug.xcconfig */,
-				7C792D001F77771C4BC4A5EA /* Pods-low-effort-sensing.release.xcconfig */,
+				674E991FB331CC094C713AF4 /* Pods-low-effort-sensing.debug.xcconfig */,
+				7AC0232147E86A95B90D88FD /* Pods-low-effort-sensing.release.xcconfig */,
+				C812A51A6B9D2E15DAC2A725 /* Pods-low-effort-sensing WatchKit App.debug.xcconfig */,
+				1F054FFE31E72067FC700FFA /* Pods-low-effort-sensing WatchKit App.release.xcconfig */,
+				774A8511AA0852A8508216AA /* Pods-low-effort-sensing WatchKit Extension.debug.xcconfig */,
+				40E888C9F348E031B6FC9FC8 /* Pods-low-effort-sensing WatchKit Extension.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -349,14 +372,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 001A90081C55CE6E009F964C /* Build configuration list for PBXNativeTarget "low-effort-sensing" */;
 			buildPhases = (
-				F5D0C3D595AA7D0B9B706625 /* Check Pods Manifest.lock */,
+				0EA8C89E4202E45AED24A764 /* 📦 Check Pods Manifest.lock */,
 				001A8FC51C55CE6E009F964C /* Sources */,
 				001A8FC61C55CE6E009F964C /* Frameworks */,
 				001A8FC71C55CE6E009F964C /* Resources */,
 				001A90071C55CE6E009F964C /* Embed Watch Content */,
-				13FD2F073397365DB6BFB1B8 /* Embed Pods Frameworks */,
-				E7F04335A9F236EB7EB04578 /* Copy Pods Resources */,
 				00D06D801CE1A92B002E8CCA /* Embed App Extensions */,
+				379A9D91E6381B3703A64267 /* 📦 Embed Pods Frameworks */,
+				0CA0A9139DF0FE9EFF73EC99 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -373,8 +396,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 001A90041C55CE6E009F964C /* Build configuration list for PBXNativeTarget "low-effort-sensing WatchKit App" */;
 			buildPhases = (
+				E21B19A0B2A641B01C35DE95 /* 📦 Check Pods Manifest.lock */,
 				001A8FD91C55CE6E009F964C /* Resources */,
 				001A90031C55CE6E009F964C /* Embed App Extensions */,
+				3965693C7FECBF3E5F89FBD1 /* Frameworks */,
+				6A85B30757E8978E955A9085 /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -390,9 +416,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 001A90001C55CE6E009F964C /* Build configuration list for PBXNativeTarget "low-effort-sensing WatchKit Extension" */;
 			buildPhases = (
+				029179F8F8937DE785483582 /* 📦 Check Pods Manifest.lock */,
 				001A8FE61C55CE6E009F964C /* Sources */,
 				001A8FE71C55CE6E009F964C /* Frameworks */,
 				001A8FE81C55CE6E009F964C /* Resources */,
+				DB93F6F76AB2DFE615E4E887 /* 📦 Embed Pods Frameworks */,
+				64A65AAF88012D099BAC893A /* 📦 Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -537,29 +566,29 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		13FD2F073397365DB6BFB1B8 /* Embed Pods Frameworks */ = {
+		029179F8F8937DE785483582 /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing-frameworks.sh\"\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		E7F04335A9F236EB7EB04578 /* Copy Pods Resources */ = {
+		0CA0A9139DF0FE9EFF73EC99 /* 📦 Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "📦 Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -567,14 +596,89 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F5D0C3D595AA7D0B9B706625 /* Check Pods Manifest.lock */ = {
+		0EA8C89E4202E45AED24A764 /* 📦 Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "📦 Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		379A9D91E6381B3703A64267 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		64A65AAF88012D099BAC893A /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6A85B30757E8978E955A9085 /* 📦 Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		DB93F6F76AB2DFE615E4E887 /* 📦 Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E21B19A0B2A641B01C35DE95 /* 📦 Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "📦 Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -760,6 +864,7 @@
 		};
 		001A90011C55CE6E009F964C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 774A8511AA0852A8508216AA /* Pods-low-effort-sensing WatchKit Extension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
@@ -779,6 +884,7 @@
 		};
 		001A90021C55CE6E009F964C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 40E888C9F348E031B6FC9FC8 /* Pods-low-effort-sensing WatchKit Extension.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
@@ -798,6 +904,7 @@
 		};
 		001A90051C55CE6E009F964C /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C812A51A6B9D2E15DAC2A725 /* Pods-low-effort-sensing WatchKit App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App.entitlements";
@@ -819,6 +926,7 @@
 		};
 		001A90061C55CE6E009F964C /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1F054FFE31E72067FC700FFA /* Pods-low-effort-sensing WatchKit App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App.entitlements";
@@ -839,7 +947,7 @@
 		};
 		001A90091C55CE6E009F964C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E6E244BF28D2CFDCF389DED2 /* Pods-low-effort-sensing.debug.xcconfig */;
+			baseConfigurationReference = 674E991FB331CC094C713AF4 /* Pods-low-effort-sensing.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -866,7 +974,7 @@
 		};
 		001A900A1C55CE6E009F964C /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 7C792D001F77771C4BC4A5EA /* Pods-low-effort-sensing.release.xcconfig */;
+			baseConfigurationReference = 7AC0232147E86A95B90D88FD /* Pods-low-effort-sensing.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
