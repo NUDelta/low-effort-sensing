@@ -82,10 +82,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             locationManager!.requestAlwaysAuthorization()
             locationManager!.requestWhenInUseAuthorization()
         }
-        locationManager!.allowsBackgroundLocationUpdates = true
-        
         clearAllMonitoredRegions()
         
+        locationManager!.allowsBackgroundLocationUpdates = true
         locationManager!.startUpdatingLocation()
         
         // print debug string with all location manager parameters
@@ -98,7 +97,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let authStatus = CLLocationManager.authorizationStatus() == .AuthorizedAlways
         let locServicesEnabled = CLLocationManager.locationServicesEnabled()
-        let locSigChangeAvailable = CLLocationManager.significantLocationChangeMonitoringAvailable()
         let locationManagerPermissionsDebugString = "Location manager setup with following parameters:\n" +
             "Authorization = \(authStatus)\n" +
             "Location Services Enabled = \(locServicesEnabled)\n"
@@ -228,8 +226,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             }
         }
         
-        var outputDict: [String: [String: String]] = ["distanceToRegions": distanceToRegions,
-                                                      "currentLocationParameters": currentLocationParameters]
+        let outputDict: [String: [String: String]] = ["distanceToRegions": distanceToRegions, "currentLocationParameters": currentLocationParameters]
         return outputDict
     }
     

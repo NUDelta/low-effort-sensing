@@ -15,18 +15,12 @@ class ViewController: UIViewController {
     // MARK: Class Variables
     @IBOutlet weak var locationDebugLabel: UILabel!
     
-//    let locationManager = CLLocationManager()
-    
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        
-        // location manager
-//        locationManager.delegate = self
-//        locationManager.requestAlwaysAuthorization()
     }
     
     override func didReceiveMemoryWarning() {

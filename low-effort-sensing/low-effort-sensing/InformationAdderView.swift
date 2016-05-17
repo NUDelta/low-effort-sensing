@@ -56,9 +56,9 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         foodTypeToolBar.tintColor = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
         foodTypeToolBar.sizeToFit()
         
-        let doneFoodTypeButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: "doneFoodTypePicker")
+        let doneFoodTypeButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(InformationAdderView.doneFoodTypePicker))
         let spaceFoodTypeButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let cancelFoodTypeButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: "cancelFoodTypePicker")
+        let cancelFoodTypeButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(InformationAdderView.cancelFoodTypePicker))
         
         foodTypeToolBar.setItems([cancelFoodTypeButton, spaceFoodTypeButton, doneFoodTypeButton], animated: false)
         foodTypeToolBar.userInteractionEnabled = true
@@ -82,9 +82,9 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         foodDurationToolBar.tintColor = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
         foodDurationToolBar.sizeToFit()
         
-        let doneFoodDurationButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: "doneFoodDurationPicker")
+        let doneFoodDurationButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(InformationAdderView.doneFoodDurationPicker))
         let spaceFoodDurationButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let cancelFoodDurationButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: "cancelFoodDurationPicker")
+        let cancelFoodDurationButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(InformationAdderView.cancelFoodDurationPicker))
         
         foodDurationToolBar.setItems([cancelFoodDurationButton, spaceFoodDurationButton, doneFoodDurationButton], animated: false)
         foodDurationToolBar.userInteractionEnabled = true
@@ -108,9 +108,9 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
         stillFoodToolBar.tintColor = UIColor(red: 76/255, green: 217/255, blue: 100/255, alpha: 1)
         stillFoodToolBar.sizeToFit()
         
-        let doneStillFoodButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: "doneStillFoodPicker")
+        let doneStillFoodButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(InformationAdderView.doneStillFoodPicker))
         let spaceStillFoodButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.FlexibleSpace, target: nil, action: nil)
-        let cancelStillFoodButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: "cancelStillFoodPicker")
+        let cancelStillFoodButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: #selector(InformationAdderView.cancelStillFoodPicker))
         
         stillFoodToolBar.setItems([cancelStillFoodButton, spaceStillFoodButton, doneStillFoodButton], animated: false)
         stillFoodToolBar.userInteractionEnabled = true
