@@ -62,7 +62,7 @@ class ViewController: UIViewController {
                             let newRegionLat = newMonitoredLocation["location"].latitude
                             let newRegionLong = newMonitoredLocation["location"].longitude
                             let newRegionId = newMonitoredLocation.objectId!
-                            MyPretracker.mySharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
+                            MyPretracker.sharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
                             
                             // Add new region to user defaults
                             var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()

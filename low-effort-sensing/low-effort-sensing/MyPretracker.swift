@@ -11,17 +11,136 @@ import Pretracking
 import CoreLocation
 import Parse
 
-class MyPretracker: Tracker {
-    var currentHeading: Double = 0.0
-    var currentElevation: Double = 0.0
-    var currentAccuracy: Double = 0.0
+public class MyPretracker: NSObject, CLLocationManagerDelegate {
+    // tracker parameters and storage variables
+    var distance: Double = 20.0
+    var radius: Double = 200.0
+    var accuracy: Double = kCLLocationAccuracyBestForNavigation
+    var distanceFilter: Double = 20.0
+    
+    var locationDic: [String: [String: Any]] = [:]
+    var locationManager: CLLocationManager?
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     var window: UIWindow?
     
-    static let mySharedManager = MyPretracker()
+    // debugging
+    var currentHeading: Double = 0.0
+    var currentElevation: Double = 0.0
+    var currentAccuracy: Double = 0.0
     
-    override func notifyPeople(region: CLRegion, locationWhenNotified: CLLocation) {
+    // background task
+    let backgroundTaskManager = BackgroundTaskManager()
+    var timer: NSTimer? = NSTimer()
+    var delay10Seconds: NSTimer? = NSTimer()
+    let bgTask: BackgroundTaskManager = BackgroundTaskManager.sharedBackgroundTaskManager()
+    
+    // MARK: Initializations, getters, and setters
+    required public override init() {
+        super.init()
+        
+        self.locationManager = CLLocationManager()
+        guard let locationManager = self.locationManager else {
+            return
+        }
+        
+        locationManager.delegate = self
+    }
+    
+    public static let sharedManager = MyPretracker()
+    
+    public func setupParameters(distance: Double?, radius: Double?, accuracy: CLLocationAccuracy?, distanceFilter: Double?) {
+        print("Setting up tracker parameters")
+        
+        // assign class variables values from caller's input
+        if let unwrappedDistance = distance {
+            self.distance = unwrappedDistance
+        }
+        if let unwrappedRadius = radius {
+            self.radius = unwrappedRadius
+        }
+        if let unwrappedAccurary = accuracy {
+            self.accuracy = unwrappedAccurary
+        }
+        if let unwrappedDistanceFilter = distanceFilter {
+            self.distanceFilter = unwrappedDistanceFilter
+        }
+        
+        // set location manager parameters
+        locationManager!.desiredAccuracy = self.accuracy
+        locationManager!.distanceFilter = self.distanceFilter
+    }
+    
+    public func clearAllMonitoredRegions() {
+        for region in locationManager!.monitoredRegions {
+            locationManager!.stopMonitoringForRegion(region)
+        }
+    }
+    
+    public func initLocationManager() {
+        if CLLocationManager.authorizationStatus() == .NotDetermined {
+            locationManager!.requestAlwaysAuthorization()
+            locationManager!.requestWhenInUseAuthorization()
+        }
+        locationManager!.allowsBackgroundLocationUpdates = true
+        
+        clearAllMonitoredRegions()
+        
+        locationManager!.startUpdatingLocation()
+        
+        // print debug string with all location manager parameters
+        let locActivity = locationManager!.activityType == .Other
+        let locAccuracy = locationManager!.desiredAccuracy
+        let locDistance = locationManager!.distanceFilter
+        let locationManagerParametersDebugString = "Manager Activity = \(locActivity)\n" +
+            "Manager Accuracy = \(locAccuracy)\n" +
+            "Manager Distance Filter = \(locDistance)\n"
+        
+        let authStatus = CLLocationManager.authorizationStatus() == .AuthorizedAlways
+        let locServicesEnabled = CLLocationManager.locationServicesEnabled()
+        let locSigChangeAvailable = CLLocationManager.significantLocationChangeMonitoringAvailable()
+        let locationManagerPermissionsDebugString = "Location manager setup with following parameters:\n" +
+            "Authorization = \(authStatus)\n" +
+            "Location Services Enabled = \(locServicesEnabled)\n"
+        
+        print("Initialized Location Manager Information:\n" + locationManagerPermissionsDebugString + locationManagerParametersDebugString)
+    }
+    
+    // MARK: Adding/Removing Locations
+    public func addLocation(distance: Double?, latitude: Double, longitude: Double, radius: Double?, name: String) {
+        // check if optional distance and radius values are set
+        var newLocationDistance: Double = self.distance
+        if let unwrappedDistance = distance {
+            newLocationDistance = unwrappedDistance
+        }
+        
+        var newLocationRadius: Double = self.radius
+        if let unwrappedRadius = radius {
+            newLocationRadius = unwrappedRadius
+        }
+        
+        // create and start monitoring new region
+        let newRegionCenter = CLLocationCoordinate2DMake(latitude, longitude)
+        let newRegionForMonitoring = CLCircularRegion.init(center: newRegionCenter, radius: newLocationRadius, identifier: name)
+        
+        locationManager!.startMonitoringForRegion(newRegionForMonitoring)
+        self.locationDic[name] = ["distance": newLocationDistance, "withinRegion": false, "notifiedForRegion": false]
+    }
+    
+    public func removeLocation(name: String) {
+        if self.locationDic.removeValueForKey(name) != nil {
+            let monitoredRegions = locationManager!.monitoredRegions
+            print(locationManager!.monitoredRegions)
+            for region in monitoredRegions {
+                if name == region.identifier {
+                    locationManager!.stopMonitoringForRegion(region)
+                    print("stopped monitoring \(name)")
+                }
+            }
+        }
+    }
+    
+    public func notifyPeople(region: CLRegion, locationWhenNotified: CLLocation) {
         print("notify for region id \(region.identifier)")
         // Get NSUserDefaults
         var monitoredHotspotDictionary = appUserDefaults!.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
@@ -69,7 +188,81 @@ class MyPretracker: Tracker {
         }
     }
     
-    override func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    public func notifyIfWithinDistance(lastLocation: CLLocation) -> [String: [String: String]] {
+        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude)")
+        
+        // check if location update is recent and accurate enough
+        let age = -lastLocation.timestamp.timeIntervalSinceNow
+        if (lastLocation.horizontalAccuracy < 0 || lastLocation.horizontalAccuracy > 65.0 || age > 20) {
+            return [:]
+        }
+        
+        // compute distance from current point to all monitored regions and notifiy if close enough
+        var distanceToRegions: [String: String] = [:]
+        var currentLocationParameters: [String: String] = ["location": "(\(lastLocation.coordinate.latitude), \(lastLocation.coordinate.longitude))"]
+        currentLocationParameters["horizontalAccuracy"] = String(lastLocation.horizontalAccuracy)
+        currentLocationParameters["heading"] = String(lastLocation.course)
+        currentLocationParameters["elevation"] = String(lastLocation.altitude)
+        currentLocationParameters["audioPlaying"] = String("nil")
+        currentLocationParameters["locationManagerAccuracy"] = String(locationManager!.desiredAccuracy)
+        
+        for region in locationManager!.monitoredRegions {
+            if let monitorRegion = region as? CLCircularRegion {
+                let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                let distanceToLocation = lastLocation.distanceFromLocation(monitorLocation)
+                
+                distanceToRegions[monitorRegion.identifier] = String(distanceToLocation)
+                
+                if let currentLocationInfo = self.locationDic[monitorRegion.identifier] {
+                    let distance = currentLocationInfo["distance"] as! Double
+                    let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
+                    
+                    if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
+                        print(distanceToLocation)
+                        self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
+                        self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
+                        
+                        notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                    }
+                }
+            }
+        }
+        
+        var outputDict: [String: [String: String]] = ["distanceToRegions": distanceToRegions,
+                                                      "currentLocationParameters": currentLocationParameters]
+        return outputDict
+    }
+    
+    //MARK: Background Task Functions
+    @objc private func stopLocationUpdates() {
+        print("Background stopping location updates")
+        
+        if (timer != nil) {
+            timer!.invalidate()
+            timer = nil
+        }
+        
+        locationManager!.stopUpdatingLocation()
+    }
+    
+    @objc private func stopLocationWithDelay() {
+        print("Background delay 50 seconds")
+        
+        locationManager!.stopUpdatingLocation()
+    }
+    
+    @objc private func restartLocationUpdates() {
+        print("Background restarting location updates")
+        
+        if (timer != nil) {
+            timer!.invalidate()
+            timer = nil
+        }
+        locationManager!.startUpdatingLocation()
+    }
+    
+    //MARK: Tracking Location Updates
+    public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let lastLocation = locations.last!
         let debugDictionary = notifyIfWithinDistance(lastLocation)
 
@@ -81,6 +274,72 @@ class MyPretracker: Tracker {
         // push debug log to parse
         // TODO: disable in final release
         saveLocationWithMetaData(debugDictionary)
+        
+        // reset timer
+        if (timer != nil) {
+            return
+        }
+        
+        let bgTask = BackgroundTaskManager.sharedBackgroundTaskManager()
+        bgTask.beginNewBackgroundTask()
+        timer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(MyPretracker.restartLocationUpdates), userInfo: nil, repeats: false)
+        
+        if (delay10Seconds != nil) {
+            delay10Seconds!.invalidate()
+            delay10Seconds = nil
+        }
+        delay10Seconds = NSTimer.scheduledTimerWithTimeInterval(50, target: self, selector: #selector(MyPretracker.stopLocationWithDelay), userInfo: nil, repeats: false)
+    }
+    
+    public func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = error.description
+    }
+    
+    public func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        print("did enter region \(region.identifier)")
+        let notification = UILocalNotification()
+        notification.alertBody = "You have entered region \(region.identifier)"
+        notification.soundName = "Default"
+        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        
+        locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+        locationManager!.distanceFilter = kCLDistanceFilterNone
+        self.locationDic[region.identifier]?["withinRegion"] = true
+    }
+    
+    public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
+        print("did exit region \(region.identifier)")
+        let notification = UILocalNotification()
+        notification.alertBody = "You have exited region \(region.identifier)"
+        notification.soundName = "Default"
+        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        
+        self.locationDic[region.identifier]?["withinRegion"] = false
+        self.locationDic[region.identifier]?["notifiedForRegion"] = false
+        
+        if outOfAllRegions() {
+            locationManager!.desiredAccuracy = self.accuracy
+            locationManager!.distanceFilter = self.distanceFilter
+        }
+    }
+    
+    private func outOfAllRegions() -> Bool {
+        print("checking all regions")
+        for (_, regionInfo) in self.locationDic {
+            if regionInfo["withinRegion"] as! Bool{
+                return false
+            }
+        }
+        return true
     }
     
     func saveLocationWithMetaData(data: [String: [String: String]]) {

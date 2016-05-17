@@ -53,11 +53,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
         // location manager and setting up monitored locations
-        MyPretracker.mySharedManager.setupParameters(distanceFromTarget,
+        MyPretracker.sharedManager.setupParameters(distanceFromTarget,
                                                      radius: geofenceRadius,
-                                                     accuracy: kCLLocationAccuracyBestForNavigation,
+                                                     accuracy: kCLLocationAccuracyNearestTenMeters,
                                                      distanceFilter: nil)
-        MyPretracker.mySharedManager.initLocationManager()
+        MyPretracker.sharedManager.initLocationManager()
         
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
         
@@ -171,7 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     func stopMonitoringAllRegions() {
         let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
         for (id, _) in monitoredHotspotDictionary {
-            MyPretracker.mySharedManager.removeLocation(id)
+            MyPretracker.sharedManager.removeLocation(id)
         }
     }
     
@@ -188,7 +188,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         let currLat = currGeopoint.latitude
                         let currLong = currGeopoint.longitude
                         let id = object.objectId!
-                        MyPretracker.mySharedManager.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
+                        MyPretracker.sharedManager.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
                         
                         // Add data to user defaults
                         var unwrappedEntry = [String : AnyObject]()
@@ -310,7 +310,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         let newRegionLat = newMonitoredLocation["location"].latitude
                         let newRegionLong = newMonitoredLocation["location"].longitude
                         let newRegionId = newMonitoredLocation.objectId!
-                        MyPretracker.mySharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
+                        MyPretracker.sharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
                         
                         // Add new region to user defaults
                         var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
@@ -363,7 +363,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                 let newRegionLat = newMonitoredLocation["location"].latitude
                                 let newRegionLong = newMonitoredLocation["location"].longitude
                                 let newRegionId = newMonitoredLocation.objectId!
-                                MyPretracker.mySharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
+                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
                                 
                                 // Add new region to user defaults
                                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
