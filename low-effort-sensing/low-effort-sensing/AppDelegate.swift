@@ -285,8 +285,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 switch(shortcutItem.type) {
                     case "com.delta.low-effort-sensing.mark-food-location":
                         tag = "food"
-                    case "com.delta.low-effort-sensing.mark-infrastructure-location":
-                        tag = "infrastructure"
                     case "com.delta.low-effort-sensing.mark-queue-location":
                         tag = "queue"
                     case "com.delta.low-effort-sensing.mark-space-location":

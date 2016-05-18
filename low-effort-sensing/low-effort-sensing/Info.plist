@@ -23,9 +23,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone's location to notify you when you enter or leave a monitored region</string>
+	<string>Low-Effort Sensing requires access to your phone&apos;s location to notify you when you enter or leave a monitored region</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone's location to notify you when you enter or leave a monitored region</string>
+	<string>Low-Effort Sensing requires access to your phone&apos;s location to notify you when you enter or leave a monitored region</string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
@@ -67,21 +67,6 @@
 			<string>Food</string>
 			<key>UIApplicationShortcutItemType</key>
 			<string>com.delta.low-effort-sensing.mark-food-location</string>
-			<key>UIApplicationShortcutItemUserInfo</key>
-			<dict>
-				<key>key</key>
-				<string>value</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeAdd</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>What structure is here?</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>City Infrastructure</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.delta.low-effort-sensing.mark-infrastructure-location</string>
 			<key>UIApplicationShortcutItemUserInfo</key>
 			<dict>
 				<key>key</key>
