@@ -15,7 +15,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     var distance: Double = 20.0
     var radius: Double = 150.0
     var accuracy: Double = kCLLocationAccuracyBestForNavigation
-    var distanceFilter: Double = 20.0
+    var distanceFilter: Double = -1.0
     
     var locationDic: [String: [String: Any]] = [:]
     var locationManager: CLLocationManager?
@@ -85,6 +85,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         clearAllMonitoredRegions()
         
         locationManager!.allowsBackgroundLocationUpdates = true
+        locationManager!.pausesLocationUpdatesAutomatically = false
         locationManager!.startUpdatingLocation()
         
         // print debug string with all location manager parameters
@@ -140,7 +141,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     // MARK: Pre-tracking algorithm and notifications
     public func notifyIfWithinDistance(lastLocation: CLLocation) -> [String: [String: String]] {
-        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude)")
+        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude) with location accuracy \(locationManager?.desiredAccuracy)")
         
         // check if location update is recent and accurate enough
         let age = -lastLocation.timestamp.timeIntervalSinceNow
@@ -271,7 +272,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         // push debug log to parse
         // TODO: disable in final release
-        saveLocationWithMetaData(debugDictionary)
+//        saveLocationWithMetaData(debugDictionary)
         
         // reset timer
         if (timer != nil) {
@@ -280,13 +281,19 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let bgTask = BackgroundTaskManager.sharedBackgroundTaskManager()
         bgTask.beginNewBackgroundTask()
-        timer = NSTimer.scheduledTimerWithTimeInterval(10, target: self, selector: #selector(MyPretracker.restartLocationUpdates), userInfo: nil, repeats: false)
         
+        // restart location manager after 1 minute
+        let intervalLength = 60.0
+        let delayLength = intervalLength - 10.0
+        
+        timer = NSTimer.scheduledTimerWithTimeInterval(intervalLength, target: self, selector: #selector(MyPretracker.restartLocationUpdates), userInfo: nil, repeats: false)
+        
+        // keep location manager inactive for 10 seconds every minute to save battery
         if (delay10Seconds != nil) {
             delay10Seconds!.invalidate()
             delay10Seconds = nil
         }
-        delay10Seconds = NSTimer.scheduledTimerWithTimeInterval(50, target: self, selector: #selector(MyPretracker.stopLocationWithDelay), userInfo: nil, repeats: false)
+        delay10Seconds = NSTimer.scheduledTimerWithTimeInterval(delayLength, target: self, selector: #selector(MyPretracker.stopLocationWithDelay), userInfo: nil, repeats: false)
     }
     
     public func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
@@ -300,26 +307,76 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = error.description
+        newLog.saveInBackground()
+    }
+    
+    public func locationManagerDidPauseLocationUpdates(manager: CLLocationManager) {
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = "Location Updates Paused by iOS"
+        newLog.saveInBackground()
+    }
+    
+    public func locationManagerDidResumeLocationUpdates(manager: CLLocationManager) {
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = "Location Updates Resumed by iOS"
+        newLog.saveInBackground()
     }
     
     public func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("did enter region \(region.identifier)")
-        let notification = UILocalNotification()
-        notification.alertBody = "You have entered region \(region.identifier)"
-        notification.soundName = "Default"
-        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+//        let notification = UILocalNotification()
+//        notification.alertBody = "You have entered region \(region.identifier)"
+//        notification.soundName = "Default"
+//        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         
         locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         locationManager!.distanceFilter = kCLDistanceFilterNone
         self.locationDic[region.identifier]?["withinRegion"] = true
+        
+        // log region entry events to Parse
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        var notificationString: String = ""
+        if let monitorRegion = region as? CLCircularRegion {
+            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+            notificationString = "Entered region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
+        } else {
+            notificationString = "Entered region \(region.identifier) (nil, nil)"
+        }
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = notificationString
+        newLog.saveInBackground()
     }
     
     public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("did exit region \(region.identifier)")
-        let notification = UILocalNotification()
-        notification.alertBody = "You have exited region \(region.identifier)"
-        notification.soundName = "Default"
-        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+//        let notification = UILocalNotification()
+//        notification.alertBody = "You have exited region \(region.identifier)"
+//        notification.soundName = "Default"
+//        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         
         self.locationDic[region.identifier]?["withinRegion"] = false
         self.locationDic[region.identifier]?["notifiedForRegion"] = false
@@ -328,6 +385,27 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             locationManager!.desiredAccuracy = self.accuracy
             locationManager!.distanceFilter = self.distanceFilter
         }
+        
+        // log region exit events to Parse
+        let date = NSDate()
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.stringFromDate(date)
+        
+        var notificationString: String = ""
+        if let monitorRegion = region as? CLCircularRegion {
+            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+            notificationString = "Exited region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
+        } else {
+            notificationString = "Exited region \(region.identifier) (nil, nil)"
+        }
+        
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_string"] = currentDateString
+        newLog["console_string"] = notificationString
+        newLog.saveInBackground()
     }
     
     private func outOfAllRegions() -> Bool {
@@ -364,7 +442,14 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 newLog["distance_to_regions"] = String(unwrappedDistanceToRegions)
                 
                 if unwrappedDistanceToRegions.count > 0 {
-                    newLog.saveInBackground()
+                    newLog.saveInBackgroundWithBlock {
+                        (success: Bool, error: NSError?) -> Void in
+                        if (success) {
+                            print("Meta data saved successfully")
+                        } else {
+                            print("Error in saving meta data: \(error)")
+                        }
+                    }
                 }
             }
         }
