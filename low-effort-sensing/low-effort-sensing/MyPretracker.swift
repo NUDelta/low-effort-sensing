@@ -110,7 +110,56 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         initLocationManager()
-        print(locationManager?.monitoredRegions)
+        beginMonitoringParseRegions()
+    }
+    
+    // MARK: - Location Functions
+    // TODO: Pull new geofences when significant change is detected
+    var parseRefreshTimer: NSTimer? = NSTimer()
+    
+    func refreshLocationsFromParse() {
+        print("refreshing tracked locations")
+        clearAllMonitoredRegions()
+        beginMonitoringParseRegions()
+    }
+    
+    func beginMonitoringParseRegions() {
+        let query = PFQuery(className: "hotspot")
+        
+        query.findObjectsInBackgroundWithBlock {
+            (foundObjs: [PFObject]?, error: NSError?) -> Void in
+            if error == nil {
+                if let foundObjs = foundObjs {
+                    var monitoredHotspotDictionary = Dictionary<String, AnyObject>()
+                    for object in foundObjs {
+                        let currGeopoint = object["location"] as! PFGeoPoint
+                        let currLat = currGeopoint.latitude
+                        let currLong = currGeopoint.longitude
+                        let id = object.objectId!
+                        self.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
+                        
+                        // Add data to user defaults
+                        var unwrappedEntry = [String : AnyObject]()
+                        unwrappedEntry["latitude"] = currLat
+                        unwrappedEntry["longitude"] = currLong
+                        unwrappedEntry["id"] = object.objectId
+                        unwrappedEntry["tag"] = object["tag"]
+                        let info : Dictionary<String, AnyObject>? = object["info"] as? Dictionary<String, AnyObject>
+                        unwrappedEntry["info"] = info
+                        
+                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
+                    }
+                    self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                    self.appUserDefaults?.synchronize()
+                    
+                    // refresh data every 10 minutes
+                    self.parseRefreshTimer = NSTimer.scheduledTimerWithTimeInterval(10.0 * 60.0, target: self, selector: #selector(MyPretracker.refreshLocationsFromParse), userInfo: nil, repeats: false)
+                }
+            } else {
+                print("Error in querying regions from Parse: \(error). Trying again.")
+                self.beginMonitoringParseRegions()
+            }
+        }
     }
     
     // MARK: Adding/Removing Locations
@@ -266,6 +315,30 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             timer = nil
         }
         locationManager!.startUpdatingLocation()
+    }
+    
+    func presentNotificationForEnteredRegion(region: CLRegion!) {
+        // Get NSUserDefaults
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        let currentRegion = monitoredHotspotDictionary[region.identifier]
+        let message = region.identifier
+        
+        // Show alert if app active, else local notification
+        if UIApplication.sharedApplication().applicationState == .Active {
+            if let viewController = window?.rootViewController {
+                let alert = UIAlertController(title: "Region Entered", message: "You have entered region \(message)", preferredStyle: .Alert)
+                let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
+                alert.addAction(action)
+                viewController.presentViewController(alert, animated: true, completion: nil)
+            }
+        } else {
+            let notification = UILocalNotification()
+            notification.alertBody = "You have entered region \(message)"
+            notification.soundName = "Default"
+            notification.category = "INVESTIGATE_CATEGORY"
+            notification.userInfo = currentRegion as? Dictionary
+            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
+        }
     }
     
     //MARK: Tracking Location Updates

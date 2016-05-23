@@ -75,8 +75,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      accuracy: kCLLocationAccuracyNearestTenMeters,
                                                      distanceFilter: nil)
         
-        beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
-        
         // setup local notifications
         var categories = Set<UIUserNotificationCategory>()
         
@@ -208,78 +206,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         print("Requesting authorization for local notifications")
         UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: notificationCategories))
         UIApplication.sharedApplication().cancelAllLocalNotifications()
-    }
-    
-    // MARK: - Location Functions
-    // TODO: Pull new geofences when significant change is detected
-    
-    func stopMonitoringAllRegions() {
-        let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-        for (id, _) in monitoredHotspotDictionary {
-            MyPretracker.sharedManager.removeLocation(id)
-        }
-    }
-    
-    func beginMonitoringParseRegions() {
-        let query = PFQuery(className: "hotspot")
-        
-        query.findObjectsInBackgroundWithBlock {
-            (foundObjs: [PFObject]?, error: NSError?) -> Void in
-            if error == nil {
-                if let foundObjs = foundObjs {
-                    var monitoredHotspotDictionary = Dictionary<String, AnyObject>()
-                    for object in foundObjs {
-                        let currGeopoint = object["location"] as! PFGeoPoint
-                        let currLat = currGeopoint.latitude
-                        let currLong = currGeopoint.longitude
-                        let id = object.objectId!
-                        MyPretracker.sharedManager.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
-                        
-                        // Add data to user defaults
-                        var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["latitude"] = currLat
-                        unwrappedEntry["longitude"] = currLong
-                        unwrappedEntry["id"] = object.objectId
-                        unwrappedEntry["tag"] = object["tag"]
-                        let info : Dictionary<String, AnyObject>? = object["info"] as? Dictionary<String, AnyObject>
-                        unwrappedEntry["info"] = info
-                        
-                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
-                    }
-                    self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-                    self.appUserDefaults?.synchronize()
-                    
-                    print(monitoredHotspotDictionary)
-                }
-            } else {
-                print("Error in querying regions from Parse: \(error). Trying again.")
-                self.beginMonitoringParseRegions()
-            }
-        }
-    }
-    
-    func presentNotificationForEnteredRegion(region: CLRegion!) {
-        // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
-        let currentRegion = monitoredHotspotDictionary[region.identifier]
-        let message = region.identifier
-        
-        // Show alert if app active, else local notification
-        if UIApplication.sharedApplication().applicationState == .Active {
-            if let viewController = window?.rootViewController {
-                let alert = UIAlertController(title: "Region Entered", message: "You have entered region \(message)", preferredStyle: .Alert)
-                let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                alert.addAction(action)
-                viewController.presentViewController(alert, animated: true, completion: nil)
-            }
-        } else {
-            let notification = UILocalNotification()
-            notification.alertBody = "You have entered region \(message)"
-            notification.soundName = "Default"
-            notification.category = "INVESTIGATE_CATEGORY"
-            notification.userInfo = currentRegion as? Dictionary
-            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
-        }
     }
     
     //MARK: - Contextual Notification Handler
