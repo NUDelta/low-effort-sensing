@@ -176,7 +176,7 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         case "Space Availability (e.g. Coffee Lab, Main Library)":
             return "space"
         case "Surprising Things (e.g. cute animals, celebrities)":
-            return "surprise"
+            return "surprising"
         default:
             return ""
         }
