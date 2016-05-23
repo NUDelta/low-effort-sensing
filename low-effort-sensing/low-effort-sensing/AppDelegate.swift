@@ -4,7 +4,11 @@
 //
 //  Created by Kapil Garg on 1/24/16.
 //  Copyright © 2016 Kapil Garg. All rights reserved.
-//
+// 
+//  Images Used
+//  Double Tap (icon, splash screen), Web Icon Set from thenounproject.com
+//  Location (authorization page), Riccardo Avanzi from thenounproject.com
+//  Notification (authorization page), Thomas Helbig from thenounproject.com
 
 import UIKit
 import Parse
@@ -16,6 +20,18 @@ let distanceFromTarget = 20.0
 let geofenceRadius = 150.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
 var vendorId: String = ""
+
+// extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
@@ -57,7 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      radius: geofenceRadius,
                                                      accuracy: kCLLocationAccuracyNearestTenMeters,
                                                      distanceFilter: nil)
-        MyPretracker.sharedManager.initLocationManager()
+        MyPretracker.sharedManager.getAuthorizationForLocationManager()
         
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
         
@@ -85,6 +101,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: categories))
         UIApplication.sharedApplication().cancelAllLocalNotifications()
+        
+        // check if user has already opened app before, if not show welcome screen
+        let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
+        if launchedBefore  {
+            print("Not first launch.")
+        }
+        else {
+            print("First launch, setting NSUserDefault.")
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+        }
         
         return performShortcutDelegate
     }

@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000447451CD3AB830033DCD3 /* MyPretracker.swift */; };
+		001627D01CF297610049107E /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627CF1CF297610049107E /* NameViewController.swift */; };
+		001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627D11CF297A70049107E /* AuthorizationViewController.swift */; };
+		001627D41CF297C10049107E /* RankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627D31CF297C10049107E /* RankingViewController.swift */; };
+		001627D61CF297D60049107E /* CompletionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627D51CF297D60049107E /* CompletionViewController.swift */; };
 		001A8FCD1C55CE6E009F964C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A8FCC1C55CE6E009F964C /* AppDelegate.swift */; };
 		001A8FCF1C55CE6E009F964C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A8FCE1C55CE6E009F964C /* ViewController.swift */; };
 		001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001A8FD01C55CE6E009F964C /* Main.storyboard */; };
@@ -121,6 +125,10 @@
 
 /* Begin PBXFileReference section */
 		000447451CD3AB830033DCD3 /* MyPretracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPretracker.swift; sourceTree = "<group>"; };
+		001627CF1CF297610049107E /* NameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
+		001627D11CF297A70049107E /* AuthorizationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
+		001627D31CF297C10049107E /* RankingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
+		001627D51CF297D60049107E /* CompletionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletionViewController.swift; sourceTree = "<group>"; };
 		001A8FC91C55CE6E009F964C /* low-effort-sensing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "low-effort-sensing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		001A8FCC1C55CE6E009F964C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		001A8FCE1C55CE6E009F964C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -238,6 +246,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		001627CE1CF297430049107E /* WelcomeScreens */ = {
+			isa = PBXGroup;
+			children = (
+				001627CF1CF297610049107E /* NameViewController.swift */,
+				001627D11CF297A70049107E /* AuthorizationViewController.swift */,
+				001627D31CF297C10049107E /* RankingViewController.swift */,
+				001627D51CF297D60049107E /* CompletionViewController.swift */,
+			);
+			name = WelcomeScreens;
+			sourceTree = "<group>";
+		};
 		001A8FC01C55CE6E009F964C = {
 			isa = PBXGroup;
 			children = (
@@ -265,6 +284,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				001627CE1CF297430049107E /* WelcomeScreens */,
 				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
 				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
@@ -693,11 +713,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */,
 				0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */,
 				001A8FCF1C55CE6E009F964C /* ViewController.swift in Sources */,
 				00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */,
 				000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */,
+				001627D61CF297D60049107E /* CompletionViewController.swift in Sources */,
 				001A8FCD1C55CE6E009F964C /* AppDelegate.swift in Sources */,
+				001627D01CF297610049107E /* NameViewController.swift in Sources */,
+				001627D41CF297C10049107E /* RankingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

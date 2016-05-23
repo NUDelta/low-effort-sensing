@@ -77,11 +77,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    public func initLocationManager() {
+    public func getAuthorizationForLocationManager() {
         if CLLocationManager.authorizationStatus() == .NotDetermined {
             locationManager!.requestAlwaysAuthorization()
-            locationManager!.requestWhenInUseAuthorization()
         }
+    }
+    
+    public func initLocationManager() {
         clearAllMonitoredRegions()
         
         locationManager!.allowsBackgroundLocationUpdates = true
@@ -103,6 +105,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             "Location Services Enabled = \(locServicesEnabled)\n"
         
         print("Initialized Location Manager Information:\n" + locationManagerPermissionsDebugString + locationManagerParametersDebugString)
+    }
+    
+    public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        initLocationManager()
     }
     
     // MARK: Adding/Removing Locations
