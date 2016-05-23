@@ -103,35 +103,35 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pIj-4c-58o">
-                                <rect key="frame" x="20" y="367" width="560" height="99"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WelcomeScreen" translatesAutoresizingMaskIntoConstraints="NO" id="0Yg-jt-BKS">
+                                <rect key="frame" x="219" y="180" width="162" height="162"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="99" id="oyp-Z1-xQV"/>
+                                    <constraint firstAttribute="width" secondItem="0Yg-jt-BKS" secondAttribute="height" multiplier="1:1" id="S0J-Wd-BT3"/>
+                                    <constraint firstAttribute="width" constant="162" id="WWe-xK-bWu"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pIj-4c-58o">
+                                <rect key="frame" x="20" y="350" width="560" height="167"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="167" id="oyp-Z1-xQV"/>
                                 </constraints>
                                 <string key="text">Low-Effort Sensing (LES) is a crowdsourcing platform that allows you to collect and contribute data about physical places that you pass by. Most importantly, you can do everything with very little effort. </string>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="WelcomeScreen" translatesAutoresizingMaskIntoConstraints="NO" id="0Yg-jt-BKS">
-                                <rect key="frame" x="212" y="171" width="177" height="177"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="0Yg-jt-BKS" secondAttribute="height" multiplier="1:1" id="S0J-Wd-BT3"/>
-                                    <constraint firstAttribute="width" constant="177" id="WWe-xK-bWu"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="pIj-4c-58o" firstAttribute="leading" secondItem="mJZ-OC-GhE" secondAttribute="leadingMargin" id="7Mz-C6-h8w"/>
                             <constraint firstItem="kdY-ye-uZY" firstAttribute="top" secondItem="KsX-Bo-Kv8" secondAttribute="bottom" constant="113" id="IRD-24-TvN"/>
-                            <constraint firstItem="Y8D-jJ-Cfx" firstAttribute="top" secondItem="pIj-4c-58o" secondAttribute="bottom" constant="44" id="KPt-Wn-5rY"/>
+                            <constraint firstItem="Y8D-jJ-Cfx" firstAttribute="top" secondItem="pIj-4c-58o" secondAttribute="bottom" constant="-7" id="KPt-Wn-5rY"/>
                             <constraint firstItem="0Yg-jt-BKS" firstAttribute="centerX" secondItem="pIj-4c-58o" secondAttribute="centerX" id="Ofh-9u-gWh"/>
                             <constraint firstItem="kdY-ye-uZY" firstAttribute="centerX" secondItem="0Yg-jt-BKS" secondAttribute="centerX" id="RCc-2L-rv5"/>
                             <constraint firstItem="SaG-D5-E52" firstAttribute="top" secondItem="Y8D-jJ-Cfx" secondAttribute="bottom" constant="60" id="aw0-G4-TT0"/>
                             <constraint firstItem="pIj-4c-58o" firstAttribute="centerX" secondItem="Y8D-jJ-Cfx" secondAttribute="centerX" id="gf2-v9-u32"/>
-                            <constraint firstItem="0Yg-jt-BKS" firstAttribute="top" secondItem="kdY-ye-uZY" secondAttribute="bottom" constant="17" id="grh-tG-LpH"/>
-                            <constraint firstItem="pIj-4c-58o" firstAttribute="top" secondItem="0Yg-jt-BKS" secondAttribute="bottom" constant="19" id="kY8-tw-eHD"/>
+                            <constraint firstItem="0Yg-jt-BKS" firstAttribute="top" secondItem="kdY-ye-uZY" secondAttribute="bottom" constant="26" id="grh-tG-LpH"/>
+                            <constraint firstItem="pIj-4c-58o" firstAttribute="top" secondItem="0Yg-jt-BKS" secondAttribute="bottom" constant="8" id="kY8-tw-eHD"/>
                             <constraint firstItem="pIj-4c-58o" firstAttribute="trailing" secondItem="mJZ-OC-GhE" secondAttribute="trailingMargin" id="nDE-3O-6oT"/>
                         </constraints>
                     </view>
@@ -234,9 +234,9 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mny-3A-1C4">
-                                <rect key="frame" x="20" y="361" width="560" height="132"/>
+                                <rect key="frame" x="20" y="348" width="560" height="155"/>
                                 <string key="text">Note: We will only save your location when you mark a location for tracking or respond to a notification. All of your data will be anonymous and we will never reference your device or your name directly.</string>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -250,10 +250,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AuthorizationScreen" translatesAutoresizingMaskIntoConstraints="NO" id="pTX-py-4Nm">
-                                <rect key="frame" x="175" y="263" width="250" height="90"/>
+                                <rect key="frame" x="188" y="259" width="225" height="81"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="90" id="jrL-LT-gGH"/>
-                                    <constraint firstAttribute="width" constant="250" id="lwQ-bt-kiX"/>
+                                    <constraint firstAttribute="height" constant="81" id="jrL-LT-gGH"/>
+                                    <constraint firstAttribute="width" constant="225" id="lwQ-bt-kiX"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -263,13 +263,13 @@
                             <constraint firstAttribute="trailingMargin" secondItem="Xbo-lP-UD3" secondAttribute="trailing" id="DyX-sq-zWc"/>
                             <constraint firstAttribute="leadingMargin" secondItem="Xbo-lP-UD3" secondAttribute="leading" id="HVg-lF-Ck9"/>
                             <constraint firstItem="Mny-3A-1C4" firstAttribute="top" secondItem="pTX-py-4Nm" secondAttribute="bottom" constant="8" id="Hcc-Kd-jQb"/>
-                            <constraint firstItem="pTX-py-4Nm" firstAttribute="top" secondItem="Xbo-lP-UD3" secondAttribute="bottom" constant="20" id="IOg-tA-frv"/>
+                            <constraint firstItem="pTX-py-4Nm" firstAttribute="top" secondItem="Xbo-lP-UD3" secondAttribute="bottom" constant="16" id="IOg-tA-frv"/>
                             <constraint firstItem="pTX-py-4Nm" firstAttribute="centerX" secondItem="UW7-PG-q4A" secondAttribute="centerX" id="Qzp-ED-FQ4"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Mny-3A-1C4" secondAttribute="trailing" id="XUd-5F-Ubx"/>
                             <constraint firstAttribute="leadingMargin" secondItem="Mny-3A-1C4" secondAttribute="leading" id="g2L-cv-3pf"/>
                             <constraint firstItem="Xbo-lP-UD3" firstAttribute="centerX" secondItem="UW7-PG-q4A" secondAttribute="centerX" id="lta-mR-iql"/>
                             <constraint firstItem="Mny-3A-1C4" firstAttribute="centerX" secondItem="UW7-PG-q4A" secondAttribute="centerX" id="ot8-1s-ldh"/>
-                            <constraint firstItem="TSH-qZ-REi" firstAttribute="top" secondItem="Mny-3A-1C4" secondAttribute="bottom" constant="1" id="pbt-bH-cyM"/>
+                            <constraint firstItem="TSH-qZ-REi" firstAttribute="top" secondItem="Mny-3A-1C4" secondAttribute="bottom" constant="-9" id="pbt-bH-cyM"/>
                             <constraint firstItem="BQl-sg-mM7" firstAttribute="top" secondItem="TSH-qZ-REi" secondAttribute="bottom" constant="70" id="tnT-XD-Sne"/>
                             <constraint firstItem="Xbo-lP-UD3" firstAttribute="top" secondItem="1RJ-Hl-18M" secondAttribute="bottom" constant="87" id="xdO-1u-q14"/>
                         </constraints>
@@ -291,24 +291,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MtZ-Q4-FmB">
-                                <rect key="frame" x="20" y="305" width="560" height="123"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="MtZ-Q4-FmB">
+                                <rect key="frame" x="20" y="243" width="560" height="249"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <outlet property="dataSource" destination="8pX-tj-N1f" id="iW5-vQ-qe5"/>
                                     <outlet property="delegate" destination="8pX-tj-N1f" id="vFQ-8S-TfZ"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="15" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugG-i9-Ihm">
-                                <rect key="frame" x="15" y="85" width="565" height="222"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="222" id="fP8-ZR-fPk"/>
-                                </constraints>
-                                <string key="text">Fantastic! Now, let's personalize your LES experience.   Currently, LES is capable of tracking the following four categories.  Hold and drag them in order of most preferred (top) to least (bottom) for your customized homepage. </string>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oag-ZO-10D">
                                 <rect key="frame" x="273" y="500" width="48" height="36"/>
                                 <constraints>
@@ -321,18 +311,28 @@
                                     <segue destination="gWh-0g-QGJ" kind="show" identifier="RankingSegue" id="SCh-Wj-6c4"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="15" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ugG-i9-Ihm">
+                                <rect key="frame" x="18" y="20" width="565" height="222"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="222" id="fP8-ZR-fPk"/>
+                                </constraints>
+                                <string key="text">Fantastic! Now, let's personalize your LES experience.   Currently, LES is capable of tracking the following four categories.  Hold and drag them in order of most preferred (top) to least (bottom) for your customized homepage. </string>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="leading" secondItem="a1j-Bu-RvK" secondAttribute="leadingMargin" constant="-5" id="06x-eL-UjE"/>
+                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="leading" secondItem="a1j-Bu-RvK" secondAttribute="leadingMargin" constant="-2" id="06x-eL-UjE"/>
                             <constraint firstItem="eck-QZ-HO5" firstAttribute="top" secondItem="oag-ZO-10D" secondAttribute="bottom" constant="64" id="8TD-e0-fN9"/>
-                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="top" secondItem="a1j-Bu-RvK" secondAttribute="topMargin" constant="85" id="94G-FT-DBJ"/>
-                            <constraint firstItem="eck-QZ-HO5" firstAttribute="top" secondItem="MtZ-Q4-FmB" secondAttribute="bottom" constant="172" id="Dd8-b7-iYn"/>
-                            <constraint firstItem="oag-ZO-10D" firstAttribute="centerX" secondItem="ugG-i9-Ihm" secondAttribute="centerX" id="JnZ-fh-iAf"/>
-                            <constraint firstItem="MtZ-Q4-FmB" firstAttribute="top" secondItem="ugG-i9-Ihm" secondAttribute="bottom" constant="-2" id="boS-DS-PcF"/>
-                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="trailing" secondItem="MtZ-Q4-FmB" secondAttribute="trailing" id="i4U-8J-em5"/>
-                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="trailing" secondItem="a1j-Bu-RvK" secondAttribute="trailingMargin" id="psp-FG-YEN"/>
-                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="leading" secondItem="MtZ-Q4-FmB" secondAttribute="leading" constant="-5" id="xEC-nf-zEq"/>
+                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="top" secondItem="a1j-Bu-RvK" secondAttribute="topMargin" constant="20" id="94G-FT-DBJ"/>
+                            <constraint firstItem="eck-QZ-HO5" firstAttribute="top" secondItem="MtZ-Q4-FmB" secondAttribute="bottom" constant="108" id="Dd8-b7-iYn"/>
+                            <constraint firstItem="oag-ZO-10D" firstAttribute="centerX" secondItem="ugG-i9-Ihm" secondAttribute="centerX" constant="-3.5" id="JnZ-fh-iAf"/>
+                            <constraint firstItem="MtZ-Q4-FmB" firstAttribute="top" secondItem="ugG-i9-Ihm" secondAttribute="bottom" constant="1" id="boS-DS-PcF"/>
+                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="trailing" secondItem="MtZ-Q4-FmB" secondAttribute="trailing" constant="3" id="i4U-8J-em5"/>
+                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="trailing" secondItem="a1j-Bu-RvK" secondAttribute="trailingMargin" constant="3" id="psp-FG-YEN"/>
+                            <constraint firstItem="ugG-i9-Ihm" firstAttribute="leading" secondItem="MtZ-Q4-FmB" secondAttribute="leading" constant="-2" id="xEC-nf-zEq"/>
                         </constraints>
                     </view>
                     <connections>

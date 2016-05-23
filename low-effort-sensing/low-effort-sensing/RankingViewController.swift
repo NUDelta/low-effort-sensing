@@ -24,6 +24,8 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.tableFooterView = UIView()
+        self.tableView.estimatedRowHeight = 50.0
+        self.tableView.rowHeight = UITableViewAutomaticDimension
         
         addLongGestureRecognizerForTableView()
     }

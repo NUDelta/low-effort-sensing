@@ -249,6 +249,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                     self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                     self.appUserDefaults?.synchronize()
                     
+                    print(monitoredHotspotDictionary)
                 }
             } else {
                 print("Error in querying regions from Parse: \(error). Trying again.")

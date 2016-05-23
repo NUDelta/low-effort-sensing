@@ -110,6 +110,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     public func locationManager(manager: CLLocationManager, didChangeAuthorizationStatus status: CLAuthorizationStatus) {
         initLocationManager()
+        print(locationManager?.monitoredRegions)
     }
     
     // MARK: Adding/Removing Locations
