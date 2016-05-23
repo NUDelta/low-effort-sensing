@@ -79,12 +79,29 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                 name: 'preference', primer: parseInt, reverse: false
               }));
 
+              var topHotspots = distanceToHotspots;
               if (typeof request.params.count != 'undefined') {
-                var output = distanceToHotspots.slice(0, request.params.count);
-                response.success(output);
-              } else {
-                response.success(distanceToHotspots);
+                topHotspots = distanceToHotspots.slice(0, request.params.count);
               }
+
+              var hotspotList = [];
+              for (var k = 0; k < topHotspots.length; k++) {
+                hotspotList.push(topHotspots[k].objectId);
+              }
+
+              var hotspotQuery = new Parse.Query('hotspot');
+              hotspotQuery.containedIn('objectId', hotspotList);
+
+              hotspotQuery.find({
+                success: function (selectedHotspots) {
+                  response.success(selectedHotspots);
+                },
+                error: function (error) {
+                  /*jshint ignore:start*/
+                  console.log(error);
+                  /*jshint ignore:end*/
+                }
+              });
             },
             error: function (error) {
               /*jshint ignore:start*/

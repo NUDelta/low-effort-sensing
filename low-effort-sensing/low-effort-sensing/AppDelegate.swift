@@ -18,7 +18,8 @@ import WatchConnectivity
 
 let distanceFromTarget = 20.0
 let geofenceRadius = 150.0
-let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
+let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
+let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
 var vendorId: String = ""
 
 // extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
