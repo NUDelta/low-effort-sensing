@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Parse
 
 class CompletionViewController: UIViewController {
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
@@ -20,5 +21,14 @@ class CompletionViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "CompletionSegue") {
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+            
+            let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionaryForKey("welcomeData"))
+            newUser.saveInBackground()
+        }
     }
 }

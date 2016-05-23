@@ -78,6 +78,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     public func getAuthorizationForLocationManager() {
+        print("Requesting authorization for always-on location")
         if CLLocationManager.authorizationStatus() == .NotDetermined {
             locationManager!.requestAlwaysAuthorization()
         }

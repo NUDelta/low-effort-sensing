@@ -153,4 +153,32 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         return snapshot
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "RankingSegue") {
+            var userInfo = appUserDefaults?.dictionaryForKey("welcomeData")
+            userInfo!["firstPreference"] = simplifyTag(categories[0])
+            userInfo!["secondPreference"] = simplifyTag(categories[1])
+            userInfo!["thirdPreference"] = simplifyTag(categories[2])
+            userInfo!["fourthPreference"] = simplifyTag(categories[3])
+                
+            self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
+            self.appUserDefaults?.synchronize()
+        }
+    }
+    
+    func simplifyTag(labelText: String) -> String {
+        switch labelText {
+        case "Free or Sold Food":
+            return "food"
+        case "Lines at Popular Places (e.g. Tech Express)":
+            return "queues"
+        case "Space Availability (e.g. Coffee Lab, Main Library)":
+            return "space"
+        case "Surprising Things (e.g. cute animals, celebrities)":
+            return "surprise"
+        default:
+            return ""
+        }
+    }
 }

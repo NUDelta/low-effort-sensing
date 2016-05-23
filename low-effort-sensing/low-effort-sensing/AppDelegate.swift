@@ -41,6 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     var shortcutItem: UIApplicationShortcutItem?
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    var notificationCategories = Set<UIUserNotificationCategory>()
     
     // MARK: - AppDelegate Functions
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -73,7 +74,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      radius: geofenceRadius,
                                                      accuracy: kCLLocationAccuracyNearestTenMeters,
                                                      distanceFilter: nil)
-        MyPretracker.sharedManager.getAuthorizationForLocationManager()
         
         beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
         
@@ -98,22 +98,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         investigateCategory.identifier = "INVESTIGATE_CATEGORY"
         
         categories.insert(investigateCategory)
-        
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: categories))
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        notificationCategories = categories
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
         if launchedBefore  {
-            print("Not first launch.")
+            self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let homeViewController: ViewController = mainStoryboard.instantiateViewControllerWithIdentifier("MainViewController") as! ViewController
+            
+            self.window?.rootViewController = homeViewController
+            self.window?.makeKeyAndVisible()
         }
         else {
-            print("First launch, setting NSUserDefault.")
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+            print("First launch, going to welcome screen")
+            let userInfo: [String : String] = ["firstName": "",
+                                               "lastName": "",
+                                               "vendorId": vendorId,
+                                               "firstPreference": "",
+                                               "secondPreference": "",
+                                               "thirdPreference": "",
+                                               "fourthPreference": ""]
+            
+            self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
+            self.appUserDefaults?.synchronize()
         }
         
         return performShortcutDelegate
     }
+    
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -189,6 +202,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         } catch _ {
             print("Error")
         }
+    }
+    
+    func registerForNotifications() {
+        print("Requesting authorization for local notifications")
+        UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: notificationCategories))
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
     // MARK: - Location Functions

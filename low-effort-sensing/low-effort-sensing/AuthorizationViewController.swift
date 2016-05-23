@@ -21,4 +21,15 @@ class AuthorizationViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+        if (segue.identifier == "AuthSegue") {
+            // request for notification authorization
+            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.registerForNotifications()
+            
+            // request location authorization
+            MyPretracker.sharedManager.getAuthorizationForLocationManager()
+        }
+    }
 }

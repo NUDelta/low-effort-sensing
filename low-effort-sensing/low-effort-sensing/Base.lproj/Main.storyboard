@@ -9,7 +9,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="MainViewController" id="BYZ-38-t0r" customClass="ViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -163,7 +163,7 @@
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Last Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MuL-L0-gHt">
                                 <rect key="frame" x="188" y="328" width="224" height="30"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jhD-aO-O2j">
                                 <rect key="frame" x="250" y="504" width="100" height="36"/>
@@ -173,7 +173,7 @@
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <state key="normal" title="Next"/>
                                 <connections>
-                                    <segue destination="JY4-8a-hcP" kind="show" id="qnh-Dl-46i"/>
+                                    <segue destination="JY4-8a-hcP" kind="show" identifier="NameSegue" id="qnh-Dl-46i"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First, what is your name?" textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v1n-m5-Sck">
@@ -200,6 +200,10 @@
                             <constraint firstItem="dtE-9y-JMW" firstAttribute="leading" secondItem="MuL-L0-gHt" secondAttribute="leading" id="lGG-07-9w3"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="firstName" destination="dtE-9y-JMW" id="deg-Nk-cyk"/>
+                        <outlet property="lastName" destination="MuL-L0-gHt" id="COW-qk-qvC"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e8X-s3-tt7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -226,7 +230,7 @@
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <state key="normal" title="Provide Authorization"/>
                                 <connections>
-                                    <segue destination="8pX-tj-N1f" kind="show" id="8U8-DE-NwO"/>
+                                    <segue destination="8pX-tj-N1f" kind="show" identifier="AuthSegue" id="8U8-DE-NwO"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mny-3A-1C4">
@@ -314,7 +318,7 @@
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <state key="normal" title="Done"/>
                                 <connections>
-                                    <segue destination="gWh-0g-QGJ" kind="show" id="SCh-Wj-6c4"/>
+                                    <segue destination="gWh-0g-QGJ" kind="show" identifier="RankingSegue" id="SCh-Wj-6c4"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -360,7 +364,7 @@
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <state key="normal" title="Got it!"/>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" id="gwV-1C-Kpc"/>
+                                    <segue destination="BYZ-38-t0r" kind="show" identifier="CompletionSegue" id="gwV-1C-Kpc"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSg-dQ-qPD">
