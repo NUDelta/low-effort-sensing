@@ -12,11 +12,23 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
   preferenceQuery.find({
     success: function (preferences) {
       var userPreferences = {
-        'firstPreference': preferences[0].get('firstPreference'),
-        'secondPreference': preferences[0].get('secondPreference'),
-        'thirdPreference': preferences[0].get('thirdPreference'),
-        'fourthPreference': preferences[0].get('fourthPreference')
-      };
+          'firstPreference': 0,
+          'secondPreference': 0,
+          'thirdPreference': 0,
+          'fourthPreference': 0
+        };
+
+      if (preferences.length > 0) {
+        var firstPreference = preferences[0].get('firstPreference');
+        var secondPreference = preferences[0].get('secondPreference');
+        var thirdPreference = preferences[0].get('thirdPreference');
+        var fourthPreference = preferences[0].get('fourthPreference');
+
+        userPreferences.firstPreference = firstPreference;
+        userPreferences.secondPreference = secondPreference;
+        userPreferences.thirdPreference = thirdPreference;
+        userPreferences.fourthPreference = fourthPreference;
+      }
 
       var preferenceDict = {
         'food': getRankForCategory('food', userPreferences),
@@ -25,33 +37,61 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
         'surprising': getRankForCategory('surprising', userPreferences)
       };
 
-      // return locations sorted by distance and ranking for user
-      var query = new Parse.Query('hotspot');
-      query.find({
-        success: function (locations) {
-          for (var i = 0; i < locations.length; i++) {
-            var currentHotspot = {
-              'objectId': locations[i].id,
-              'location': locations[i].get('location'),
-              'tag': locations[i].get('tag'),
-              'preference': preferenceDict[locations[i].get('tag')]
-            };
+      var prevRespondedQuery = new Parse.Query('pingResponse');
+      prevRespondedQuery.equalTo('vendorId', request.params.vendorId);
+      prevRespondedQuery.find({
+        success: function (prevNotifications) {
+          var prevNotificationLen = prevNotifications.length;
 
-            currentHotspot.distance = getDistance(currentLocation,
-                                                  currentHotspot.location);
-            currentHotspot.distance = Math.round(currentHotspot.distance);
-            distanceToHotspots.push(currentHotspot);
-          }
+          // return locations sorted by distance and ranking for user
+          var locationQuery = new Parse.Query('hotspot');
+          locationQuery.find({
+            success: function (locations) {
+              for (var i = 0; i < locations.length; i++) {
+                var currentHotspot = {
+                  'objectId': locations[i].id,
+                  'location': locations[i].get('location'),
+                  'tag': locations[i].get('tag'),
+                  'preference': preferenceDict[locations[i].get('tag')]
+                };
 
-          distanceToHotspots.sort(sortBy('distance', {
-            name: 'preference', primer: parseInt, reverse: false
-          }));
+                currentHotspot.distance = getDistance(currentLocation,
+                                                      currentHotspot.location);
+                currentHotspot.distance = Math.round(currentHotspot.distance);
 
-          if (typeof request.params.count != 'undefined') {
-            response.success(distanceToHotspots.slice(0, request.params.count));
-          } else {
-            response.success(distanceToHotspots);
-          }
+                var hotspotPrevNotified = false;
+                if (prevNotificationLen > 0) {
+                  for (var j = 0; j < prevNotificationLen; j++) {
+                    var currentHotpotId = prevNotifications[j].get('hotspotId');
+                    if (currentHotpotId == currentHotspot.objectId) {
+                      hotspotPrevNotified = true;
+                      break;
+                    }
+                  }
+                }
+
+                if (!hotspotPrevNotified) {
+                  distanceToHotspots.push(currentHotspot);
+                }
+              }
+
+              distanceToHotspots.sort(sortBy('distance', {
+                name: 'preference', primer: parseInt, reverse: false
+              }));
+
+              if (typeof request.params.count != 'undefined') {
+                var output = distanceToHotspots.slice(0, request.params.count);
+                response.success(output);
+              } else {
+                response.success(distanceToHotspots);
+              }
+            },
+            error: function (error) {
+              /*jshint ignore:start*/
+              console.log(error);
+              /*jshint ignore:end*/
+            }
+          });
         },
         error: function (error) {
           /*jshint ignore:start*/
