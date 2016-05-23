@@ -334,6 +334,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         tag = "queue"
                     case "com.delta.low-effort-sensing.mark-space-location":
                         tag = "space"
+                    case "com.delta.low-effort-sensing.mark-surprising-thing-location":
+                        tag = "surprising"
                     default:
                         return
                 }

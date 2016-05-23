@@ -32,6 +32,21 @@
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeAdd</string>
 			<key>UIApplicationShortcutItemSubtitle</key>
+			<string>See something odd?</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Surprising Thing</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>com.delta.low-effort-sensing.mark-surprising-thing-location</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>key</key>
+				<string>value</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
 			<string>How busy is this place?</string>
 			<key>UIApplicationShortcutItemTitle</key>
 			<string>Space Availability</string>
