@@ -15,11 +15,14 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     @IBOutlet weak var foodButton: UIButton!
     @IBOutlet weak var queueButton: UIButton!
     @IBOutlet weak var spaceButton: UIButton!
+    @IBOutlet weak var surprisingButton: UIButton!
+    
     @IBOutlet weak var submittedLabel: UILabel!
     
     var foodSelected: Bool = false
     var queueSelected: Bool = false
     var spaceSelected: Bool = false
+    var surprisingSelected: Bool = false
     
     let brightGreenColor: UIColor = UIColor.init(red: 83.0 / 255.0, green: 215.0 / 255.0, blue: 105.0 / 255.0, alpha: 1.0)
     let defaultAlpha: CGFloat = 0.4
@@ -75,6 +78,9 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             pushDataToParse("space")
             unmarkLocation("space")
             submittedLabel.text = ""
+        } else if surprisingSelected {
+            pushDataToParse("surprising")
+            unmarkLocation("surprising")
         }
     }
     
@@ -84,7 +90,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             foodButton.alpha = 1
             foodButton.backgroundColor = brightGreenColor
             foodButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            submittedLabel.text = "Location will be marked for Food tracking\nwhen you exit the notification center \n\nClick Food again to untrack or\nclick another button to change the category"
+            submittedLabel.text = "Location will be marked for Food tracking when you exit the notification center. \n\nClick Food again to untrack or click another button to change the category"
             
             foodSelected = true
         } else {
@@ -97,6 +103,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             unmarkLocation("queue")
         } else if spaceSelected {
             unmarkLocation("space")
+        } else if surprisingSelected {
+            unmarkLocation("surprising")
         }
     }
     
@@ -106,7 +114,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             queueButton.alpha = 1
             queueButton.backgroundColor = brightGreenColor
             queueButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            submittedLabel.text = "Location will be marked for Queue tracking\nwhen you exit the notification center \n\nClick Queue again to untrack or\nclick another button to change the category"
+            submittedLabel.text = "Location will be marked for Queue tracking when you exit the notification center \n\nClick Queue again to untrack or click another button to change the category"
             
             queueSelected = true
         } else {
@@ -119,6 +127,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             unmarkLocation("food")
         } else if spaceSelected {
             unmarkLocation("space")
+        } else if surprisingSelected {
+            unmarkLocation("surprising")
         }
     }
     
@@ -128,7 +138,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             spaceButton.alpha = 1
             spaceButton.backgroundColor = brightGreenColor
             spaceButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
-            submittedLabel.text = "Location will be marked for Space tracking\nwhen you exit the notification center \n\nClick Space again to untrack or\nclick another button to change the category"
+            submittedLabel.text = "Location will be marked for Space tracking when you exit the notification center \n\nClick Space again to untrack or click another button to change the category"
             
             spaceSelected = true
         } else {
@@ -141,6 +151,33 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             unmarkLocation("food")
         } else if queueSelected {
             unmarkLocation("queue")
+        } else if surprisingSelected {
+            unmarkLocation("surprising")
+        }
+    }
+    
+    @IBAction func markLocationForSurprisingThing(sender: AnyObject) {
+        // show user that button has been selected/deselected
+        if !surprisingSelected {
+            surprisingButton.alpha = 1
+            surprisingButton.backgroundColor = brightGreenColor
+            surprisingButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            submittedLabel.text = "Location will be marked for Surprising Things tracking when you exit the notification center \n\nClick Surprising Things again to untrack or click another button to change the category"
+            
+            surprisingSelected = true
+            print(surprisingSelected)
+        } else {
+            unmarkLocation("surprising")
+            submittedLabel.text = ""
+        }
+        
+        // reset any other buttons selected
+        if foodSelected {
+            unmarkLocation("food")
+        } else if queueSelected {
+            unmarkLocation("queue")
+        } else if spaceSelected {
+            unmarkLocation("space")
         }
     }
     
@@ -163,6 +200,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             spaceButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
             
             spaceSelected = false
+        }  else if location == "surprising" {
+            surprisingButton.alpha = defaultAlpha
+            surprisingButton.backgroundColor = UIColor.whiteColor()
+            surprisingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            
+            surprisingSelected = false
         }
     }
     
