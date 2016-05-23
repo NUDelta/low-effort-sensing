@@ -172,7 +172,7 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         case "Free or Sold Food":
             return "food"
         case "Lines at Popular Places (e.g. Tech Express)":
-            return "queues"
+            return "queue"
         case "Space Availability (e.g. Coffee Lab, Main Library)":
             return "space"
         case "Surprising Things (e.g. cute animals, celebrities)":
