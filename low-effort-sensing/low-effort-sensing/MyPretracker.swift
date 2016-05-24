@@ -112,6 +112,11 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     // MARK: - Location Functions
     func refreshLocationsFromParse() {
+        if (parseRefreshTimer != nil) {
+            parseRefreshTimer!.invalidate()
+            parseRefreshTimer = nil
+        }
+        
         print("refreshing tracked locations")
         clearAllMonitoredRegions()
         beginMonitoringParseRegions()
