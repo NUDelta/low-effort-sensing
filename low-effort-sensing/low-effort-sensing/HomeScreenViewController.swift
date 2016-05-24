@@ -12,59 +12,111 @@ import MapKit
 import CoreLocation
 
 class HomeScreenViewController: UIViewController {
-//    // MARK: Class Variables
-//    @IBOutlet weak var mapView: MKMapView!
-//    let regionRadius: CLLocationDistance = 1000
-//    
-//    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
-//    
-//    // MARK: Class Functions
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        // Do any additional setup after loading the view, typically from a nib.
-//        
-//        // set initial location to current user location
-//        let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
-//        let initialLocation = CLLocation(latitude: (currentLocation?.latitude)!,
-//                                         longitude: (currentLocation?.longitude)!)
-//        centerMapOnLocation(initialLocation)
-//        
-//        // add pins for marked locations
-//        let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-//        for (_, info) in monitoredHotspotDictionary {
-//            addAnnotationsForDictionary(info as! [String : AnyObject])
-//            
-//            let location = info as! [String : AnyObject]
-//            let lastLocation = MyPretracker.sharedManager.locationManager?.location
-//            let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
-//            
-//            let distanceToLocation = lastLocation!.distanceFromLocation(annotationLocation)
-//            print(info)
-//            print(distanceToLocation)
-//        }
-//    }
-//    
-//    override func didReceiveMemoryWarning() {
-//        super.didReceiveMemoryWarning()
-//        // Dispose of any resources that can be recreated.
-//    }
-//    
-//    func centerMapOnLocation(location: CLLocation) {
-//        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
-//                                                                  regionRadius * 2.0, regionRadius * 2.0)
-//        mapView.setRegion(coordinateRegion, animated: true)
-//    }
-//    
-//    func addAnnotationsForDictionary(location: [String : AnyObject]) {
-//        let lastLocation = MyPretracker.sharedManager.locationManager?.location
-//        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
-//        
-//        let distanceToLocation = lastLocation!.distanceFromLocation(annotationLocation)
-//        
-//        let newLocation = MarkedLocation(title: location["tag"] as! String,
-//                                         locationName: "\(distanceToLocation) meters from your location",
-//                                         discipline: "food",
-//                                         coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double))
-//        mapView.addAnnotation(newLocation)
-//    }
+    // MARK: Class Variables
+    @IBOutlet weak var mapView: MKMapView!
+    let regionRadius: CLLocationDistance = 1000
+    
+    
+    @IBOutlet weak var nearbyButton: UIButton!
+    @IBOutlet weak var myLocationsButton: UIButton!
+    var showingNearby: Bool = Bool()
+    
+    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    
+    // MARK: Class Functions
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // Do any additional setup after loading the view, typically from a nib.
+        
+        // set initial location to current user location
+        let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
+        let initialLocation = CLLocation(latitude: (currentLocation?.latitude)!,
+                                         longitude: (currentLocation?.longitude)!)
+        centerMapOnLocation(initialLocation)
+        
+        // add pins for marked locations
+        let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        for (_, info) in monitoredHotspotDictionary {
+            addAnnotationsForDictionary(info as! [String : AnyObject])
+            
+            let location = info as! [String : AnyObject]
+            let lastLocation = MyPretracker.sharedManager.locationManager?.location
+            let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
+            
+            let distanceToLocation = lastLocation!.distanceFromLocation(annotationLocation)
+            print(info)
+            print(distanceToLocation)
+        }
+        
+        // set nearby shown
+        showingNearby = true
+        nearbyButton.backgroundColor = UIColor.blueColor()
+        nearbyButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+        
+        myLocationsButton.backgroundColor = UIColor.whiteColor()
+        myLocationsButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func centerMapOnLocation(location: CLLocation) {
+        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate,
+                                                                  regionRadius * 2.0, regionRadius * 2.0)
+        mapView.setRegion(coordinateRegion, animated: true)
+    }
+    
+    func addAnnotationsForDictionary(location: [String : AnyObject]) {
+        let lastLocation = MyPretracker.sharedManager.locationManager?.location
+        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
+        
+        let distanceToLocation = lastLocation!.distanceFromLocation(annotationLocation)
+        let distanceInFeet = Int(distanceToLocation * 3.28084)
+        let tag = location["tag"] as! String
+        
+        let newLocation = MarkedLocation(title: createTitleFromTag(tag),
+                                         locationName: "\(distanceInFeet) feet away",
+                                         discipline: tag,
+                                         coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double))
+        mapView.addAnnotation(newLocation)
+    }
+    
+    func createTitleFromTag(tag: String) -> String{
+        switch tag {
+        case "food":
+            return "Free/Sold Food Here"
+        case "queue":
+            return "How Long is the Line Here?"
+        case "space":
+            return "How Busy is the Space Here?"
+        case "surprising":
+            return "Something Surprising is Happening Here!"
+        default:
+            return ""
+        }
+    }
+    
+    @IBAction func toggleNearbyPlaces(sender: AnyObject) {
+        if !showingNearby {
+            showingNearby = true
+            nearbyButton.backgroundColor = UIColor.blueColor()
+            nearbyButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            
+            myLocationsButton.backgroundColor = UIColor.whiteColor()
+            myLocationsButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        }
+    }
+    
+    @IBAction func toggleLocationsMarked(sender: AnyObject) {
+        if showingNearby {
+            showingNearby = false
+            myLocationsButton.backgroundColor = UIColor.blueColor()
+            myLocationsButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            
+            nearbyButton.backgroundColor = UIColor.whiteColor()
+            nearbyButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+        }
+    }
 }

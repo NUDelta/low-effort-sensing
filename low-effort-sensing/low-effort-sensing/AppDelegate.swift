@@ -104,7 +104,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         if launchedBefore  {
             self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let homeViewController: ViewController = mainStoryboard.instantiateViewControllerWithIdentifier("MainViewController") as! ViewController
+            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
@@ -122,6 +122,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
             self.appUserDefaults?.synchronize()
         }
+        
+        // hide status bar on all pages
+        application.statusBarHidden = true
         
         return performShortcutDelegate
     }
