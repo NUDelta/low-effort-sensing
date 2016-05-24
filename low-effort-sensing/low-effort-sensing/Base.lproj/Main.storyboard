@@ -69,7 +69,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="803" y="470"/>
+            <point key="canvasLocation" x="-1078" y="470"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="zLv-oR-vAv">
@@ -198,7 +198,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uLa-26-FF8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1023" y="409"/>
+            <point key="canvasLocation" x="1884" y="470"/>
         </scene>
         <!--Name View Controller-->
         <scene sceneID="zb8-sp-OYe">
@@ -424,7 +424,7 @@
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <state key="normal" title="Got it!"/>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" identifier="CompletionSegue" id="gwV-1C-Kpc"/>
+                                    <segue destination="waM-V0-2Ds" kind="show" identifier="CompletionSegue" id="7A4-Lr-bRV"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="10" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSg-dQ-qPD">
@@ -543,14 +543,11 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1y5-dG-7MA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1624" y="450"/>
+            <point key="canvasLocation" x="-356" y="470"/>
         </scene>
     </scenes>
     <resources>
         <image name="AuthorizationScreen" width="300" height="109"/>
         <image name="WelcomeScreen" width="200" height="200"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="aGy-H1-5aG"/>
-    </inferredMetricsTieBreakers>
 </document>
