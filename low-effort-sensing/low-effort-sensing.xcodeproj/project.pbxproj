@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000447451CD3AB830033DCD3 /* MyPretracker.swift */; };
+		001627D01CF297610049107E /* NameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627CF1CF297610049107E /* NameViewController.swift */; };
+		001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627D11CF297A70049107E /* AuthorizationViewController.swift */; };
+		001627D41CF297C10049107E /* RankingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627D31CF297C10049107E /* RankingViewController.swift */; };
+		001627D61CF297D60049107E /* CompletionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001627D51CF297D60049107E /* CompletionViewController.swift */; };
 		001A8FCD1C55CE6E009F964C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A8FCC1C55CE6E009F964C /* AppDelegate.swift */; };
 		001A8FCF1C55CE6E009F964C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A8FCE1C55CE6E009F964C /* ViewController.swift */; };
 		001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001A8FD01C55CE6E009F964C /* Main.storyboard */; };
@@ -54,6 +58,9 @@
 		00D06D8C1CE1AD69002E8CCA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901E1C55D249009F964C /* SystemConfiguration.framework */; };
 		00D06D8D1CE1AD7C002E8CCA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90201C55D252009F964C /* libz.tbd */; };
 		00D06D8E1CE1AD85002E8CCA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
+		00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */; };
+		00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */; };
+		00F1B8A71CF4398F006D2FBD /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00F1B8A21CF41775006D2FBD /* MapKit.framework */; };
 		355D2452F18278C76DDEB6E0 /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */; };
 		D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */; };
 		DBD28EDA5A4D3C3A59B70E5E /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */; };
@@ -121,6 +128,10 @@
 
 /* Begin PBXFileReference section */
 		000447451CD3AB830033DCD3 /* MyPretracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPretracker.swift; sourceTree = "<group>"; };
+		001627CF1CF297610049107E /* NameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
+		001627D11CF297A70049107E /* AuthorizationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
+		001627D31CF297C10049107E /* RankingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
+		001627D51CF297D60049107E /* CompletionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompletionViewController.swift; sourceTree = "<group>"; };
 		001A8FC91C55CE6E009F964C /* low-effort-sensing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "low-effort-sensing.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		001A8FCC1C55CE6E009F964C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		001A8FCE1C55CE6E009F964C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -168,6 +179,9 @@
 		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
 		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
 		00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+		00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeScreenViewController.swift; sourceTree = "<group>"; };
+		00F1B8A21CF41775006D2FBD /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarkedLocation.swift; sourceTree = "<group>"; };
 		1F054FFE31E72067FC700FFA /* Pods-low-effort-sensing WatchKit App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit App.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App.release.xcconfig"; sourceTree = "<group>"; };
 		40E888C9F348E031B6FC9FC8 /* Pods-low-effort-sensing WatchKit Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit Extension.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension.release.xcconfig"; sourceTree = "<group>"; };
 		4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -196,6 +210,7 @@
 				001A900F1C55D0FB009F964C /* Parse.framework in Frameworks */,
 				001A90111C55D105009F964C /* Bolts.framework in Frameworks */,
 				D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */,
+				00F1B8A71CF4398F006D2FBD /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +253,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		001627CE1CF297430049107E /* WelcomeScreens */ = {
+			isa = PBXGroup;
+			children = (
+				001627CF1CF297610049107E /* NameViewController.swift */,
+				001627D11CF297A70049107E /* AuthorizationViewController.swift */,
+				001627D31CF297C10049107E /* RankingViewController.swift */,
+				001627D51CF297D60049107E /* CompletionViewController.swift */,
+			);
+			name = WelcomeScreens;
+			sourceTree = "<group>";
+		};
 		001A8FC01C55CE6E009F964C = {
 			isa = PBXGroup;
 			children = (
@@ -265,6 +291,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				001627CE1CF297430049107E /* WelcomeScreens */,
 				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
 				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
@@ -277,6 +304,8 @@
 				001A8FD51C55CE6E009F964C /* LaunchScreen.storyboard */,
 				001A8FD81C55CE6E009F964C /* Info.plist */,
 				0026F54A1CEA9B75004C20F2 /* low-effort-sensing-Bridging-Header.h */,
+				00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */,
+				00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */,
 			);
 			path = "low-effort-sensing";
 			sourceTree = "<group>";
@@ -321,6 +350,7 @@
 		001A900B1C55D0B6009F964C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00F1B8A21CF41775006D2FBD /* MapKit.framework */,
 				00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */,
 				001A90221C55D260009F964C /* libsqlite3.tbd */,
 				001A90201C55D252009F964C /* libz.tbd */,
@@ -693,11 +723,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */,
 				0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */,
 				001A8FCF1C55CE6E009F964C /* ViewController.swift in Sources */,
 				00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */,
 				000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */,
+				00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */,
+				001627D61CF297D60049107E /* CompletionViewController.swift in Sources */,
 				001A8FCD1C55CE6E009F964C /* AppDelegate.swift in Sources */,
+				001627D01CF297610049107E /* NameViewController.swift in Sources */,
+				001627D41CF297C10049107E /* RankingViewController.swift in Sources */,
+				00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

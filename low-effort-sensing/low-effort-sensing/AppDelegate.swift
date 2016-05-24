@@ -4,7 +4,11 @@
 //
 //  Created by Kapil Garg on 1/24/16.
 //  Copyright © 2016 Kapil Garg. All rights reserved.
-//
+// 
+//  Images Used
+//  Double Tap (icon, splash screen), Web Icon Set from thenounproject.com
+//  Location (authorization page), Riccardo Avanzi from thenounproject.com
+//  Notification (authorization page), Thomas Helbig from thenounproject.com
 
 import UIKit
 import Parse
@@ -14,8 +18,21 @@ import WatchConnectivity
 
 let distanceFromTarget = 20.0
 let geofenceRadius = 150.0
-let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving the fetched locations to NSUserDefaults
+let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
+let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
 var vendorId: String = ""
+
+// extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
@@ -25,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     var shortcutItem: UIApplicationShortcutItem?
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    var notificationCategories = Set<UIUserNotificationCategory>()
     
     // MARK: - AppDelegate Functions
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -57,9 +75,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      radius: geofenceRadius,
                                                      accuracy: kCLLocationAccuracyNearestTenMeters,
                                                      distanceFilter: nil)
-        MyPretracker.sharedManager.initLocationManager()
-        
-        beginMonitoringParseRegions()   // pull geolocations from parse and begin monitoring regions
         
         // setup local notifications
         var categories = Set<UIUserNotificationCategory>()
@@ -82,12 +97,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         investigateCategory.identifier = "INVESTIGATE_CATEGORY"
         
         categories.insert(investigateCategory)
+        notificationCategories = categories
         
-        application.registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: categories))
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        // check if user has already opened app before, if not show welcome screen
+        let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
+        if launchedBefore  {
+            self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
+            
+            self.window?.rootViewController = homeViewController
+            self.window?.makeKeyAndVisible()
+        }
+        else {
+            print("First launch, going to welcome screen")
+            let userInfo: [String : String] = ["firstName": "",
+                                               "lastName": "",
+                                               "vendorId": vendorId,
+                                               "firstPreference": "",
+                                               "secondPreference": "",
+                                               "thirdPreference": "",
+                                               "fourthPreference": ""]
+            
+            self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
+            self.appUserDefaults?.synchronize()
+        }
+        
+        // hide status bar on all pages
+        application.statusBarHidden = true
         
         return performShortcutDelegate
     }
+    
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -165,75 +206,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         }
     }
     
-    // MARK: - Location Functions
-    // TODO: Pull new geofences when significant change is detected
-    
-    func stopMonitoringAllRegions() {
-        let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-        for (id, _) in monitoredHotspotDictionary {
-            MyPretracker.sharedManager.removeLocation(id)
-        }
-    }
-    
-    func beginMonitoringParseRegions() {
-        let query = PFQuery(className: "hotspot")
-        
-        query.findObjectsInBackgroundWithBlock {
-            (foundObjs: [PFObject]?, error: NSError?) -> Void in
-            if error == nil {
-                if let foundObjs = foundObjs {
-                    var monitoredHotspotDictionary = Dictionary<String, AnyObject>()
-                    for object in foundObjs {
-                        let currGeopoint = object["location"] as! PFGeoPoint
-                        let currLat = currGeopoint.latitude
-                        let currLong = currGeopoint.longitude
-                        let id = object.objectId!
-                        MyPretracker.sharedManager.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
-                        
-                        // Add data to user defaults
-                        var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["latitude"] = currLat
-                        unwrappedEntry["longitude"] = currLong
-                        unwrappedEntry["id"] = object.objectId
-                        unwrappedEntry["tag"] = object["tag"]
-                        let info : Dictionary<String, AnyObject>? = object["info"] as? Dictionary<String, AnyObject>
-                        unwrappedEntry["info"] = info
-                        
-                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
-                    }
-                    self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-                    self.appUserDefaults?.synchronize()
-                    
-                }
-            } else {
-                print("Error in querying regions from Parse: \(error). Trying again.")
-                self.beginMonitoringParseRegions()
-            }
-        }
-    }
-    
-    func presentNotificationForEnteredRegion(region: CLRegion!) {
-        // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
-        let currentRegion = monitoredHotspotDictionary[region.identifier]
-        let message = region.identifier
-        
-        // Show alert if app active, else local notification
-        if UIApplication.sharedApplication().applicationState == .Active {
-            if let viewController = window?.rootViewController {
-                let alert = UIAlertController(title: "Region Entered", message: "You have entered region \(message)", preferredStyle: .Alert)
-                let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                alert.addAction(action)
-                viewController.presentViewController(alert, animated: true, completion: nil)
-            }
-        } else {
-            let notification = UILocalNotification()
-            notification.alertBody = "You have entered region \(message)"
-            notification.soundName = "Default"
-            notification.category = "INVESTIGATE_CATEGORY"
-            notification.userInfo = currentRegion as? Dictionary
-            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
-        }
+    func registerForNotifications() {
+        print("Requesting authorization for local notifications")
+        UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: notificationCategories))
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
     //MARK: - Contextual Notification Handler
@@ -285,12 +261,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 switch(shortcutItem.type) {
                     case "com.delta.low-effort-sensing.mark-food-location":
                         tag = "food"
-                    case "com.delta.low-effort-sensing.mark-infrastructure-location":
-                        tag = "infrastructure"
                     case "com.delta.low-effort-sensing.mark-queue-location":
                         tag = "queue"
                     case "com.delta.low-effort-sensing.mark-space-location":
                         tag = "space"
+                    case "com.delta.low-effort-sensing.mark-surprising-thing-location":
+                        tag = "surprising"
                     default:
                         return
                 }
