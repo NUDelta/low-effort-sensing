@@ -207,6 +207,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         if self.locationDic.removeValueForKey(name) != nil {
             let monitoredRegions = locationManager!.monitoredRegions
             print(locationManager!.monitoredRegions)
+            
             for region in monitoredRegions {
                 if name == region.identifier {
                     locationManager!.stopMonitoringForRegion(region)
@@ -308,13 +309,11 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             timer!.invalidate()
             timer = nil
         }
-        
         locationManager!.stopUpdatingLocation()
     }
     
     @objc private func stopLocationWithDelay() {
         print("Background delay 50 seconds")
-        
         locationManager!.stopUpdatingLocation()
     }
     

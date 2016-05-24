@@ -16,17 +16,18 @@ class HomeScreenViewController: UIViewController {
     @IBOutlet weak var mapView: MKMapView!
     let regionRadius: CLLocationDistance = 1000
     
-    
     @IBOutlet weak var nearbyButton: UIButton!
     @IBOutlet weak var myLocationsButton: UIButton!
     var showingNearby: Bool = Bool()
+    let charcoalGreyColor: UIColor = UIColor.init(red: 116.0 / 255.0, green: 125.0 / 255.0, blue: 125.0 / 255.0, alpha: 1.0)
     
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        // setup map view
+        mapView.showsUserLocation = true
         
         // set initial location to current user location
         let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
@@ -36,21 +37,11 @@ class HomeScreenViewController: UIViewController {
         
         // add pins for marked locations
         let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-        for (_, info) in monitoredHotspotDictionary {
-            addAnnotationsForDictionary(info as! [String : AnyObject])
-            
-            let location = info as! [String : AnyObject]
-            let lastLocation = MyPretracker.sharedManager.locationManager?.location
-            let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
-            
-            let distanceToLocation = lastLocation!.distanceFromLocation(annotationLocation)
-            print(info)
-            print(distanceToLocation)
-        }
+        drawNewAnnotations(monitoredHotspotDictionary)
         
         // set nearby shown
         showingNearby = true
-        nearbyButton.backgroundColor = UIColor.blueColor()
+        nearbyButton.backgroundColor = charcoalGreyColor
         nearbyButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
         
         myLocationsButton.backgroundColor = UIColor.whiteColor()
@@ -98,10 +89,64 @@ class HomeScreenViewController: UIViewController {
         }
     }
     
+    func drawNewAnnotations(locations: [String : AnyObject]) {
+        // clear all existing annotations
+        mapView.removeAnnotations(mapView.annotations)
+        
+        // draw new annotations
+        for (_, info) in locations {
+            addAnnotationsForDictionary(info as! [String : AnyObject])
+        }
+    }
+    
+    func getAndDrawMyMarkedLocations() {
+        let query = PFQuery(className: "hotspot")
+        query.whereKey("vendorId", equalTo: vendorId)
+        query.findObjectsInBackgroundWithBlock {
+            (objects: [PFObject]?, error: NSError?) -> Void in
+            
+            if error == nil {
+                if let objects = objects {
+                    var monitoredHotspotDictionary = [String : AnyObject]()
+                    for object in objects {
+                        let currGeopoint = object["location"] as! PFGeoPoint
+                        let currLat = currGeopoint.latitude
+                        let currLong = currGeopoint.longitude
+                        let id = object.objectId!
+                        
+                        // Add data to user defaults
+                        var unwrappedEntry = [String : AnyObject]()
+                        unwrappedEntry["latitude"] = currLat
+                        unwrappedEntry["longitude"] = currLong
+                        unwrappedEntry["id"] = id
+                        unwrappedEntry["tag"] = object["tag"]
+                        let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
+                        unwrappedEntry["info"] = info
+                        
+                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
+                    }
+                    self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: myHotspotsRegionKey)
+                    self.appUserDefaults?.synchronize()
+                    
+                    // add annotations onto map view
+                    self.drawNewAnnotations(monitoredHotspotDictionary)
+                }
+            } else {
+                // Log details of the failure
+                print("Error: \(error!) \(error!.userInfo)")
+            }
+        }
+    }
+    
     @IBAction func toggleNearbyPlaces(sender: AnyObject) {
         if !showingNearby {
+            // draw new annotations
+            let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+            drawNewAnnotations(monitoredHotspotDictionary)
+            
+            // update buttons
             showingNearby = true
-            nearbyButton.backgroundColor = UIColor.blueColor()
+            nearbyButton.backgroundColor = charcoalGreyColor
             nearbyButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
             
             myLocationsButton.backgroundColor = UIColor.whiteColor()
@@ -111,8 +156,12 @@ class HomeScreenViewController: UIViewController {
     
     @IBAction func toggleLocationsMarked(sender: AnyObject) {
         if showingNearby {
+            // draw new annotations
+            getAndDrawMyMarkedLocations()
+            
+            // update buttons
             showingNearby = false
-            myLocationsButton.backgroundColor = UIColor.blueColor()
+            myLocationsButton.backgroundColor = charcoalGreyColor
             myLocationsButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
             
             nearbyButton.backgroundColor = UIColor.whiteColor()
