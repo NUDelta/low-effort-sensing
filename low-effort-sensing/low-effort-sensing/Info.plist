@@ -4,6 +4,10 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+	<key>UIStatusBarHidden</key>
+	<true/>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -23,8 +27,6 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone&apos;s location to notify you when you enter or leave a monitored region</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Low-Effort Sensing requires access to your phone&apos;s location to notify you when you enter or leave a monitored region</string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
