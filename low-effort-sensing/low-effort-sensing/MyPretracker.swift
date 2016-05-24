@@ -20,13 +20,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     var locationDic: [String: [String: Any]] = [:]
     var locationManager: CLLocationManager?
     
+    var parseRefreshTimer: NSTimer? = NSTimer() // refreshing locations being tracked
+    
     let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
     var window: UIWindow?
-    
-    // debugging
-    var currentHeading: Double = 0.0
-    var currentElevation: Double = 0.0
-    var currentAccuracy: Double = 0.0
     
     // background task
     let backgroundTaskManager = BackgroundTaskManager()
@@ -114,9 +111,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - Location Functions
-    // TODO: Pull new geofences when significant change is detected
-    var parseRefreshTimer: NSTimer? = NSTimer()
-    
     func refreshLocationsFromParse() {
         print("refreshing tracked locations")
         clearAllMonitoredRegions()
@@ -134,6 +128,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                                  "count": 10]) {
                     (foundObjs: AnyObject?, error: NSError?) -> Void in
                     if error == nil {
+                        // parse response
                         if let foundObjs = foundObjs {
                             let foundObjsArray = foundObjs as! [AnyObject]
                             var monitoredHotspotDictionary: [String : AnyObject] = [String : AnyObject]()
@@ -158,6 +153,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                     monitoredHotspotDictionary[id] = unwrappedEntry
                                 }
                             }
+                            // save regions to user defaults
                             self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                             self.appUserDefaults?.synchronize()
                             
@@ -168,8 +164,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                                                             userInfo: nil,
                                                                                             repeats: false)
                             
-                            print(monitoredHotspotDictionary.count)
-                            print(self.locationManager?.monitoredRegions.count)
+                            // reset accuracy and distance filter to original
+                            self.locationManager!.desiredAccuracy = self.accuracy
+                            self.locationManager!.distanceFilter = self.distanceFilter
                         }
                     } else {
                         print("Error in querying regions from Parse: \(error). Trying again.")
@@ -215,23 +212,17 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: Pre-tracking algorithm and notifications
-    public func notifyIfWithinDistance(lastLocation: CLLocation) -> [String: [String: String]] {
+    public func notifyIfWithinDistance(lastLocation: CLLocation) {
         print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude) with location accuracy \(locationManager?.desiredAccuracy)")
         
         // check if location update is recent and accurate enough
         let age = -lastLocation.timestamp.timeIntervalSinceNow
         if (lastLocation.horizontalAccuracy < 0 || lastLocation.horizontalAccuracy > 65.0 || age > 20) {
-            return [:]
+            return
         }
         
         // compute distance from current point to all monitored regions and notifiy if close enough
         var distanceToRegions: [String: String] = [:]
-        var currentLocationParameters: [String: String] = ["location": "(\(lastLocation.coordinate.latitude), \(lastLocation.coordinate.longitude))"]
-        currentLocationParameters["horizontalAccuracy"] = String(lastLocation.horizontalAccuracy)
-        currentLocationParameters["heading"] = String(lastLocation.course)
-        currentLocationParameters["elevation"] = String(lastLocation.altitude)
-        currentLocationParameters["audioPlaying"] = String("nil")
-        currentLocationParameters["locationManagerAccuracy"] = String(locationManager!.desiredAccuracy)
         
         for region in locationManager!.monitoredRegions {
             if let monitorRegion = region as? CLCircularRegion {
@@ -254,9 +245,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 }
             }
         }
-        
-        let outputDict: [String: [String: String]] = ["distanceToRegions": distanceToRegions, "currentLocationParameters": currentLocationParameters]
-        return outputDict
     }
     
     public func notifyPeople(region: CLRegion, locationWhenNotified: CLLocation) {
@@ -362,16 +350,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     //MARK: Tracking Location Updates
     public func locationManager(manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let lastLocation = locations.last!
-        let debugDictionary = notifyIfWithinDistance(lastLocation)
-
-        // save course, elevation, and current accuracy information
-        currentHeading = lastLocation.course as Double
-        currentElevation = lastLocation.altitude as Double
-        currentAccuracy = manager.desiredAccuracy
-        
-        // push debug log to parse
-        // TODO: disable in final release
-//        saveLocationWithMetaData(debugDictionary)
+        notifyIfWithinDistance(lastLocation)
         
         // reset timer
         if (timer != nil) {
@@ -439,11 +418,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     public func locationManager(manager: CLLocationManager, didEnterRegion region: CLRegion) {
         print("did enter region \(region.identifier)")
-//        let notification = UILocalNotification()
-//        notification.alertBody = "You have entered region \(region.identifier)"
-//        notification.soundName = "Default"
-//        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
-        
         locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
         locationManager!.distanceFilter = kCLDistanceFilterNone
         self.locationDic[region.identifier]?["withinRegion"] = true
@@ -472,11 +446,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
         print("did exit region \(region.identifier)")
-//        let notification = UILocalNotification()
-//        notification.alertBody = "You have exited region \(region.identifier)"
-//        notification.soundName = "Default"
-//        UIApplication.sharedApplication().presentLocalNotificationNow(notification)
-        
         self.locationDic[region.identifier]?["withinRegion"] = false
         self.locationDic[region.identifier]?["notifiedForRegion"] = false
         
@@ -515,42 +484,5 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             }
         }
         return true
-    }
-    
-    func saveLocationWithMetaData(data: [String: [String: String]]) {
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
-        
-        if let unwrappedCurrentLocationParameters = data["currentLocationParameters"] {
-            let newLog = PFObject(className: "pretracking_debug")
-            newLog["vendor_id"] = vendorId
-            newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
-            newLog["timestamp_string"] = currentDateString
-            newLog["console_string"] = "Location has updated"
-            
-            newLog["location"] = unwrappedCurrentLocationParameters["location"]
-            newLog["audio_playing"] = unwrappedCurrentLocationParameters["audioPlaying"]
-            newLog["tracking_accuracy"] = unwrappedCurrentLocationParameters["locationManagerAccuracy"]
-            newLog["horizontal_accuracy"] = unwrappedCurrentLocationParameters["horizontalAccuracy"]
-            newLog["heading"] = unwrappedCurrentLocationParameters["heading"]
-            newLog["elevation"] = unwrappedCurrentLocationParameters["elevation"]
-            
-            if let unwrappedDistanceToRegions =  data["distanceToRegions"] {
-                newLog["distance_to_regions"] = String(unwrappedDistanceToRegions)
-                
-                if unwrappedDistanceToRegions.count > 0 {
-                    newLog.saveInBackgroundWithBlock {
-                        (success: Bool, error: NSError?) -> Void in
-                        if (success) {
-                            print("Meta data saved successfully")
-                        } else {
-                            print("Error in saving meta data: \(error)")
-                        }
-                    }
-                }
-            }
-        }
     }
 }
