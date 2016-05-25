@@ -379,11 +379,12 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     public func locationManager(manager: CLLocationManager, didFailWithError error: NSError) {
+        print("Location manager failed with error: \(error)")
         let date = NSDate()
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         let currentDateString = dateFormatter.stringFromDate(date)
-        
+
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
         newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
