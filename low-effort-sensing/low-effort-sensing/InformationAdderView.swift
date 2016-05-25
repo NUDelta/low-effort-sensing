@@ -32,7 +32,7 @@ class InformationAdderView: UIViewController, UITextFieldDelegate, UIPickerViewD
     var foodDurationPicker: UIPickerView!
     var stillFoodPicker: UIPickerView!
     
-    let appUserDefaults = NSUserDefaults(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults(suiteName: appGroup)
     
     // Passed in arguments
     var currentHotspotId: String = ""

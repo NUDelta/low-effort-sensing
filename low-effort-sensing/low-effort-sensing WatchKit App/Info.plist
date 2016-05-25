@@ -28,7 +28,7 @@
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
 	</array>
 	<key>WKCompanionAppBundleIdentifier</key>
-	<string>edu.northwestern.delta.les</string>
+	<string>$(WK_COMPANION_APP_BUNDLE_IDENTIFIER)</string>
 	<key>WKWatchKitApp</key>
 	<true/>
 </dict>

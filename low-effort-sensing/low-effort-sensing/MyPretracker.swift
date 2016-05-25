@@ -22,7 +22,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     var parseRefreshTimer: NSTimer? = NSTimer() // refreshing locations being tracked
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     var window: UIWindow?
     
     // background task
@@ -329,7 +329,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     func presentNotificationForEnteredRegion(region: CLRegion!) {
         // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
         let currentRegion = monitoredHotspotDictionary[region.identifier]
         let message = region.identifier
         

@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     // MARK: Class Variables
     @IBOutlet weak var locationDebugLabel: UILabel!
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     
     // MARK: Class Functions
     override func viewDidLoad() {
@@ -87,7 +87,7 @@ class ViewController: UIViewController {
     @IBAction func debugSendNotification(sender: AnyObject) {
         print("Preparing notification")
         // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: "group.com.delta.les")?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
         
         // Get first region in monitored regions to use
         if  monitoredHotspotDictionary.keys.count > 0 {

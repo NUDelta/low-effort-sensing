@@ -10,6 +10,15 @@ import UIKit
 import NotificationCenter
 import Parse
 
+// App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
+let appGroup = "group.com.delta.les-debug" // for debug builds
+// let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+
+// Containing Application for Parse (MUST BE CHANGED DEPENDING ON BUILD
+let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
+//let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
+
+
 class TodayViewController: UIViewController, NCWidgetProviding {
         
     @IBOutlet weak var foodButton: UIButton!
@@ -35,8 +44,8 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         // Do any additional setup after loading the view from its nib.
         if (Parse.isLocalDatastoreEnabled() == false) {
             Parse.enableLocalDatastore()
-            Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.les",
-                                                                  containingApplication: "edu.northwestern.delta.les.widget")
+            Parse.enableDataSharingWithApplicationGroupIdentifier(appGroup,
+                                                                  containingApplication: containingApplication)
             Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
                                    clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         }

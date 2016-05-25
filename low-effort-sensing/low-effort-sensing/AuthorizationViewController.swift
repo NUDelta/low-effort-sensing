@@ -9,7 +9,7 @@
 import Foundation
 
 class AuthorizationViewController: UIViewController {
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     
     // MARK: Class Functions
     override func viewDidLoad() {

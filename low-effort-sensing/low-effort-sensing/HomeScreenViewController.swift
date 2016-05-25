@@ -21,7 +21,7 @@ class HomeScreenViewController: UIViewController {
     var showingNearby: Bool = Bool()
     let charcoalGreyColor: UIColor = UIColor.init(red: 116.0 / 255.0, green: 125.0 / 255.0, blue: 125.0 / 255.0, alpha: 1.0)
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     
     // MARK: Class Functions
     override func viewDidLoad() {

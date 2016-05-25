@@ -42,6 +42,10 @@
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00305B051C7DA8F1003242F2 /* InformationAdderView.swift */; };
+		00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */; };
+		00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */; };
+		00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */; };
+		00AFE22D1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */; };
 		00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */; };
 		00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D06D741CE1A92A002E8CCA /* TodayViewController.swift */; };
 		00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */; };
@@ -128,6 +132,7 @@
 
 /* Begin PBXFileReference section */
 		000447451CD3AB830033DCD3 /* MyPretracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPretracker.swift; sourceTree = "<group>"; };
+		00046C6A1CF615410085755A /* Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision */ = {isa = PBXFileReference; lastKnownFileType = file; name = Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision; path = ../../../../../Downloads/Delta_Lab_Les_Provisioning_Profiles/Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision; sourceTree = "<group>"; };
 		001627CF1CF297610049107E /* NameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
 		001627D11CF297A70049107E /* AuthorizationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
 		001627D31CF297C10049107E /* RankingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
@@ -169,6 +174,10 @@
 		0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
 		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
 		00305B051C7DA8F1003242F2 /* InformationAdderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationAdderView.swift; sourceTree = "<group>"; };
+		00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "LES Widget Debug.entitlements"; sourceTree = "<group>"; };
+		00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing Debug.entitlements"; sourceTree = "<group>"; };
+		00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App Debug.entitlements"; sourceTree = "<group>"; };
+		00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension Debug.entitlements"; sourceTree = "<group>"; };
 		00D06D701CE1A92A002E8CCA /* LES Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LES Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		00D06D741CE1A92A002E8CCA /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -295,6 +304,7 @@
 				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
 				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
+				00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */,
 				001A8FCC1C55CE6E009F964C /* AppDelegate.swift */,
 				000447451CD3AB830033DCD3 /* MyPretracker.swift */,
 				001A8FCE1C55CE6E009F964C /* ViewController.swift */,
@@ -314,6 +324,7 @@
 			isa = PBXGroup;
 			children = (
 				00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */,
+				00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */,
 				001A8FE01C55CE6E009F964C /* Interface.storyboard */,
 				001A8FE31C55CE6E009F964C /* Assets.xcassets */,
 				001A8FE51C55CE6E009F964C /* Info.plist */,
@@ -324,6 +335,7 @@
 		001A8FEE1C55CE6E009F964C /* low-effort-sensing WatchKit Extension */ = {
 			isa = PBXGroup;
 			children = (
+				00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */,
 				00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */,
 				001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */,
 				001F5CF51C803A8900CD0045 /* QuestionRowController.swift */,
@@ -350,6 +362,7 @@
 		001A900B1C55D0B6009F964C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00046C6A1CF615410085755A /* Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision */,
 				00F1B8A21CF41775006D2FBD /* MapKit.framework */,
 				00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */,
 				001A90221C55D260009F964C /* libsqlite3.tbd */,
@@ -374,6 +387,7 @@
 		00D06D731CE1A92A002E8CCA /* LES Widget */ = {
 			isa = PBXGroup;
 			children = (
+				00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */,
 				00D06D811CE1AC1B002E8CCA /* LES Widget.entitlements */,
 				00D06D741CE1A92A002E8CCA /* TodayViewController.swift */,
 				00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */,
@@ -550,9 +564,9 @@
 			projectRoot = "";
 			targets = (
 				001A8FC81C55CE6E009F964C /* low-effort-sensing */,
+				00D06D6F1CE1A92A002E8CCA /* LES Widget */,
 				001A8FDA1C55CE6E009F964C /* low-effort-sensing WatchKit App */,
 				001A8FE91C55CE6E009F964C /* low-effort-sensing WatchKit Extension */,
-				00D06D6F1CE1A92A002E8CCA /* LES Widget */,
 			);
 		};
 /* End PBXProject section */
@@ -565,6 +579,7 @@
 				001A8FD71C55CE6E009F964C /* LaunchScreen.storyboard in Resources */,
 				001A8FD41C55CE6E009F964C /* Assets.xcassets in Resources */,
 				001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */,
+				00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -574,6 +589,7 @@
 			files = (
 				001A8FE41C55CE6E009F964C /* Assets.xcassets in Resources */,
 				001A8FE21C55CE6E009F964C /* Interface.storyboard in Resources */,
+				00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,6 +597,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00AFE22D1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements in Resources */,
 				001A8FFC1C55CE6E009F964C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -589,6 +606,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */,
 				00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -903,18 +921,20 @@
 			baseConfigurationReference = 774A8511AA0852A8508216AA /* Pods-low-effort-sensing WatchKit Extension.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
 				INFOPLIST_FILE = "low-effort-sensing WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp.watchkitextension;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
-				PROVISIONING_PROFILE = "b724261d-14e0-42be-a4fb-6adb0c2385af";
+				PROVISIONING_PROFILE = "fcc1e013-a648-4297-9707-ebe8317fb8c2";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+				WK_APP_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.watchkitapp";
 			};
 			name = Debug;
 		};
@@ -924,17 +944,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Distribution: Northwestern University";
 				INFOPLIST_FILE = "low-effort-sensing WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
-				PROVISIONING_PROFILE = "b724261d-14e0-42be-a4fb-6adb0c2385af";
+				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+				WK_APP_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp;
 			};
 			name = Release;
 		};
@@ -943,20 +964,21 @@
 			baseConfigurationReference = C812A51A6B9D2E15DAC2A725 /* Pods-low-effort-sensing WatchKit App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				IBSC_MODULE = low_effort_sensing_WatchKit_Extension;
 				INFOPLIST_FILE = "low-effort-sensing WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8e16d2e4-6fa6-4a7f-b7bf-43c95fb02c25";
+				PROVISIONING_PROFILE = "1a39600b-7faf-4224-b71d-2d104ff908f9";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+				WK_COMPANION_APP_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug";
 			};
 			name = Debug;
 		};
@@ -966,18 +988,20 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit App/low-effort-sensing WatchKit App.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Distribution: Northwestern University";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				IBSC_MODULE = low_effort_sensing_WatchKit_Extension;
 				INFOPLIST_FILE = "low-effort-sensing WatchKit App/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "8e16d2e4-6fa6-4a7f-b7bf-43c95fb02c25";
+				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+				WK_COMPANION_APP_BUNDLE_IDENTIFIER = edu.northwestern.delta.les;
 			};
 			name = Release;
 		};
@@ -988,9 +1012,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing Debug.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -999,9 +1023,9 @@
 				INFOPLIST_FILE = "low-effort-sensing/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "eabe9821-adf2-4e41-9ad5-02208d96ca81";
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1016,8 +1040,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1028,7 +1052,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -1038,18 +1062,18 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
-				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "LES Widget/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.widget;
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a88a2525-51d4-4865-a06a-86d7367324df";
+				PROVISIONING_PROFILE = "bf50fb1f-8da4-479e-9728-96b9bdbb207b";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -1059,8 +1083,8 @@
 			buildSettings = {
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget.entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1069,7 +1093,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "a88a2525-51d4-4865-a06a-86d7367324df";
+				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

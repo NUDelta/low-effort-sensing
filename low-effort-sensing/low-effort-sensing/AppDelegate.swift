@@ -22,6 +22,10 @@ let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently mo
 let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
 var vendorId: String = ""
 
+// App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
+let appGroup = "group.com.delta.les-debug" // for debug builds
+// let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+
 // extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
@@ -41,7 +45,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     let watchSession = WCSession.defaultSession()
     var shortcutItem: UIApplicationShortcutItem?
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     var notificationCategories = Set<UIUserNotificationCategory>()
     
     // MARK: - AppDelegate Functions
@@ -66,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         watchSession.activateSession()
         
         // Initialize Parse.
-        Parse.enableDataSharingWithApplicationGroupIdentifier("group.com.delta.les")
+        Parse.enableDataSharingWithApplicationGroupIdentifier(appGroup)
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         

@@ -9,7 +9,7 @@
 import Foundation
 
 class RankingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    let appUserDefaults = NSUserDefaults.init(suiteName: "group.com.delta.les")
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     
     @IBOutlet var tableView: UITableView!
     var categories: [String] = ["Free or Sold Food", "Lines at Popular Places (e.g. Tech Express)", "Space Availability (e.g. Coffee Lab, Main Library)", "Surprising Things (e.g. cute animals, celebrities)"]
