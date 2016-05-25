@@ -309,6 +309,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         self.appUserDefaults?.synchronize()
                     }
                 }
+                
+                // Show alert confirming location saved
+                var tagDescription = ""
+                switch(tag) {
+                case "food":
+                    tagDescription = "Food"
+                case "queue":
+                    tagDescription = "Queue"
+                case "space":
+                    tagDescription = "Space"
+                case "surprising":
+                    tagDescription = "Surprising Things"
+                default:
+                    return
+                }
+                
+                let title = "Location Marked for \(tagDescription) Tracking"
+                let message = "Your current location has been marked for \(tagDescription) tracking. Check back later to see if someone has contributed information to it!"
+                
+                let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                
+                self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
             }
         }
         return true
