@@ -28,11 +28,19 @@ class HomeScreenViewController: UIViewController {
         super.viewDidLoad()
         // setup map view
         mapView.showsUserLocation = true
-        
+    }
+    
+    override func viewDidAppear(animated: Bool) {
         // set initial location to current user location
         let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
-        let initialLocation = CLLocation(latitude: (currentLocation?.latitude)!,
-                                         longitude: (currentLocation?.longitude)!)
+        var initialLocation: CLLocation = CLLocation()
+        
+        if let currentLocation = currentLocation {
+            initialLocation = CLLocation(latitude: currentLocation.latitude,
+                                         longitude: currentLocation.longitude)
+        } else {
+            initialLocation = CLLocation(latitude: 42.057034, longitude: -87.677132) // center around tech for default location
+        }
         centerMapOnLocation(initialLocation)
         
         // add pins for marked locations
