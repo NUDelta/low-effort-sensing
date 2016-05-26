@@ -278,7 +278,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = notificationString
         newLog.saveInBackground()
@@ -387,7 +387,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = error.description
         newLog.saveInBackground()
@@ -401,7 +401,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "Location Updates Paused by iOS"
         newLog.saveInBackground()
@@ -415,7 +415,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "Location Updates Resumed by iOS"
         newLog.saveInBackground()
@@ -443,7 +443,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = notificationString
         newLog.saveInBackground()
@@ -475,7 +475,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = notificationString
         newLog.saveInBackground()

@@ -153,7 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
 
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App entering background"
         newLog.saveInBackground()
@@ -171,7 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App entering foreground"
         newLog.saveInBackground()
@@ -200,7 +200,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App about to terminate"
         do {
