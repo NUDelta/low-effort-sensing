@@ -11,7 +11,7 @@ import Parse
 import MapKit
 import CoreLocation
 
-class HomeScreenViewController: UIViewController {
+class HomeScreenViewController: UIViewController, MKMapViewDelegate{
     // MARK: Class Variables
     @IBOutlet weak var mapView: MKMapView!
     let regionRadius: CLLocationDistance = 1000
@@ -27,19 +27,20 @@ class HomeScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // setup map view
+        mapView.delegate = self
         mapView.showsUserLocation = true
     }
     
     override func viewDidAppear(animated: Bool) {
         // set initial location to current user location
-        let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
+        let currentLocation = mapView.userLocation.location?.coordinate
         var initialLocation: CLLocation = CLLocation()
         
         if let currentLocation = currentLocation {
             initialLocation = CLLocation(latitude: currentLocation.latitude,
                                          longitude: currentLocation.longitude)
         } else {
-            initialLocation = CLLocation(latitude: 42.057034, longitude: -87.677132) // center around tech for default location
+            initialLocation = CLLocation(latitude: 0.0, longitude: 0.0) // default location
         }
         centerMapOnLocation(initialLocation)
         
@@ -54,6 +55,11 @@ class HomeScreenViewController: UIViewController {
         
         myLocationsButton.backgroundColor = UIColor.whiteColor()
         myLocationsButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+    }
+    
+    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
+        let location = CLLocation(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude)
+        centerMapOnLocation(location)
     }
     
     override func didReceiveMemoryWarning() {
