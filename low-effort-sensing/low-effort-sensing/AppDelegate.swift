@@ -38,6 +38,79 @@ extension UIViewController {
     }
 }
 
+// blank location info
+let foodInfo = ["isfood": "", "foodtype ": "", "stillfood": "", "howmuchfood": "",
+                "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
+
+let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
+
+let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seating near power": "",
+                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
+
+let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
+
+// notification answers
+let foodAnswers = ["isfood": ["yes", "no"],
+                   "foodtype ": ["pizza", "buns", "pastries", "other"],
+                   "stillfood": ["yes", "no"],
+                   "howmuchfood": ["none", "some", "very little", "lots"],
+                   "freeorsold": ["free", "sold"],
+                   "forstudentgroup": ["yes", "no"],
+                   "cost": ["< $2", "$2-3", "$3-4", "$5+"],
+                   "sellingreason": ["fundraising", "charity", "other"]]
+
+let queueAnswers = ["isline": ["yes", "no"],
+                    "linetime": ["< 5 mins", "5-10 mins", "10-20 mins", "20+ mins"],
+                    "islonger": ["yes", "no", "I don't come here regularly"],
+                    "isworthwaiting": ["yes", "no"],
+                    "npeople": ["< 5", "5-10", "10+"]]
+
+let spaceAnswers = ["isspace": ["yes", "no"],
+                    "isavailable": ["yes", "no"],
+                    "seatingtype": ["small tables", "large tables", "couches/chairs"],
+                    "seating near power": ["yes", "no"],
+                    "iswifi": ["yes", "no"],
+                    "manypeople": ["yes", "no"],
+                    "loudness": ["loud", "light conversation", "quiet"],
+                    "event": ["no", "sports", "music", "gathering", "other"]]
+
+let surprisingAnswers = ["whatshappening": ["I don't see anything unusual", "celebrity", "emergency vehicles", "lots of people"],
+                         "famefrom": ["no longer here", "musician", "actor/actress", "politician", "comedian", "other", "I don't know"],
+                         "vehicles": ["no longer here", "just police", "police, firetrucks, and ambulances"],
+                         "peopledoing": ["no longer here", "protest/riot", "student gathering for organization", "university or formal event", "other", "I don't know"]]
+
+
+// key to question dictionary
+let foodKeyToQuestion = ["isfood": "Is there food here?",
+                         "foodtype ": "What kind of food is here?",
+                         "stillfood": "Is there still food here?",
+                         "howmuchfood": "How much food is left?",
+                         "freeorsold": "Is it free or sold?",
+                         "forstudentgroup": "Is it for a student group?",
+                         "cost": "How much does it cost?",
+                         "sellingreason": "Why is it being sold?"]
+
+let queueKeyToQuestion = ["isline": "Is there a line here?",
+                          "linetime": "How much time do you think it would take to go through the line right now?",
+                          "islonger": "If you come here regularly, is the line longer than normal?",
+                          "isworthwaiting": "Is it worth waiting in line?",
+                          "npeople": "How many people are in line right now?"]
+
+let spaceKeyToQuestion = ["isspace": "Is there a communal space to track here?",
+                          "isavailable": "Is there seating/space available?",
+                          "seatingtype": "What kind of seating?",
+                          "seating near power": "Is there seating near power outlets?",
+                          "iswifi": "Is there Wifi?",
+                          "manypeople": "Are there a lot of people here?",
+                          "loudness": "How loud is the place?",
+                          "event": "Is there an event, like a sports game on TV or live music, going on here?"]
+
+let surprisingKeyToQuestion = ["whatshappening": "What’s happening here?",
+                               "famefrom": "What are they known for?",
+                               "vehicles": "What vehicles are there?",
+                               "peopledoing": "What are they doing there?"]
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     // MARK: Class Variables
@@ -53,7 +126,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // Check active state for 3D Touch Home actions
         var performShortcutDelegate = true
         if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
-            
             print("Application launched via shortcut")
             self.shortcutItem = shortcutItem
             
@@ -255,14 +327,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             if error == nil {
-                // Get current date to make debug string
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-                let dateString = dateFormatter.stringFromDate(NSDate())
-                
                 // create tag based on shortcut
                 var tag = ""
-                switch(shortcutItem.type) {
+                switch shortcutItem.type {
                     case "com.delta.low-effort-sensing.mark-food-location":
                         tag = "food"
                     case "com.delta.low-effort-sensing.mark-queue-location":
@@ -280,35 +347,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 newMonitoredLocation["vendorId"] = vendorId
                 newMonitoredLocation["location"] = geoPoint
                 newMonitoredLocation["tag"] = tag
-                newMonitoredLocation["debug"] = "tester_" + dateString
-                newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+                newMonitoredLocation["archived"] = false
                 
-                newMonitoredLocation.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        // add new location to monitored regions
-                        let newRegionLat = newMonitoredLocation["location"].latitude
-                        let newRegionLong = newMonitoredLocation["location"].longitude
-                        let newRegionId = newMonitoredLocation.objectId!
-                        MyPretracker.sharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
-                        
-                        // Add new region to user defaults
-                        var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-                        
-                        // Add data to user defaults
-                        var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["latitude"] = newRegionLat
-                        unwrappedEntry["longitude"] = newRegionLong
-                        unwrappedEntry["id"] = newMonitoredLocation.objectId
-                        unwrappedEntry["tag"] = newMonitoredLocation["tag"]
-                        let info : Dictionary<String, AnyObject>? = newMonitoredLocation["info"] as? Dictionary<String, AnyObject>
-                        unwrappedEntry["info"] = info
-                        
-                        monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
-                        self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-                        self.appUserDefaults?.synchronize()
-                    }
+                // set info dict based on tag
+                switch tag {
+                case "food":
+                    newMonitoredLocation["info"] = foodInfo
+                    break
+                case "queue":
+                    newMonitoredLocation["info"] = queueInfo
+                    break
+                case "space":
+                    newMonitoredLocation["info"] = spaceInfo
+                    break
+                case "surprising":
+                    newMonitoredLocation["info"] = surprisingInfo
+                    break
+                default:
+                    break
                 }
+                
+                // push to parse
+                newMonitoredLocation.saveInBackground()
                 
                 // Show alert confirming location saved
                 var tagDescription = ""

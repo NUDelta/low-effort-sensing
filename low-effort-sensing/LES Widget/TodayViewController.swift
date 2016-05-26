@@ -18,6 +18,16 @@ let appGroup = "group.com.delta.les-debug" // for debug builds
 let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
 //let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 
+// blank location info
+let foodInfo = ["isfood": "", "foodtype ": "", "stillfood": "", "howmuchfood": "",
+                "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
+
+let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
+
+let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seating near power": "",
+                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
+
+let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
 
 class TodayViewController: UIViewController, NCWidgetProviding {
         
@@ -222,25 +232,33 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             if error == nil {
-                // Get current date to make debug string
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-                let dateString = dateFormatter.stringFromDate(NSDate())
-                
                 // Get location and push to Parse
                 let newMonitoredLocation = PFObject(className: "hotspot")
                 newMonitoredLocation["vendorId"] = self.vendorId
                 newMonitoredLocation["location"] = geoPoint
                 newMonitoredLocation["tag"] = tag
-                newMonitoredLocation["debug"] = "tester_" + dateString
-                newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+                newMonitoredLocation["archived"] = false
                 
-                newMonitoredLocation.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                       // do nothing if succeds
-                    }
+                // set info dict based on tag
+                switch tag {
+                    case "food":
+                        newMonitoredLocation["info"] = foodInfo
+                        break
+                    case "queue":
+                        newMonitoredLocation["info"] = queueInfo
+                        break
+                    case "space":
+                        newMonitoredLocation["info"] = spaceInfo
+                        break
+                    case "surprising":
+                        newMonitoredLocation["info"] = surprisingInfo
+                        break
+                    default:
+                        break
                 }
+                
+                // push to parse
+                newMonitoredLocation.saveInBackground()
             }
         }
     }
