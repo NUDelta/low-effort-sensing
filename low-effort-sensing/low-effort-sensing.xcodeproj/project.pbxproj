@@ -42,10 +42,12 @@
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00305B051C7DA8F1003242F2 /* InformationAdderView.swift */; };
+		006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */; };
 		00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */; };
 		00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */; };
 		00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */; };
 		00AFE22D1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */; };
+		00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */; };
 		00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */; };
 		00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D06D741CE1A92A002E8CCA /* TodayViewController.swift */; };
 		00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */; };
@@ -174,10 +176,12 @@
 		0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
 		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
 		00305B051C7DA8F1003242F2 /* InformationAdderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationAdderView.swift; sourceTree = "<group>"; };
+		006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondToOtherViewController.swift; sourceTree = "<group>"; };
 		00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "LES Widget Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension Debug.entitlements"; sourceTree = "<group>"; };
+		00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCreator.swift; sourceTree = "<group>"; };
 		00D06D701CE1A92A002E8CCA /* LES Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LES Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		00D06D741CE1A92A002E8CCA /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -316,6 +320,8 @@
 				0026F54A1CEA9B75004C20F2 /* low-effort-sensing-Bridging-Header.h */,
 				00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */,
 				00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */,
+				00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */,
+				006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */,
 			);
 			path = "low-effort-sensing";
 			sourceTree = "<group>";
@@ -744,6 +750,7 @@
 				001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */,
 				0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */,
 				001A8FCF1C55CE6E009F964C /* ViewController.swift in Sources */,
+				006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */,
 				00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */,
 				000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */,
 				00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */,
@@ -752,6 +759,7 @@
 				001627D01CF297610049107E /* NameViewController.swift in Sources */,
 				001627D41CF297C10049107E /* RankingViewController.swift in Sources */,
 				00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */,
+				00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

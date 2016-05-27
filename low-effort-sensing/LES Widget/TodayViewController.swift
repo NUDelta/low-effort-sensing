@@ -19,7 +19,7 @@ let containingApplication = "edu.northwestern.delta.les-debug.widget" // for deb
 //let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 
 // blank location info
-let foodInfo = ["isfood": "", "foodtype ": "", "stillfood": "", "howmuchfood": "",
+let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
                 "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
 
 let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]

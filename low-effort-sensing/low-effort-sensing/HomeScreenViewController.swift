@@ -9,9 +9,9 @@
 import Foundation
 import Parse
 import MapKit
-import CoreLocation
 
-class HomeScreenViewController: UIViewController, MKMapViewDelegate{
+
+class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     // MARK: Class Variables
     @IBOutlet weak var mapView: MKMapView!
     let regionRadius: CLLocationDistance = 1000
@@ -29,21 +29,10 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate{
         // setup map view
         mapView.delegate = self
         mapView.showsUserLocation = true
+        mapView.userTrackingMode = MKUserTrackingMode.Follow
     }
     
     override func viewDidAppear(animated: Bool) {
-        // set initial location to current user location
-        let currentLocation = mapView.userLocation.location?.coordinate
-        var initialLocation: CLLocation = CLLocation()
-        
-        if let currentLocation = currentLocation {
-            initialLocation = CLLocation(latitude: currentLocation.latitude,
-                                         longitude: currentLocation.longitude)
-        } else {
-            initialLocation = CLLocation(latitude: 0.0, longitude: 0.0) // default location
-        }
-        centerMapOnLocation(initialLocation)
-        
         // add pins for marked locations
         let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
         drawNewAnnotations(monitoredHotspotDictionary)
@@ -55,11 +44,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate{
         
         myLocationsButton.backgroundColor = UIColor.whiteColor()
         myLocationsButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
-    }
-    
-    func mapView(mapView: MKMapView, didUpdateUserLocation userLocation: MKUserLocation) {
-        let location = CLLocation(latitude: userLocation.coordinate.latitude, longitude: userLocation.coordinate.longitude)
-        centerMapOnLocation(location)
     }
     
     override func didReceiveMemoryWarning() {
@@ -74,15 +58,29 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate{
     }
     
     func addAnnotationsForDictionary(location: [String : AnyObject]) {
-        let lastLocation = MyPretracker.sharedManager.locationManager?.location
-        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
+        let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
+        var lastLocation: CLLocation = CLLocation()
         
-        let distanceToLocation = lastLocation!.distanceFromLocation(annotationLocation)
-        let distanceInFeet = Int(distanceToLocation * 3.28084)
+        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
         let tag = location["tag"] as! String
         
+        var distanceToLocation: Double
+        var distanceInFeet: Int
+        var distanceString = ""
+        
+        // check if pretracker has an updated location to compute distance, if not don't display a distance.
+        if let currentLocation = currentLocation {
+            lastLocation = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
+            
+            distanceToLocation = lastLocation.distanceFromLocation(annotationLocation)
+            distanceInFeet = Int(distanceToLocation * 3.28084)
+            distanceString =  "\(distanceInFeet) feet away"
+        } else {
+            distanceString = "Distance currently unavailable"
+        }
+        
         let newLocation = MarkedLocation(title: createTitleFromTag(tag),
-                                         locationName: "\(distanceInFeet) feet away",
+                                         locationName: distanceString,
                                          discipline: tag,
                                          coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double))
         mapView.addAnnotation(newLocation)

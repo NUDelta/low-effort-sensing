@@ -13,7 +13,6 @@
 import UIKit
 import Parse
 import Bolts
-import CoreLocation
 import WatchConnectivity
 
 let distanceFromTarget = 20.0
@@ -39,7 +38,7 @@ extension UIViewController {
 }
 
 // blank location info
-let foodInfo = ["isfood": "", "foodtype ": "", "stillfood": "", "howmuchfood": "",
+let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
                 "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
 
 let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
@@ -51,9 +50,8 @@ let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peo
 
 // notification answers
 let foodAnswers = ["isfood": ["yes", "no"],
-                   "foodtype ": ["pizza", "buns", "pastries", "other"],
-                   "stillfood": ["yes", "no"],
-                   "howmuchfood": ["none", "some", "very little", "lots"],
+                   "foodtype": ["no food here", "pizza slices", "buns", "pastries", "other"],
+                   "howmuchfood": ["none", "very little", "some", "lots"],
                    "freeorsold": ["free", "sold"],
                    "forstudentgroup": ["yes", "no"],
                    "cost": ["< $2", "$2-3", "$3-4", "$5+"],
@@ -82,8 +80,7 @@ let surprisingAnswers = ["whatshappening": ["I don't see anything unusual", "cel
 
 // key to question dictionary
 let foodKeyToQuestion = ["isfood": "Is there food here?",
-                         "foodtype ": "What kind of food is here?",
-                         "stillfood": "Is there still food here?",
+                         "foodtype": "What kind of food is here?",
                          "howmuchfood": "How much food is left?",
                          "freeorsold": "Is it free or sold?",
                          "forstudentgroup": "Is it for a student group?",
@@ -153,8 +150,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      distanceFilter: nil)
         
         // setup local notifications
-        var categories = Set<UIUserNotificationCategory>()
-        
         let option1HotspotAction = UIMutableUserNotificationAction()
         option1HotspotAction.title = NSLocalizedString("Option 1", comment: "click for option 1")
         option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
@@ -172,18 +167,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                        forContext: UIUserNotificationActionContext.Default)
         investigateCategory.identifier = "INVESTIGATE_CATEGORY"
         
-        categories.insert(investigateCategory)
-        notificationCategories = categories
+        notificationCategories.insert(investigateCategory)
+        
+        createFoodNotifications()
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
         if launchedBefore  {
+            // register categories for notifications
+            registerForNotifications()
+            
+            // open map view
             self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
+            
+//            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: false)
         }
         else {
             print("First launch, going to welcome screen")
@@ -203,6 +205,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         application.statusBarHidden = true
         
         return performShortcutDelegate
+    }
+    
+    func sendNotification() {
+        print("Preparing notification")
+        // Get NSUserDefaults
+        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        
+        // Get first region in monitored regions to use
+        if  monitoredHotspotDictionary.keys.count > 0 {
+            
+            let currentRegion = monitoredHotspotDictionary["aCt8nf7vHW"] as! [String : AnyObject]
+            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String])
+            let notificationContent = newNotification.createNotificationForTag()
+            
+            print(notificationContent)
+            print("food_" + notificationContent["notificationCategory"]!)
+            
+            
+            // Display notification after short time
+            let notification = UILocalNotification()
+            notification.alertBody = notificationContent["message"]
+            notification.soundName = "Default"
+            notification.category = notificationContent["notificationCategory"]
+            notification.userInfo = currentRegion
+            notification.fireDate = NSDate().dateByAddingTimeInterval(3)
+            
+            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        }
     }
     
 
@@ -288,31 +318,133 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
-    //MARK: - Contextual Notification Handler
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
-                     forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        var notificationId = ""
-        print(notification.userInfo)
+    // MARK: - Create Custom Notifications for each question
+    func createFoodNotifications() {
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "food_isfood", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("no food here", option2Title: "report food type", categoryIdentifier: "food_foodtype", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("none", option2Title: "report food amount", categoryIdentifier: "food_howmuchfood", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("free", option2Title: "sold", categoryIdentifier: "food_freeorsold", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "food_forstudentgroup", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("< $2", option2Title: "other", categoryIdentifier: "food_cost", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("fundraising", option2Title: "other", categoryIdentifier: "food_sellingreason", option2InForeground: true))
+    }
+    
+    func createNotificationCategory(option1Title: String, option2Title: String, categoryIdentifier: String, option2InForeground: Bool) -> UIMutableUserNotificationCategory {
+        let option1HotspotAction = UIMutableUserNotificationAction()
+        let option2HotspotAction = UIMutableUserNotificationAction()
+        let notificationCategory = UIMutableUserNotificationCategory()
         
+        option1HotspotAction.title = NSLocalizedString(option1Title, comment: "click for option 1")
+        option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
+        option1HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+        option1HotspotAction.authenticationRequired = false
+        
+        option2HotspotAction.title = NSLocalizedString(option2Title, comment: "click for option 2")
+        option2HotspotAction.identifier = "OPTION2_EVENT_IDENTIFIER"
+        if option2InForeground {
+            option2HotspotAction.activationMode = UIUserNotificationActivationMode.Foreground
+        } else {
+            option2HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+        }
+        option2HotspotAction.authenticationRequired = false
+        
+        notificationCategory.setActions([option2HotspotAction, option1HotspotAction], forContext: UIUserNotificationActionContext.Default)
+        notificationCategory.identifier = categoryIdentifier
+        
+        return notificationCategory
+    }
+    
+    //MARK: - Contextual Notification Handler
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+        // get UTC timestamp and timezone of notification
+        let epochTimestamp = Int(NSDate().timeIntervalSince1970)
+        let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
+        
+        // get scenario and question as separate components
+        let notificationCategoryArr = notification.category?.componentsSeparatedByString("_")
+        
+        // Setup response object to push to parse
+        var notificationId = ""
         if let unwrappedNotificationId = notification.userInfo!["id"] {
             notificationId = unwrappedNotificationId as! String
         }
-    
-        // Get info from response and push to Parse
+        
         let newResponse = PFObject(className: "pingResponse")
         newResponse["vendorId"] = vendorId
         newResponse["hotspotId"] = notificationId
-        newResponse["question"] = "default"
-
-        if (notification.category == "INVESTIGATE_CATEGORY") {
-            if (identifier == "OPTION1_EVENT_IDENTIFIER") {
-                newResponse["response"] = "option_1"
-            } else if (identifier == "OPTION2_EVENT_IDENTIFIER") {
-                newResponse["response"] = "option_2"
+        newResponse["question"] = notificationCategoryArr![1]
+        newResponse["response"] = ""
+        newResponse["tag"] = notificationCategoryArr![0]
+        newResponse["timestamp"] = epochTimestamp
+        newResponse["gmtOffset"] = gmtOffset
+        
+        if (notificationCategoryArr![0] == "food") {
+            // check for binary responses
+            if ["isfood", "freeorsold", "forstudentgroup"].contains(notificationCategoryArr![1]) {
+                newResponse["response"] = getResponseForCategoryAndIdentifier("food", category: notificationCategoryArr![1], identifier: identifier!)
             }
+            // check if first answer of non-binary responses
+            else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                switch notificationCategoryArr![1] {
+                case "foodtype":
+                    newResponse["response"] = "no food here"
+                case "howmuchfood":
+                    newResponse["response"] = "none"
+                case "cost":
+                    newResponse["response"] = "< $2"
+                case "sellingreason":
+                    newResponse["response"] = "fundraising"
+                default:
+                    newResponse["response"] = ""
+                }
+            }
+            // if option 2, launch app and show picker
+            else {
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+            }
+        } else if (notificationCategoryArr![0] == "queue") {
+            // TODO: Implement logic based on notification
+        } else if (notificationCategoryArr![0] == "space") {
+            // TODO: Implement logic based on notification
+        } else if (notificationCategoryArr![0] == "surprising") {
+            // TODO: Implement logic based on notification
         }
-        newResponse.saveInBackground()
+        
+        // if response field is not blank, save to parse
+        if newResponse["response"] as! String != "" {
+            newResponse.saveInBackground()
+        }
         completionHandler()
+    }
+    
+    func getResponseForCategoryAndIdentifier(scenario: String, category: String, identifier: String) -> String {
+        // get answer index for binary answers
+        var index = 0
+        if identifier == "OPTION1_EVENT_IDENTIFIER" {
+            index = 0
+        } else {
+            index = 1
+        }
+        
+        // find and return answer
+        switch scenario {
+            case "food":
+                return foodAnswers[category]![index]
+            case "queue":
+                return queueAnswers[category]![index]
+            case "space":
+                return spaceAnswers[category]![index]
+            case "surprising":
+                return surprisingAnswers[category]![index]
+            default:
+                return ""
+        }
     }
     
     // MARK: 3D Touch shortcut handler

@@ -91,17 +91,23 @@ class ViewController: UIViewController {
         
         // Get first region in monitored regions to use
         if  monitoredHotspotDictionary.keys.count > 0 {
-            let region = Array(monitoredHotspotDictionary.keys)[0]
-            let currentRegion = monitoredHotspotDictionary[region]
-            let message = region
+
+            let currentRegion = monitoredHotspotDictionary["aCt8nf7vHW"] as! [String : AnyObject]
+            print(currentRegion)
+            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String])
+            let notificationContent = newNotification.createNotificationForTag()
+            
+            print(notificationContent)
+            print("food_" + notificationContent["notificationCategory"]!)
+            
             
             // Display notification after short time
             let notification = UILocalNotification()
-            notification.alertBody = "You have entered region \(message)"
+            notification.alertBody = notificationContent["message"]
             notification.soundName = "Default"
-            notification.category = "INVESTIGATE_CATEGORY"
-            notification.userInfo = currentRegion as? Dictionary
-            notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+            notification.category = notificationContent["notificationCategory"]
+            notification.userInfo = currentRegion
+            notification.fireDate = NSDate().dateByAddingTimeInterval(2)
             
             UIApplication.sharedApplication().scheduleLocalNotification(notification)
         }
