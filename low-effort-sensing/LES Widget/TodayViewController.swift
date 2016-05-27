@@ -232,12 +232,21 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             if error == nil {
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(NSDate().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
+                
                 // Get location and push to Parse
                 let newMonitoredLocation = PFObject(className: "hotspot")
                 newMonitoredLocation["vendorId"] = self.vendorId
                 newMonitoredLocation["location"] = geoPoint
                 newMonitoredLocation["tag"] = tag
                 newMonitoredLocation["archived"] = false
+                newMonitoredLocation["timestampCreated"] = epochTimestamp
+                newMonitoredLocation["gmtOffset"] = gmtOffset
+                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
+                newMonitoredLocation["submissionMethod"] = "today_widget"
+                
                 
                 // set info dict based on tag
                 switch tag {
