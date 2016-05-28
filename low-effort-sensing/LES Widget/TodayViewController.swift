@@ -246,6 +246,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 newMonitoredLocation["gmtOffset"] = gmtOffset
                 newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
                 newMonitoredLocation["submissionMethod"] = "today_widget"
+                newMonitoredLocation["locationCommonName"] = ""
                 
                 
                 // set info dict based on tag

@@ -146,14 +146,22 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                     let id = object.objectId!
                                     self.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
                                     
+                                    let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
+                                    
                                     // Add data to user defaults
                                     var unwrappedEntry = [String : AnyObject]()
+                                    unwrappedEntry["id"] = id
+                                    unwrappedEntry["vendorId"] = object["vendorId"] as! String
+                                    unwrappedEntry["tag"] = object["tag"] as! String
+                                    unwrappedEntry["info"] = info
                                     unwrappedEntry["latitude"] = currLat
                                     unwrappedEntry["longitude"] = currLong
-                                    unwrappedEntry["id"] = id
-                                    unwrappedEntry["tag"] = object["tag"] as! String
-                                    let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
-                                    unwrappedEntry["info"] = info
+                                    unwrappedEntry["archived"] = object["archived"] as? Bool
+                                    unwrappedEntry["timestampCreated"] = object["timestampCreated"] as? Int
+                                    unwrappedEntry["gmtOffset"] = object["gmtOffset"] as? Int
+                                    unwrappedEntry["timestampLastUpdate"] = object["timestampLastUpdate"] as? Int
+                                    unwrappedEntry["submissionMethod"] = object["submissionMethod"] as? String
+                                    unwrappedEntry["locationCommonName"] = object["locationCommonName"] as? String
                                     
                                     monitoredHotspotDictionary[id] = unwrappedEntry
                                 }
@@ -285,6 +293,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         // Show alert if app active, else local notification
         if UIApplication.sharedApplication().applicationState == .Active {
+            print("Application is active")
             if let viewController = window?.rootViewController {
                 let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .Alert)
                 let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)

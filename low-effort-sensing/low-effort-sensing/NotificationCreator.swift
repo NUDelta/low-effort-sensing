@@ -9,12 +9,21 @@
 import Foundation
 
 class NotificationCreator {
+    let currentHotspot: [String : AnyObject]
     let tag: String
     let currentInfo: [String : String]
     
-    init(scenario: String, hotspotInfo: [String : String]) {
+    var locationCommonName: String
+    
+    init(scenario: String, hotspotInfo: [String : String], currentHotspot: [String : AnyObject]) {
         self.tag = scenario
         self.currentInfo = hotspotInfo
+        self.currentHotspot = currentHotspot
+        
+        self.locationCommonName = ""
+        if let currentHotspotLocationCommonName = currentHotspot["locationCommonName"] as? String {
+           self.locationCommonName = currentHotspotLocationCommonName
+        }
     }
     
     func createNotificationForTag() -> [String : String] {

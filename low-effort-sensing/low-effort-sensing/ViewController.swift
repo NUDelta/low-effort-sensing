@@ -94,7 +94,7 @@ class ViewController: UIViewController {
 
             let currentRegion = monitoredHotspotDictionary["aCt8nf7vHW"] as! [String : AnyObject]
             print(currentRegion)
-            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String])
+            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
             let notificationContent = newNotification.createNotificationForTag()
             
             print(notificationContent)

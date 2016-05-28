@@ -214,9 +214,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         // Get first region in monitored regions to use
         if  monitoredHotspotDictionary.keys.count > 0 {
-            
-            let currentRegion = monitoredHotspotDictionary["aCt8nf7vHW"] as! [String : AnyObject]
-            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String])
+            let currentRegion = monitoredHotspotDictionary["hIQZFSju33"] as! [String : AnyObject]
+            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
             let notificationContent = newNotification.createNotificationForTag()
             
             print(notificationContent)
@@ -488,6 +487,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 newMonitoredLocation["gmtOffset"] = gmtOffset
                 newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
                 newMonitoredLocation["submissionMethod"] = "3d_touch"
+                newMonitoredLocation["locationCommonName"] = ""
                 
                 // set info dict based on tag
                 switch tag {
@@ -556,7 +556,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         let newMonitoredLocation = PFObject(className: "hotspot")
                         newMonitoredLocation["location"] = geoPoint
                         newMonitoredLocation["tag"] = "free food!"
-                        newMonitoredLocation["debug"] = "tester_" + dateString
                         newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
                         
                         newMonitoredLocation.saveInBackgroundWithBlock {
