@@ -49,7 +49,7 @@
                                     <constraint firstAttribute="width" constant="162" id="WWe-xK-bWu"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="pIj-4c-58o">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="pIj-4c-58o">
                                 <rect key="frame" x="7" y="350" width="585" height="167"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="167" id="oyp-Z1-xQV"/>
@@ -173,13 +173,13 @@
                                     <segue destination="JY4-8a-hcP" kind="show" identifier="NameSegue" id="qnh-Dl-46i"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First, what is your name?" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="v1n-m5-Sck">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="First, what is your name?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="v1n-m5-Sck">
                                 <rect key="frame" x="166" y="241" width="269" height="33"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="33" id="jgD-Wg-DbJ"/>
                                     <constraint firstAttribute="width" constant="269" id="mly-ep-ewP"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="25"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="23"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -230,14 +230,14 @@
                                     <segue destination="8pX-tj-N1f" kind="show" identifier="AuthSegue" id="8U8-DE-NwO"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Mny-3A-1C4">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="Mny-3A-1C4">
                                 <rect key="frame" x="8" y="348" width="585" height="155"/>
                                 <string key="text">Note: We will only save your location when you mark a location for tracking or respond to a notification. All of your data will be anonymous and we will never reference your device or your name directly.</string>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wonderful!  Now, LES will request authorization to track your location and send you notifications." textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Xbo-lP-UD3">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Wonderful!  Now, LES will request authorization to track your location and send you notifications." textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="Xbo-lP-UD3">
                                 <rect key="frame" x="8" y="107" width="585" height="136"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="136" id="6qh-70-QMV"/>
@@ -271,6 +271,9 @@
                             <constraint firstItem="Xbo-lP-UD3" firstAttribute="top" secondItem="1RJ-Hl-18M" secondAttribute="bottom" constant="87" id="xdO-1u-q14"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="authLabel" destination="Xbo-lP-UD3" id="yUP-iP-1uW"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xig-QE-mVb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -308,7 +311,7 @@
                                     <segue destination="gWh-0g-QGJ" kind="show" identifier="RankingSegue" id="SCh-Wj-6c4"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="ugG-i9-Ihm">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="ugG-i9-Ihm">
                                 <rect key="frame" x="8" y="20" width="583" height="222"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="222" id="fP8-ZR-fPk"/>
@@ -364,7 +367,7 @@
                                     <segue destination="waM-V0-2Ds" kind="show" identifier="CompletionSegue" id="7A4-Lr-bRV"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lSg-dQ-qPD">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="lSg-dQ-qPD">
                                 <rect key="frame" x="10" y="223" width="581" height="154"/>
                                 <string key="text">Wonderful! You're all setup.   We hope you enjoy using LES, and if you have any questions or feedback, please feel free to let us know.</string>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="25"/>
@@ -382,6 +385,9 @@
                             <constraint firstItem="lSg-dQ-qPD" firstAttribute="centerY" secondItem="ar9-zN-vD6" secondAttribute="centerY" id="bhV-d9-bmP"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="viewLabel" destination="lSg-dQ-qPD" id="D0g-Pp-vWi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AY2-ix-F3E" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -410,7 +416,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="83"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EQB-1U-lVt">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" textAlignment="natural" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="EQB-1U-lVt">
                                                     <rect key="frame" x="8" y="8" width="584" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="21" id="X7S-Hl-zoi"/>
@@ -419,7 +425,7 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Answer" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="sfN-04-iiz">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Answer" textAlignment="natural" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="sfN-04-iiz">
                                                     <rect key="frame" x="8" y="42" width="584" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -489,7 +495,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="rsE-ii-l7Z">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Question" textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="rsE-ii-l7Z">
                                 <rect key="frame" x="20" y="218" width="560" height="54"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="18"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>

@@ -37,6 +37,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     @IBOutlet weak var surprisingButton: UIButton!
     
     @IBOutlet weak var submittedLabel: UILabel!
+    @IBOutlet weak var infoLabel: UILabel!
     
     var foodSelected: Bool = false
     var queueSelected: Bool = false
@@ -67,6 +68,31 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         
         // Set label to be empty until user submits data
         submittedLabel.text = ""
+        
+        // dyanmic font sizing for labels
+        submittedLabel.adjustsFontSizeToFitWidth = true
+        infoLabel.adjustsFontSizeToFitWidth = true
+        
+        // dyanmic font sizing for buttons
+        foodButton.titleLabel!.numberOfLines = 0
+        foodButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        foodButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        foodButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        queueButton.titleLabel!.numberOfLines = 0
+        queueButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        queueButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        queueButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        spaceButton.titleLabel!.numberOfLines = 0
+        spaceButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        spaceButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        surprisingButton.titleLabel!.numberOfLines = 0
+        surprisingButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        surprisingButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        surprisingButton.titleLabel!.minimumScaleFactor = 0.5
     }
     
     override func didReceiveMemoryWarning() {

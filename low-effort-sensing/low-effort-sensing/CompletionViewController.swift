@@ -10,12 +10,15 @@ import Foundation
 import Parse
 
 class CompletionViewController: UIViewController {
-    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+    @IBOutlet weak var viewLabel: UILabel!
     
+    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
+        self.viewLabel.adjustsFontSizeToFitWidth = true
     }
     
     override func didReceiveMemoryWarning() {

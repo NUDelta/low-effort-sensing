@@ -30,6 +30,17 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         mapView.delegate = self
         mapView.showsUserLocation = true
         mapView.userTrackingMode = MKUserTrackingMode.Follow
+        
+        // make buttons resize 
+        nearbyButton.titleLabel!.numberOfLines = 0
+        nearbyButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        nearbyButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        nearbyButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        myLocationsButton.titleLabel!.numberOfLines = 0
+        myLocationsButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        myLocationsButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        myLocationsButton.titleLabel!.minimumScaleFactor = 0.5
     }
     
     override func viewDidAppear(animated: Bool) {

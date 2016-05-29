@@ -35,6 +35,12 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         cell.questionLabel.text = tableData[indexPath.row].firstRowLabel
         cell.answerLabel.text = tableData[indexPath.row].secondRowLabel
         cell.userInteractionEnabled = false
+        
+        // dyanmic font sizing
+        cell.questionLabel.adjustsFontSizeToFitWidth = true
+        cell.questionLabel.minimumScaleFactor = 0.5
+        cell.answerLabel.adjustsFontSizeToFitWidth = true
+        cell.answerLabel.minimumScaleFactor = 0.5
         return cell
     }
     

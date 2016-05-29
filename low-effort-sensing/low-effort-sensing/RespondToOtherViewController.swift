@@ -80,6 +80,7 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
         }
         
         self.question.text = self.notificationMessage
+        self.question.adjustsFontSizeToFitWidth = true
     }
     
     override func didReceiveMemoryWarning() {
