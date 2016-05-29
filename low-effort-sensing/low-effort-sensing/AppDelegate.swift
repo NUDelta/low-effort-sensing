@@ -43,7 +43,7 @@ let foodQuestionOrdering = ["isfood", "foodtype", "howmuchfood",
 
 let queueQuestionOrdering = ["isline", "linetime", "islonger", "isworthwaiting", "npeople"]
 
-let spaceQuestionOrdering = ["isspace", "isavailable", "seatingtype", "seating near power",
+let spaceQuestionOrdering = ["isspace", "isavailable", "seatingtype", "seatingnearpower",
                              "iswifi", "manypeople", "loudness", "event"]
 
 let surprisingQuestionOrdering = ["whatshappening", "famefrom", "vehicles", "peopledoing"]
@@ -54,7 +54,7 @@ let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
 
 let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
 
-let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seating near power": "",
+let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
                  "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
 
 let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
@@ -77,7 +77,7 @@ let queueAnswers = ["isline": ["yes", "no"],
 let spaceAnswers = ["isspace": ["yes", "no"],
                     "isavailable": ["yes", "no"],
                     "seatingtype": ["small tables", "large tables", "couches/chairs"],
-                    "seating near power": ["yes", "no"],
+                    "seatingnearpower": ["yes", "no"],
                     "iswifi": ["yes", "no"],
                     "manypeople": ["yes", "no"],
                     "loudness": ["loud", "light conversation", "quiet"],
@@ -107,7 +107,7 @@ let queueKeyToQuestion = ["isline": "Is there a line here?",
 let spaceKeyToQuestion = ["isspace": "Is there a communal space to track here?",
                           "isavailable": "Is there seating/space available?",
                           "seatingtype": "What kind of seating?",
-                          "seating near power": "Is there seating near power outlets?",
+                          "seatingnearpower": "Is there seating near power outlets?",
                           "iswifi": "Is there Wifi?",
                           "manypeople": "Are there a lot of people here?",
                           "loudness": "How loud is the place?",

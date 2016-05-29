@@ -24,7 +24,7 @@ let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
 
 let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
 
-let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seating near power": "",
+let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
                  "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
 
 let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]

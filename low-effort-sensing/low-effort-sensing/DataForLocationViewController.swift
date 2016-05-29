@@ -99,7 +99,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
             questionDictionary = queueKeyToQuestion
             break
         case "space":
-            questionOrdering = ["isavailable", "seatingtype", "seating near power", "iswifi", "manypeople", "loudness", "event"]
+            questionOrdering = ["isavailable", "seatingtype", "seatingnearpower", "iswifi", "manypeople", "loudness", "event"]
             questionDictionary = spaceKeyToQuestion
             break
         case "surprising":
