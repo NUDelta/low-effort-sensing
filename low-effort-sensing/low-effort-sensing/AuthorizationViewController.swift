@@ -9,12 +9,16 @@
 import Foundation
 
 class AuthorizationViewController: UIViewController {
+    @IBOutlet weak var authLabel: UILabel!
+    
     let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
     
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
+        
+        self.authLabel.adjustsFontSizeToFitWidth = true
     }
     
     override func didReceiveMemoryWarning() {

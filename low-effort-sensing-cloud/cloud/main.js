@@ -59,6 +59,7 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                                                       currentHotspot.location);
                 currentHotspot.distance = Math.round(currentHotspot.distance);
 
+                // check if user has already been notified for the location
                 var hotspotPrevNotified = false;
                 if (prevNotificationLen > 0) {
                   for (var j = 0; j < prevNotificationLen; j++) {
@@ -70,7 +71,13 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                   }
                 }
 
-                if (!hotspotPrevNotified) {
+                // check if user is one who initially marked it
+                var didUserCreateLocation = false;
+                if (locations[i].get('vendorId') == request.params.vendorId) {
+                  didUserCreateLocation = true;
+                }
+
+                if (!hotspotPrevNotified && !didUserCreateLocation) {
                   distanceToHotspots.push(currentHotspot);
                 }
               }

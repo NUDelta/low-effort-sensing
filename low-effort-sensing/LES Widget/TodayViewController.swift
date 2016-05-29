@@ -18,6 +18,16 @@ let appGroup = "group.com.delta.les-debug" // for debug builds
 let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
 //let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 
+// blank location info
+let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
+                "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
+
+let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
+
+let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
+                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
+
+let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
 
 class TodayViewController: UIViewController, NCWidgetProviding {
         
@@ -27,6 +37,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     @IBOutlet weak var surprisingButton: UIButton!
     
     @IBOutlet weak var submittedLabel: UILabel!
+    @IBOutlet weak var infoLabel: UILabel!
     
     var foodSelected: Bool = false
     var queueSelected: Bool = false
@@ -57,6 +68,31 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         
         // Set label to be empty until user submits data
         submittedLabel.text = ""
+        
+        // dyanmic font sizing for labels
+        submittedLabel.adjustsFontSizeToFitWidth = true
+        infoLabel.adjustsFontSizeToFitWidth = true
+        
+        // dyanmic font sizing for buttons
+        foodButton.titleLabel!.numberOfLines = 0
+        foodButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        foodButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        foodButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        queueButton.titleLabel!.numberOfLines = 0
+        queueButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        queueButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        queueButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        spaceButton.titleLabel!.numberOfLines = 0
+        spaceButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        spaceButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        surprisingButton.titleLabel!.numberOfLines = 0
+        surprisingButton.titleLabel!.adjustsFontSizeToFitWidth = true
+        surprisingButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        surprisingButton.titleLabel!.minimumScaleFactor = 0.5
     }
     
     override func didReceiveMemoryWarning() {
@@ -222,25 +258,43 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             if error == nil {
-                // Get current date to make debug string
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-                let dateString = dateFormatter.stringFromDate(NSDate())
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(NSDate().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
                 
                 // Get location and push to Parse
                 let newMonitoredLocation = PFObject(className: "hotspot")
                 newMonitoredLocation["vendorId"] = self.vendorId
                 newMonitoredLocation["location"] = geoPoint
                 newMonitoredLocation["tag"] = tag
-                newMonitoredLocation["debug"] = "tester_" + dateString
-                newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+                newMonitoredLocation["archived"] = false
+                newMonitoredLocation["timestampCreated"] = epochTimestamp
+                newMonitoredLocation["gmtOffset"] = gmtOffset
+                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
+                newMonitoredLocation["submissionMethod"] = "today_widget"
+                newMonitoredLocation["locationCommonName"] = ""
                 
-                newMonitoredLocation.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                       // do nothing if succeds
-                    }
+                
+                // set info dict based on tag
+                switch tag {
+                    case "food":
+                        newMonitoredLocation["info"] = foodInfo
+                        break
+                    case "queue":
+                        newMonitoredLocation["info"] = queueInfo
+                        break
+                    case "space":
+                        newMonitoredLocation["info"] = spaceInfo
+                        break
+                    case "surprising":
+                        newMonitoredLocation["info"] = surprisingInfo
+                        break
+                    default:
+                        break
                 }
+                
+                // push to parse
+                newMonitoredLocation.saveInBackground()
             }
         }
     }

@@ -13,7 +13,6 @@
 import UIKit
 import Parse
 import Bolts
-import CoreLocation
 import WatchConnectivity
 
 let distanceFromTarget = 20.0
@@ -38,6 +37,88 @@ extension UIViewController {
     }
 }
 
+// question ordering
+let foodQuestionOrdering = ["isfood", "foodtype", "howmuchfood",
+                            "freeorsold", "forstudentgroup", "cost", "sellingreason"]
+
+let queueQuestionOrdering = ["isline", "linetime", "islonger", "isworthwaiting", "npeople"]
+
+let spaceQuestionOrdering = ["isspace", "isavailable", "seatingtype", "seatingnearpower",
+                             "iswifi", "manypeople", "loudness", "event"]
+
+let surprisingQuestionOrdering = ["whatshappening", "famefrom", "vehicles", "peopledoing"]
+
+// blank location info
+let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
+                "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
+
+let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
+
+let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
+                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
+
+let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
+
+// notification answers
+let foodAnswers = ["isfood": ["yes", "no"],
+                   "foodtype": ["no food here", "pizza slices", "buns", "pastries", "other"],
+                   "howmuchfood": ["none", "very little", "some", "lots"],
+                   "freeorsold": ["free", "sold"],
+                   "forstudentgroup": ["yes", "no"],
+                   "cost": ["< $2", "$2-3", "$3-4", "$5+"],
+                   "sellingreason": ["fundraising", "charity", "other"]]
+
+let queueAnswers = ["isline": ["yes", "no"],
+                    "linetime": ["< 5 mins", "5-10 mins", "10-20 mins", "20+ mins"],
+                    "islonger": ["yes", "no", "I don't come here regularly"],
+                    "isworthwaiting": ["yes", "no"],
+                    "npeople": ["< 5", "5-10", "10+"]]
+
+let spaceAnswers = ["isspace": ["yes", "no"],
+                    "isavailable": ["yes", "no"],
+                    "seatingtype": ["small tables", "large tables", "couches/chairs"],
+                    "seatingnearpower": ["yes", "no"],
+                    "iswifi": ["yes", "no"],
+                    "manypeople": ["yes", "no"],
+                    "loudness": ["loud", "light conversation", "quiet"],
+                    "event": ["no", "sports", "music", "gathering", "other"]]
+
+let surprisingAnswers = ["whatshappening": ["no", "celebrity", "emergency vehicles", "lots of people"],
+                         "famefrom": ["no longer here", "musician", "actor/actress", "politician", "comedian", "other", "I don't know"],
+                         "vehicles": ["no longer here", "just police", "police, firetrucks, and ambulances"],
+                         "peopledoing": ["no longer here", "protest/riot", "student gathering for organization", "university or formal event", "other", "I don't know"]]
+
+
+// key to question dictionary
+let foodKeyToQuestion = ["isfood": "Is there food here?",
+                         "foodtype": "What kind of food is here?",
+                         "howmuchfood": "How much food is left?",
+                         "freeorsold": "Is it free or sold?",
+                         "forstudentgroup": "Is it for a student group?",
+                         "cost": "How much does it cost?",
+                         "sellingreason": "Why is it being sold?"]
+
+let queueKeyToQuestion = ["isline": "Is there a line here?",
+                          "linetime": "How much time do you think it would take to go through the line right now?",
+                          "islonger": "If you come here regularly, is the line longer than normal?",
+                          "isworthwaiting": "Is it worth waiting in line?",
+                          "npeople": "How many people are in line right now?"]
+
+let spaceKeyToQuestion = ["isspace": "Is there a communal space to track here?",
+                          "isavailable": "Is there seating/space available?",
+                          "seatingtype": "What kind of seating?",
+                          "seatingnearpower": "Is there seating near power outlets?",
+                          "iswifi": "Is there Wifi?",
+                          "manypeople": "Are there a lot of people here?",
+                          "loudness": "How loud is the place?",
+                          "event": "Is there an event, like a sports game on TV or live music, going on here?"]
+
+let surprisingKeyToQuestion = ["whatshappening": "What’s happening here?",
+                               "famefrom": "What are they known for?",
+                               "vehicles": "What vehicles are there?",
+                               "peopledoing": "What are they doing there?"]
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     // MARK: Class Variables
@@ -53,7 +134,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // Check active state for 3D Touch Home actions
         var performShortcutDelegate = true
         if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
-            
             print("Application launched via shortcut")
             self.shortcutItem = shortcutItem
             
@@ -81,31 +161,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      distanceFilter: nil)
         
         // setup local notifications
-        var categories = Set<UIUserNotificationCategory>()
-        
-        let option1HotspotAction = UIMutableUserNotificationAction()
-        option1HotspotAction.title = NSLocalizedString("Option 1", comment: "click for option 1")
-        option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
-        option1HotspotAction.activationMode = UIUserNotificationActivationMode.Background
-        option1HotspotAction.authenticationRequired = false
-        
-        let option2HotspotAction = UIMutableUserNotificationAction()
-        option2HotspotAction.title = NSLocalizedString("Option 2", comment: "click for option 2")
-        option2HotspotAction.identifier = "OPTION2_EVENT_IDENTIFIER"
-        option2HotspotAction.activationMode = UIUserNotificationActivationMode.Background
-        option2HotspotAction.authenticationRequired = false
-        
-        let investigateCategory = UIMutableUserNotificationCategory()
-        investigateCategory.setActions([option2HotspotAction, option1HotspotAction],
-                                       forContext: UIUserNotificationActionContext.Default)
-        investigateCategory.identifier = "INVESTIGATE_CATEGORY"
-        
-        categories.insert(investigateCategory)
-        notificationCategories = categories
+        createFoodNotifications()
+        createQueueNotifications()
+        createSpaceNotifications()
+        createSurprisingNotifications()
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
         if launchedBefore  {
+            // register categories for notifications
+            registerForNotifications()
+            
+            // open map view
             self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
@@ -133,6 +200,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         return performShortcutDelegate
     }
     
+//    // USED FOR DEBUGGING
+//    func sendNotification() {
+//        print("Preparing notification")
+//        // Get NSUserDefaults
+//        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+//        print(monitoredHotspotDictionary)
+//        
+//        // Get first region in monitored regions to use
+//        if  monitoredHotspotDictionary.keys.count > 0 {
+//            let currentRegion = monitoredHotspotDictionary["jMWwRfcHRH"] as! [String : AnyObject]
+//            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
+//            let notificationContent = newNotification.createNotificationForTag()
+//            
+//            print(notificationContent)
+//            
+//            // Display notification after short time
+//            let notification = UILocalNotification()
+//            notification.alertBody = notificationContent["message"]
+//            notification.soundName = "Default"
+//            notification.category = notificationContent["notificationCategory"]
+//            notification.userInfo = currentRegion
+//            notification.fireDate = NSDate().dateByAddingTimeInterval(3)
+//            
+//            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+//        }
+//    }
+    
 
     func applicationWillResignActive(application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
@@ -153,7 +247,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
 
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App entering background"
         newLog.saveInBackground()
@@ -171,7 +265,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App entering foreground"
         newLog.saveInBackground()
@@ -200,7 +294,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(Int64(NSDate().timeIntervalSince1970 * 1000))
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App about to terminate"
         do {
@@ -211,36 +305,238 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     func registerForNotifications() {
-        print("Requesting authorization for local notifications")
+        print("Registering categories for local notifications")
         UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: notificationCategories))
         UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
-    //MARK: - Contextual Notification Handler
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?,
-                     forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
-        var notificationId = ""
-        print(notification.userInfo)
+    // MARK: - Create Custom Notifications for each question
+    func createFoodNotifications() {
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "food_isfood", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("no food here", option2Title: "report food type", categoryIdentifier: "food_foodtype", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("none", option2Title: "report food amount", categoryIdentifier: "food_howmuchfood", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("free", option2Title: "sold", categoryIdentifier: "food_freeorsold", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "food_forstudentgroup", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("< $2", option2Title: "other", categoryIdentifier: "food_cost", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("fundraising", option2Title: "other", categoryIdentifier: "food_sellingreason", option2InForeground: true))
+    }
+    
+    func createQueueNotifications() {
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "queue_isline", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("< 5 mins", option2Title: "report other line length", categoryIdentifier: "queue_linetime", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("I'm not a regular", option2Title: "other", categoryIdentifier: "queue_islonger", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "queue_isworthwaiting", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("< 5", option2Title: "report other number of people", categoryIdentifier: "queue_npeople", option2InForeground: true))
+    }
+    
+    func createSpaceNotifications() {
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_isspace", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_isavailable", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("small tables", option2Title: "other seating", categoryIdentifier: "space_seatingtype", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_seatingnearpower", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_iswifi", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_manypeople", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("quiet", option2Title: "other noise level", categoryIdentifier: "space_loudness", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("no", option2Title: "event type", categoryIdentifier: "space_event", option2InForeground: true))
+    }
+    
+    func createSurprisingNotifications() {
+        notificationCategories.insert(createNotificationCategory("no", option2Title: "yes", categoryIdentifier: "surprising_whatshappening", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("no longer here", option2Title: "other", categoryIdentifier: "surprising_famefrom", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("no longer here", option2Title: "other", categoryIdentifier: "surprising_vehicles", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("no longer here", option2Title: "other", categoryIdentifier: "surprising_peopledoing", option2InForeground: true))
+    }
+    
+    func createNotificationCategory(option1Title: String, option2Title: String, categoryIdentifier: String, option2InForeground: Bool) -> UIMutableUserNotificationCategory {
+        let option1HotspotAction = UIMutableUserNotificationAction()
+        let option2HotspotAction = UIMutableUserNotificationAction()
+        let notificationCategory = UIMutableUserNotificationCategory()
         
+        option1HotspotAction.title = NSLocalizedString(option1Title, comment: "click for option 1")
+        option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
+        option1HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+        option1HotspotAction.authenticationRequired = false
+        
+        option2HotspotAction.title = NSLocalizedString(option2Title, comment: "click for option 2")
+        option2HotspotAction.identifier = "OPTION2_EVENT_IDENTIFIER"
+        if option2InForeground {
+            option2HotspotAction.activationMode = UIUserNotificationActivationMode.Foreground
+        } else {
+            option2HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+        }
+        option2HotspotAction.authenticationRequired = false
+        
+        notificationCategory.setActions([option2HotspotAction, option1HotspotAction], forContext: UIUserNotificationActionContext.Default)
+        notificationCategory.identifier = categoryIdentifier
+        
+        return notificationCategory
+    }
+    
+    //MARK: - Contextual Notification Handler
+    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+        // get UTC timestamp and timezone of notification
+        let epochTimestamp = Int(NSDate().timeIntervalSince1970)
+        let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
+        
+        // get scenario and question as separate components
+        let notificationCategoryArr = notification.category?.componentsSeparatedByString("_")
+        
+        // Setup response object to push to parse
+        var notificationId = ""
         if let unwrappedNotificationId = notification.userInfo!["id"] {
             notificationId = unwrappedNotificationId as! String
         }
-    
-        // Get info from response and push to Parse
+        
         let newResponse = PFObject(className: "pingResponse")
         newResponse["vendorId"] = vendorId
         newResponse["hotspotId"] = notificationId
-        newResponse["question"] = "default"
-
-        if (notification.category == "INVESTIGATE_CATEGORY") {
-            if (identifier == "OPTION1_EVENT_IDENTIFIER") {
-                newResponse["response"] = "option_1"
-            } else if (identifier == "OPTION2_EVENT_IDENTIFIER") {
-                newResponse["response"] = "option_2"
+        newResponse["question"] = notificationCategoryArr![1]
+        newResponse["response"] = ""
+        newResponse["tag"] = notificationCategoryArr![0]
+        newResponse["timestamp"] = epochTimestamp
+        newResponse["gmtOffset"] = gmtOffset
+        
+        if (notificationCategoryArr![0] == "food") {
+            // check for binary responses
+            if ["isfood", "freeorsold", "forstudentgroup"].contains(notificationCategoryArr![1]) {
+                newResponse["response"] = getResponseForCategoryAndIdentifier("food", category: notificationCategoryArr![1], identifier: identifier!)
+            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
+                switch notificationCategoryArr![1] {
+                case "foodtype":
+                    newResponse["response"] = "no food here"
+                case "howmuchfood":
+                    newResponse["response"] = "none"
+                case "cost":
+                    newResponse["response"] = "< $2"
+                case "sellingreason":
+                    newResponse["response"] = "fundraising"
+                default:
+                    newResponse["response"] = ""
+                }
+            } else {
+                // if option 2, launch app and show picker
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
             }
+        } else if (notificationCategoryArr![0] == "queue") {
+            // check binary responses
+            if ["isline", "isworthwaiting"].contains(notificationCategoryArr![1]) {
+                newResponse["response"] = getResponseForCategoryAndIdentifier("queue", category: notificationCategoryArr![1], identifier: identifier!)
+            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
+                switch notificationCategoryArr![1] {
+                case "linetime":
+                    newResponse["response"] = "< 5 mins"
+                case "islonger":
+                    newResponse["response"] = "I don't come here regularly"
+                case "npeople":
+                    newResponse["response"] = "< 5"
+                default:
+                    newResponse["response"] = ""
+                }
+            } else {
+                // if option 2, launch app and show picker
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+            }
+        } else if (notificationCategoryArr![0] == "space") {
+            // check binary responses
+            if ["isspace", "isavailable", "seatingnearpower", "iswifi", "manypeople"].contains(notificationCategoryArr![1]) {
+                newResponse["response"] = getResponseForCategoryAndIdentifier("space", category: notificationCategoryArr![1], identifier: identifier!)
+            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
+                switch notificationCategoryArr![1] {
+                case "seatingtype":
+                    newResponse["response"] = "small tables"
+                case "loudness":
+                    newResponse["response"] = "quiet"
+                case "event":
+                    newResponse["response"] = "no"
+                default:
+                    newResponse["response"] = ""
+                }
+            } else {
+                // if option 2, launch app and show picker
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+            }
+        } else if (notificationCategoryArr![0] == "surprising") {
+            if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
+                switch notificationCategoryArr![1] {
+                case "whatshappening":
+                    newResponse["response"] = "no"
+                case "famefrom":
+                    newResponse["response"] = "no longer here"
+                case "vehicles":
+                    newResponse["response"] = "no longer here"
+                case "peopledoing":
+                    newResponse["response"] = "no longer here"
+                default:
+                    newResponse["response"] = ""
+                }
+            } else {
+                // if option 2, launch app and show picker
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+            }
+
         }
-        newResponse.saveInBackground()
+        
+        // if response field is not blank, save to parse
+        if newResponse["response"] as! String != "" {
+            newResponse.saveInBackground()
+        }
         completionHandler()
+    }
+    
+    func getResponseForCategoryAndIdentifier(scenario: String, category: String, identifier: String) -> String {
+        // get answer index for binary answers
+        var index = 0
+        if identifier == "OPTION1_EVENT_IDENTIFIER" {
+            index = 0
+        } else {
+            index = 1
+        }
+        
+        // find and return answer
+        switch scenario {
+            case "food":
+                return foodAnswers[category]![index]
+            case "queue":
+                return queueAnswers[category]![index]
+            case "space":
+                return spaceAnswers[category]![index]
+            case "surprising":
+                return surprisingAnswers[category]![index]
+            default:
+                return ""
+        }
     }
     
     // MARK: 3D Touch shortcut handler
@@ -255,14 +551,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         PFGeoPoint.geoPointForCurrentLocationInBackground {
             (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
             if error == nil {
-                // Get current date to make debug string
-                let dateFormatter = NSDateFormatter()
-                dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-                let dateString = dateFormatter.stringFromDate(NSDate())
-                
                 // create tag based on shortcut
                 var tag = ""
-                switch(shortcutItem.type) {
+                switch shortcutItem.type {
                     case "com.delta.low-effort-sensing.mark-food-location":
                         tag = "food"
                     case "com.delta.low-effort-sensing.mark-queue-location":
@@ -275,40 +566,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         return
                 }
                 
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(NSDate().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
+                
                 // Get location and push to Parse
                 let newMonitoredLocation = PFObject(className: "hotspot")
                 newMonitoredLocation["vendorId"] = vendorId
                 newMonitoredLocation["location"] = geoPoint
                 newMonitoredLocation["tag"] = tag
-                newMonitoredLocation["debug"] = "tester_" + dateString
-                newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+                newMonitoredLocation["archived"] = false
+                newMonitoredLocation["timestampCreated"] = epochTimestamp
+                newMonitoredLocation["gmtOffset"] = gmtOffset
+                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
+                newMonitoredLocation["submissionMethod"] = "3d_touch"
+                newMonitoredLocation["locationCommonName"] = ""
                 
-                newMonitoredLocation.saveInBackgroundWithBlock {
-                    (success: Bool, error: NSError?) -> Void in
-                    if (success) {
-                        // add new location to monitored regions
-                        let newRegionLat = newMonitoredLocation["location"].latitude
-                        let newRegionLong = newMonitoredLocation["location"].longitude
-                        let newRegionId = newMonitoredLocation.objectId!
-                        MyPretracker.sharedManager.addLocation(nil, latitude: newRegionLat, longitude: newRegionLong, radius: nil, name: newRegionId)
-                        
-                        // Add new region to user defaults
-                        var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
-                        
-                        // Add data to user defaults
-                        var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["latitude"] = newRegionLat
-                        unwrappedEntry["longitude"] = newRegionLong
-                        unwrappedEntry["id"] = newMonitoredLocation.objectId
-                        unwrappedEntry["tag"] = newMonitoredLocation["tag"]
-                        let info : Dictionary<String, AnyObject>? = newMonitoredLocation["info"] as? Dictionary<String, AnyObject>
-                        unwrappedEntry["info"] = info
-                        
-                        monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
-                        self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-                        self.appUserDefaults?.synchronize()
-                    }
+                // set info dict based on tag
+                switch tag {
+                case "food":
+                    newMonitoredLocation["info"] = foodInfo
+                    break
+                case "queue":
+                    newMonitoredLocation["info"] = queueInfo
+                    break
+                case "space":
+                    newMonitoredLocation["info"] = spaceInfo
+                    break
+                case "surprising":
+                    newMonitoredLocation["info"] = surprisingInfo
+                    break
+                default:
+                    break
                 }
+                
+                // push to parse
+                newMonitoredLocation.saveInBackground()
                 
                 // Show alert confirming location saved
                 var tagDescription = ""
@@ -356,7 +649,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         let newMonitoredLocation = PFObject(className: "hotspot")
                         newMonitoredLocation["location"] = geoPoint
                         newMonitoredLocation["tag"] = "free food!"
-                        newMonitoredLocation["debug"] = "tester_" + dateString
                         newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
                         
                         newMonitoredLocation.saveInBackgroundWithBlock {
