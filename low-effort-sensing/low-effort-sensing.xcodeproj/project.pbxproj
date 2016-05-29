@@ -43,6 +43,8 @@
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00305B051C7DA8F1003242F2 /* InformationAdderView.swift */; };
 		006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */; };
+		0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */; };
+		0092F78E1CFA08F7006A9C2C /* LocationDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */; };
 		00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */; };
 		00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */; };
 		00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */; };
@@ -177,6 +179,8 @@
 		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
 		00305B051C7DA8F1003242F2 /* InformationAdderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationAdderView.swift; sourceTree = "<group>"; };
 		006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondToOtherViewController.swift; sourceTree = "<group>"; };
+		0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForLocationViewController.swift; sourceTree = "<group>"; };
+		0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDataCell.swift; sourceTree = "<group>"; };
 		00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "LES Widget Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App Debug.entitlements"; sourceTree = "<group>"; };
@@ -322,6 +326,8 @@
 				00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */,
 				00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */,
 				006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */,
+				0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */,
+				0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */,
 			);
 			path = "low-effort-sensing";
 			sourceTree = "<group>";
@@ -754,9 +760,11 @@
 				00305B061C7DA8F1003242F2 /* InformationAdderView.swift in Sources */,
 				000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */,
 				00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */,
+				0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */,
 				001627D61CF297D60049107E /* CompletionViewController.swift in Sources */,
 				001A8FCD1C55CE6E009F964C /* AppDelegate.swift in Sources */,
 				001627D01CF297610049107E /* NameViewController.swift in Sources */,
+				0092F78E1CFA08F7006A9C2C /* LocationDataCell.swift in Sources */,
 				001627D41CF297C10049107E /* RankingViewController.swift in Sources */,
 				00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */,
 				00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */,

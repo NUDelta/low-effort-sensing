@@ -79,10 +79,25 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             distanceString = "Distance currently unavailable"
         }
         
-        let newLocation = MarkedLocation(title: createTitleFromTag(tag),
+        var annotationTitle = ""
+        let locationCommonName = location["locationCommonName"] as! String
+        if locationCommonName == "" {
+            annotationTitle = createTitleFromTag(tag)
+        } else {
+            print(locationCommonName)
+            print(tag)
+            if tag == "queue" {
+                annotationTitle = locationCommonName + " (line tracking)"
+            } else if tag == "space" {
+                annotationTitle = locationCommonName + " (space tracking)"
+            }
+        }
+        
+        let newLocation = MarkedLocation(title: annotationTitle,
                                          locationName: distanceString,
                                          discipline: tag,
-                                         coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double))
+                                         coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double),
+                                         hotspotId: location["id"] as! String)
         mapView.addAnnotation(newLocation)
     }
     
@@ -120,23 +135,33 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             if error == nil {
                 if let objects = objects {
                     var monitoredHotspotDictionary = [String : AnyObject]()
+                    
                     for object in objects {
                         let currGeopoint = object["location"] as! PFGeoPoint
                         let currLat = currGeopoint.latitude
                         let currLong = currGeopoint.longitude
                         let id = object.objectId!
                         
+                        let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
+                        
                         // Add data to user defaults
                         var unwrappedEntry = [String : AnyObject]()
+                        unwrappedEntry["id"] = id
+                        unwrappedEntry["vendorId"] = object["vendorId"] as! String
+                        unwrappedEntry["tag"] = object["tag"] as! String
+                        unwrappedEntry["info"] = info
                         unwrappedEntry["latitude"] = currLat
                         unwrappedEntry["longitude"] = currLong
-                        unwrappedEntry["id"] = id
-                        unwrappedEntry["tag"] = object["tag"]
-                        let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
-                        unwrappedEntry["info"] = info
+                        unwrappedEntry["archived"] = object["archived"] as? Bool
+                        unwrappedEntry["timestampCreated"] = object["timestampCreated"] as? Int
+                        unwrappedEntry["gmtOffset"] = object["gmtOffset"] as? Int
+                        unwrappedEntry["timestampLastUpdate"] = object["timestampLastUpdate"] as? Int
+                        unwrappedEntry["submissionMethod"] = object["submissionMethod"] as? String
+                        unwrappedEntry["locationCommonName"] = object["locationCommonName"] as? String
                         
-                        monitoredHotspotDictionary[object.objectId!] = unwrappedEntry
+                        monitoredHotspotDictionary[id] = unwrappedEntry
                     }
+                    
                     self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: myHotspotsRegionKey)
                     self.appUserDefaults?.synchronize()
                     
@@ -148,6 +173,46 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
                 print("Error: \(error!) \(error!.userInfo)")
             }
         }
+    }
+    
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        if let annotation = annotation as? MarkedLocation {
+            let identifier = "pin"
+            var view: MKPinAnnotationView
+            if let dequeuedView = mapView.dequeueReusableAnnotationViewWithIdentifier(identifier)
+                as? MKPinAnnotationView {
+                dequeuedView.annotation = annotation
+                view = dequeuedView
+            } else {
+                view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+                view.canShowCallout = true
+                view.calloutOffset = CGPoint(x: -5, y: 5)
+                view.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure) as UIView
+            }
+            return view
+        }
+        return nil
+    }
+    
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        // get data for hotspot
+        var monitoredHotspotDictionary: [String : AnyObject]
+        if showingNearby {
+            monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+        } else {
+            monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(myHotspotsRegionKey) ?? Dictionary()
+        }
+        
+        let annotationMarkedLocation = view.annotation as! MarkedLocation
+        let annotationDistance = view.annotation?.subtitle
+        let annotationHotpspotDictionary = monitoredHotspotDictionary[annotationMarkedLocation.hotspotId]
+    
+        // show DataForLocationViewController
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let dataForLocation : DataForLocationViewController = mainStoryboard.instantiateViewControllerWithIdentifier("DataForLocationView") as! DataForLocationViewController
+        
+        dataForLocation.loadDataForHotspotDictionary(annotationHotpspotDictionary as! [String : AnyObject], distance: annotationDistance!!)
+        self.showViewController(dataForLocation, sender: dataForLocation)
     }
     
     @IBAction func toggleNearbyPlaces(sender: AnyObject) {

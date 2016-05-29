@@ -37,6 +37,17 @@ extension UIViewController {
     }
 }
 
+// question ordering
+let foodQuestionOrdering = ["isfood", "foodtype", "howmuchfood",
+                            "freeorsold", "forstudentgroup", "cost", "sellingreason"]
+
+let queueQuestionOrdering = ["isline", "linetime", "islonger", "isworthwaiting", "npeople"]
+
+let spaceQuestionOrdering = ["isspace", "isavailable", "seatingtype", "seating near power",
+                             "iswifi", "manypeople", "loudness", "event"]
+
+let surprisingQuestionOrdering = ["whatshappening", "famefrom", "vehicles", "peopledoing"]
+
 // blank location info
 let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
                 "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
@@ -402,6 +413,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
                 let rootViewController = self.window!.rootViewController
