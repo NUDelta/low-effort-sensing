@@ -72,7 +72,8 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
         var lastLocation: CLLocation = CLLocation()
         
-        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double), altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
+        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double),
+                                                 altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: NSDate.init())
         let tag = location["tag"] as! String
         
         var distanceToLocation: Double

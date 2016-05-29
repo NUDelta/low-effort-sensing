@@ -227,7 +227,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     // MARK: Pre-tracking algorithm and notifications
     public func notifyIfWithinDistance(lastLocation: CLLocation) {
-        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude) with location accuracy \(locationManager?.desiredAccuracy)")
+//        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude) with location accuracy \(locationManager?.desiredAccuracy)")
         
         // check if location update is recent and accurate enough
         let age = -lastLocation.timestamp.timeIntervalSinceNow
@@ -250,7 +250,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
                     
                     if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
-                        print(distanceToLocation)
                         self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
                         self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
                         
@@ -262,17 +261,15 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     public func notifyPeople(region: CLRegion, locationWhenNotified: CLLocation) {
-        print("notify for region id \(region.identifier)")
+//        print("notify for region id \(region.identifier)")
         // Get NSUserDefaults
         var monitoredHotspotDictionary = appUserDefaults!.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
-        let currentRegion = monitoredHotspotDictionary[region.identifier]
+        let currentRegion = monitoredHotspotDictionary[region.identifier] as! [String : AnyObject]
         let message = region.identifier
         
         // Log notification to parse
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
+        let epochTimestamp = Int(NSDate().timeIntervalSince1970)
+        let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
         
         var distanceToLocation: Double = 0.0
         var notificationString: String = ""
@@ -284,12 +281,14 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             notificationString = "Notified for \(region.identifier) (nil, nil) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance nil"
         }
         
-        let newLog = PFObject(className: "pretracking_debug")
-        newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
-        newLog["timestamp_string"] = currentDateString
-        newLog["console_string"] = notificationString
-        newLog.saveInBackground()
+        // Log notification sent event to parse
+        let newResponse = PFObject(className: "notificationSent")
+        newResponse["vendorId"] = vendorId
+        newResponse["hotspotId"] = currentRegion["id"] as! String
+        newResponse["timestamp"] = epochTimestamp
+        newResponse["gmtOffset"] = gmtOffset
+        newResponse["notificationString"] = notificationString
+        newResponse.saveInBackground()
         
         // Show alert if app active, else local notification
         if UIApplication.sharedApplication().applicationState == .Active {
@@ -301,11 +300,16 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 viewController.presentViewController(alert, animated: true, completion: nil)
             }
         } else {
+            // Create context for notification
+            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
+            let notificationContent = newNotification.createNotificationForTag()
+
+            // Display notification with context
             let notification = UILocalNotification()
-            notification.alertBody = "You are near \(message)"
+            notification.alertBody = notificationContent["message"]
             notification.soundName = "Default"
-            notification.category = "INVESTIGATE_CATEGORY"
-            notification.userInfo = currentRegion as? Dictionary
+            notification.category = notificationContent["notificationCategory"]
+            notification.userInfo = currentRegion
             UIApplication.sharedApplication().presentLocalNotificationNow(notification)
         }
     }
@@ -334,30 +338,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             timer = nil
         }
         locationManager!.startUpdatingLocation()
-    }
-    
-    func presentNotificationForEnteredRegion(region: CLRegion!) {
-        // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
-        let currentRegion = monitoredHotspotDictionary[region.identifier]
-        let message = region.identifier
-        
-        // Show alert if app active, else local notification
-        if UIApplication.sharedApplication().applicationState == .Active {
-            if let viewController = window?.rootViewController {
-                let alert = UIAlertController(title: "Region Entered", message: "You have entered region \(message)", preferredStyle: .Alert)
-                let action = UIAlertAction(title: "OK", style: .Cancel, handler: nil)
-                alert.addAction(action)
-                viewController.presentViewController(alert, animated: true, completion: nil)
-            }
-        } else {
-            let notification = UILocalNotification()
-            notification.alertBody = "You have entered region \(message)"
-            notification.soundName = "Default"
-            notification.category = "INVESTIGATE_CATEGORY"
-            notification.userInfo = currentRegion as? Dictionary
-            UIApplication.sharedApplication().presentLocalNotificationNow(notification)
-        }
     }
     
     //MARK: Tracking Location Updates
@@ -436,26 +416,26 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         locationManager!.distanceFilter = kCLDistanceFilterNone
         self.locationDic[region.identifier]?["withinRegion"] = true
         
-        // log region entry events to Parse
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
-        
-        var notificationString: String = ""
-        if let monitorRegion = region as? CLCircularRegion {
-            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-            notificationString = "Entered region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
-        } else {
-            notificationString = "Entered region \(region.identifier) (nil, nil)"
-        }
-        
-        let newLog = PFObject(className: "pretracking_debug")
-        newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
-        newLog["timestamp_string"] = currentDateString
-        newLog["console_string"] = notificationString
-        newLog.saveInBackground()
+//        // log region entry events to Parse
+//        let date = NSDate()
+//        let dateFormatter = NSDateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//        let currentDateString = dateFormatter.stringFromDate(date)
+//        
+//        var notificationString: String = ""
+//        if let monitorRegion = region as? CLCircularRegion {
+//            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+//            notificationString = "Entered region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
+//        } else {
+//            notificationString = "Entered region \(region.identifier) (nil, nil)"
+//        }
+//        
+//        let newLog = PFObject(className: "pretracking_debug")
+//        newLog["vendor_id"] = vendorId
+//        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
+//        newLog["timestamp_string"] = currentDateString
+//        newLog["console_string"] = notificationString
+//        newLog.saveInBackground()
     }
     
     public func locationManager(manager: CLLocationManager, didExitRegion region: CLRegion) {
@@ -468,26 +448,26 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             locationManager!.distanceFilter = self.distanceFilter
         }
         
-        // log region exit events to Parse
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
-        
-        var notificationString: String = ""
-        if let monitorRegion = region as? CLCircularRegion {
-            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-            notificationString = "Exited region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
-        } else {
-            notificationString = "Exited region \(region.identifier) (nil, nil)"
-        }
-        
-        let newLog = PFObject(className: "pretracking_debug")
-        newLog["vendor_id"] = vendorId
-        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
-        newLog["timestamp_string"] = currentDateString
-        newLog["console_string"] = notificationString
-        newLog.saveInBackground()
+//        // log region exit events to Parse
+//        let date = NSDate()
+//        let dateFormatter = NSDateFormatter()
+//        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//        let currentDateString = dateFormatter.stringFromDate(date)
+//        
+//        var notificationString: String = ""
+//        if let monitorRegion = region as? CLCircularRegion {
+//            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+//            notificationString = "Exited region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
+//        } else {
+//            notificationString = "Exited region \(region.identifier) (nil, nil)"
+//        }
+//        
+//        let newLog = PFObject(className: "pretracking_debug")
+//        newLog["vendor_id"] = vendorId
+//        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
+//        newLog["timestamp_string"] = currentDateString
+//        newLog["console_string"] = notificationString
+//        newLog.saveInBackground()
     }
     
     private func outOfAllRegions() -> Bool {

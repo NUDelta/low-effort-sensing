@@ -161,25 +161,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      distanceFilter: nil)
         
         // setup local notifications
-        let option1HotspotAction = UIMutableUserNotificationAction()
-        option1HotspotAction.title = NSLocalizedString("Option 1", comment: "click for option 1")
-        option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
-        option1HotspotAction.activationMode = UIUserNotificationActivationMode.Background
-        option1HotspotAction.authenticationRequired = false
-        
-        let option2HotspotAction = UIMutableUserNotificationAction()
-        option2HotspotAction.title = NSLocalizedString("Option 2", comment: "click for option 2")
-        option2HotspotAction.identifier = "OPTION2_EVENT_IDENTIFIER"
-        option2HotspotAction.activationMode = UIUserNotificationActivationMode.Background
-        option2HotspotAction.authenticationRequired = false
-        
-        let investigateCategory = UIMutableUserNotificationCategory()
-        investigateCategory.setActions([option2HotspotAction, option1HotspotAction],
-                                       forContext: UIUserNotificationActionContext.Default)
-        investigateCategory.identifier = "INVESTIGATE_CATEGORY"
-        
-        notificationCategories.insert(investigateCategory)
-        
         createFoodNotifications()
         createQueueNotifications()
         createSpaceNotifications()
@@ -198,9 +179,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
-            
-            // DEBUG NOTIFICATION DELETE FOR FINAL VERSION
-            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: false)
         }
         else {
             print("First launch, going to welcome screen")
@@ -222,31 +200,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         return performShortcutDelegate
     }
     
-    func sendNotification() {
-        print("Preparing notification")
-        // Get NSUserDefaults
-        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
-        print(monitoredHotspotDictionary)
-        
-        // Get first region in monitored regions to use
-        if  monitoredHotspotDictionary.keys.count > 0 {
-            let currentRegion = monitoredHotspotDictionary["jMWwRfcHRH"] as! [String : AnyObject]
-            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
-            let notificationContent = newNotification.createNotificationForTag()
-            
-            print(notificationContent)
-            
-            // Display notification after short time
-            let notification = UILocalNotification()
-            notification.alertBody = notificationContent["message"]
-            notification.soundName = "Default"
-            notification.category = notificationContent["notificationCategory"]
-            notification.userInfo = currentRegion
-            notification.fireDate = NSDate().dateByAddingTimeInterval(3)
-            
-            UIApplication.sharedApplication().scheduleLocalNotification(notification)
-        }
-    }
+//    // USED FOR DEBUGGING
+//    func sendNotification() {
+//        print("Preparing notification")
+//        // Get NSUserDefaults
+//        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+//        print(monitoredHotspotDictionary)
+//        
+//        // Get first region in monitored regions to use
+//        if  monitoredHotspotDictionary.keys.count > 0 {
+//            let currentRegion = monitoredHotspotDictionary["jMWwRfcHRH"] as! [String : AnyObject]
+//            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
+//            let notificationContent = newNotification.createNotificationForTag()
+//            
+//            print(notificationContent)
+//            
+//            // Display notification after short time
+//            let notification = UILocalNotification()
+//            notification.alertBody = notificationContent["message"]
+//            notification.soundName = "Default"
+//            notification.category = notificationContent["notificationCategory"]
+//            notification.userInfo = currentRegion
+//            notification.fireDate = NSDate().dateByAddingTimeInterval(3)
+//            
+//            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+//        }
+//    }
     
 
     func applicationWillResignActive(application: UIApplication) {
@@ -326,7 +305,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     func registerForNotifications() {
-        print("Requesting authorization for local notifications")
+        print("Registering categories for local notifications")
         UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: notificationCategories))
         UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
