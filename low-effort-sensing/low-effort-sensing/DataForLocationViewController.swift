@@ -53,8 +53,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         if locationCommonName == "" {
             firstRowLabelValue = createTitleFromTag(tag)
         } else {
-            print(locationCommonName)
-            print(tag)
             if tag == "queue" {
                 firstRowLabelValue = locationCommonName + " (line tracking)"
             } else if tag == "space" {

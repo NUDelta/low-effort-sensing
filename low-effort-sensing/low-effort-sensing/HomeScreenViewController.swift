@@ -95,8 +95,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         if locationCommonName == "" {
             annotationTitle = createTitleFromTag(tag)
         } else {
-            print(locationCommonName)
-            print(tag)
             if tag == "queue" {
                 annotationTitle = locationCommonName + " (line tracking)"
             } else if tag == "space" {

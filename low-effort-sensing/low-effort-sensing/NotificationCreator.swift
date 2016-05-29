@@ -152,6 +152,99 @@ class NotificationCreator {
     
     func createNotificationForQueue() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
+        
+        var locationPhrase = ""
+        if self.locationCommonName == "" {
+            locationPhrase = "here"
+        } else {
+            locationPhrase = "at \(self.locationCommonName)"
+        }
+        if currentInfo["isline"] == "yes" {
+            // ask for line time
+            if currentInfo["linetime"] == "" {
+                output["notificationCategory"] = "queue_linetime"
+                output["message"] = "How long do you think it will take to get through the line \(locationPhrase)?"
+            } else if currentInfo["linetime"] == "< 5 mins" || currentInfo["linetime"] == "5-10 mins" {
+                // ask how many people if line is short
+                if currentInfo["npeople"] == "" {
+                    output["notificationCategory"] = "queue_npeople"
+                    output["message"] = "The line \(locationPhrase) is short (\(currentInfo["linetime"]!)). About how many people are in line?"
+                }
+                else {
+                    // ask if longer than normal
+                    if currentInfo["islonger"] == "" {
+                        output["notificationCategory"] = "queue_islonger"
+                        output["message"] = "The line \(locationPhrase) is short and has about \(currentInfo["npeople"]!) people in it. If you come here regularly, is this longer than normal?"
+                    } else if currentInfo["islonger"] == "yes" {
+                        // ask if line is worth waiting in
+                        if currentInfo["isworthwaiting"] == "" {
+                            output["notificationCategory"] = "queue_isworthwaiting"
+                            output["message"] = "The line \(locationPhrase) is longer than normal, but still short. Do you think it's worth waiting?"
+                        } else if currentInfo["isworthwaiting"] == "yes" {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is suppose to be longer than normal, but worth waiting for. Do you still see a line here?"
+                        } else {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is suppose to be longer than normal, but still short. Do you still see a line here?"
+                        }
+                    } else {
+                        // ask if line is worth waiting in
+                        if currentInfo["isworthwaiting"] == "" {
+                            output["notificationCategory"] = "queue_isworthwaiting"
+                            output["message"] = "The line \(locationPhrase) is short. Do you think it's worth waiting?"
+                        } else if currentInfo["isworthwaiting"] == "yes" {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is short, but worth waiting for. Do you still see a line here?"
+                        } else {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is short. Do you still see a line here?"
+                        }
+                    }
+                }
+            } else {
+                // ask how many people if line is long
+                if currentInfo["npeople"] == "" {
+                    output["notificationCategory"] = "queue_npeople"
+                    output["message"] = "The line \(locationPhrase) is long (\(currentInfo["linetime"]!)). About how many people are in line?"
+                }
+                else {
+                    // ask if longer than normal
+                    if currentInfo["islonger"] == "" {
+                        output["notificationCategory"] = "queue_islonger"
+                        output["message"] = "The line \(locationPhrase) is long and has about \(currentInfo["npeople"]!) people in it. If you come here regularly, is this longer than normal?"
+                    } else if currentInfo["islonger"] == "yes" {
+                        // ask if line is worth waiting in
+                        if currentInfo["isworthwaiting"] == "" {
+                            output["notificationCategory"] = "queue_isworthwaiting"
+                            output["message"] = "The line \(locationPhrase) is longer than normal. Do you think it's worth waiting?"
+                        } else if currentInfo["isworthwaiting"] == "yes" {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is suppose to be longer than normal, but worth waiting for. Do you still see a line here?"
+                        } else {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is suppose to be longer than normal. Do you still see a line here?"
+                        }
+                    } else {
+                        // ask if line is worth waiting in
+                        if currentInfo["isworthwaiting"] == "" {
+                            output["notificationCategory"] = "queue_isworthwaiting"
+                            output["message"] = "The line \(locationPhrase) is long. Do you think it's worth waiting?"
+                        } else if currentInfo["isworthwaiting"] == "yes" {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is suppose to be long, but worth waiting for. Do you still see a line here?"
+                        } else {
+                            output["notificationCategory"] = "queue_isline"
+                            output["message"] = "The line \(locationPhrase) is suppose to be long. Do you still see a line here?"
+                        }
+                    }
+                }
+                
+            }
+        } else {
+            output["notificationCategory"] = "queue_isline"
+            output["message"] = "Someone reported a line to track \(locationPhrase). Do you see one here?"
+        }
+        
         return output
     }
     

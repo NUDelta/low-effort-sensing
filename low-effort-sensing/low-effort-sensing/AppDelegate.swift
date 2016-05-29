@@ -181,6 +181,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         notificationCategories.insert(investigateCategory)
         
         createFoodNotifications()
+        createQueueNotifications()
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
@@ -226,7 +227,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         // Get first region in monitored regions to use
         if  monitoredHotspotDictionary.keys.count > 0 {
-            let currentRegion = monitoredHotspotDictionary["hIQZFSju33"] as! [String : AnyObject]
+            let currentRegion = monitoredHotspotDictionary["yyP8fecI1U"] as! [String : AnyObject]
             let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
             let notificationContent = newNotification.createNotificationForTag()
             
@@ -340,6 +341,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         notificationCategories.insert(createNotificationCategory("fundraising", option2Title: "other", categoryIdentifier: "food_sellingreason", option2InForeground: true))
     }
     
+    func createQueueNotifications() {
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "queue_isline", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("< 5 mins", option2Title: "report other line length", categoryIdentifier: "queue_linetime", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("I'm not a regular", option2Title: "other", categoryIdentifier: "queue_islonger", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "queue_isworthwaiting", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("< 5", option2Title: "report other number of people", categoryIdentifier: "queue_npeople", option2InForeground: true))
+    }
+    
     func createNotificationCategory(option1Title: String, option2Title: String, categoryIdentifier: String, option2InForeground: Bool) -> UIMutableUserNotificationCategory {
         let option1HotspotAction = UIMutableUserNotificationAction()
         let option2HotspotAction = UIMutableUserNotificationAction()
@@ -421,7 +430,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
             }
         } else if (notificationCategoryArr![0] == "queue") {
-            // TODO: Implement logic based on notification
+            // check binary responses
+            if ["isline", "isworthwaiting",].contains(notificationCategoryArr![1]) {
+                newResponse["response"] = getResponseForCategoryAndIdentifier("queue", category: notificationCategoryArr![1], identifier: identifier!)
+            }
+            // check if first answer of non-binary responses
+            else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                switch notificationCategoryArr![1] {
+                case "linetime":
+                    newResponse["response"] = "< 5 mins"
+                case "islonger":
+                    newResponse["response"] = "I don't come here regularly"
+                case "npeople":
+                    newResponse["response"] = "< 5"
+                default:
+                    newResponse["response"] = ""
+                }
+            }
+            // if option 2, launch app and show picker
+            else {
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+            }
         } else if (notificationCategoryArr![0] == "space") {
             // TODO: Implement logic based on notification
         } else if (notificationCategoryArr![0] == "surprising") {
