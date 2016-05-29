@@ -182,6 +182,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         createFoodNotifications()
         createQueueNotifications()
+        createSpaceNotifications()
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
@@ -198,7 +199,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             self.window?.makeKeyAndVisible()
             
             // DEBUG NOTIFICATION DELETE FOR FINAL VERSION
-//            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: false)
+            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: false)
         }
         else {
             print("First launch, going to welcome screen")
@@ -224,10 +225,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         print("Preparing notification")
         // Get NSUserDefaults
         var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+        print(monitoredHotspotDictionary)
         
         // Get first region in monitored regions to use
         if  monitoredHotspotDictionary.keys.count > 0 {
-            let currentRegion = monitoredHotspotDictionary["yyP8fecI1U"] as! [String : AnyObject]
+            let currentRegion = monitoredHotspotDictionary["Mq4owvPTXF"] as! [String : AnyObject]
             let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
             let notificationContent = newNotification.createNotificationForTag()
             
@@ -349,6 +351,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         notificationCategories.insert(createNotificationCategory("< 5", option2Title: "report other number of people", categoryIdentifier: "queue_npeople", option2InForeground: true))
     }
     
+    func createSpaceNotifications() {
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_isspace", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_isavailable", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("small tables", option2Title: "other seating", categoryIdentifier: "space_seatingtype", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_seatingnearpower", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_iswifi", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("yes", option2Title: "no", categoryIdentifier: "space_manypeople", option2InForeground: false))
+        notificationCategories.insert(createNotificationCategory("quiet", option2Title: "other noise level", categoryIdentifier: "space_loudness", option2InForeground: true))
+        notificationCategories.insert(createNotificationCategory("no", option2Title: "event type", categoryIdentifier: "space_event", option2InForeground: true))
+    }
+    
     func createNotificationCategory(option1Title: String, option2Title: String, categoryIdentifier: String, option2InForeground: Bool) -> UIMutableUserNotificationCategory {
         let option1HotspotAction = UIMutableUserNotificationAction()
         let option2HotspotAction = UIMutableUserNotificationAction()
@@ -402,9 +415,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             // check for binary responses
             if ["isfood", "freeorsold", "forstudentgroup"].contains(notificationCategoryArr![1]) {
                 newResponse["response"] = getResponseForCategoryAndIdentifier("food", category: notificationCategoryArr![1], identifier: identifier!)
-            }
-            // check if first answer of non-binary responses
-            else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
                 switch notificationCategoryArr![1] {
                 case "foodtype":
                     newResponse["response"] = "no food here"
@@ -417,9 +429,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 default:
                     newResponse["response"] = ""
                 }
-            }
-            // if option 2, launch app and show picker
-            else {
+            } else {
+                // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
@@ -431,11 +442,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             }
         } else if (notificationCategoryArr![0] == "queue") {
             // check binary responses
-            if ["isline", "isworthwaiting",].contains(notificationCategoryArr![1]) {
+            if ["isline", "isworthwaiting"].contains(notificationCategoryArr![1]) {
                 newResponse["response"] = getResponseForCategoryAndIdentifier("queue", category: notificationCategoryArr![1], identifier: identifier!)
-            }
-            // check if first answer of non-binary responses
-            else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
                 switch notificationCategoryArr![1] {
                 case "linetime":
                     newResponse["response"] = "< 5 mins"
@@ -446,9 +456,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 default:
                     newResponse["response"] = ""
                 }
-            }
-            // if option 2, launch app and show picker
-            else {
+            } else {
+                // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
@@ -459,7 +468,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
             }
         } else if (notificationCategoryArr![0] == "space") {
-            // TODO: Implement logic based on notification
+            // check binary responses
+            if ["isspace", "isavailable", "seatingnearpower", "iswifi", "manypeople"].contains(notificationCategoryArr![1]) {
+                newResponse["response"] = getResponseForCategoryAndIdentifier("space", category: notificationCategoryArr![1], identifier: identifier!)
+            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+                // check if first answer of non-binary responses
+                switch notificationCategoryArr![1] {
+                case "seatingtype":
+                    newResponse["response"] = "small tables"
+                case "loudness":
+                    newResponse["response"] = "quiet"
+                case "event":
+                    newResponse["response"] = "no"
+                default:
+                    newResponse["response"] = ""
+                }
+            } else {
+                // if option 2, launch app and show picker
+                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                
+                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+                
+                let rootViewController = self.window!.rootViewController
+                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+            }
         } else if (notificationCategoryArr![0] == "surprising") {
             // TODO: Implement logic based on notification
         }

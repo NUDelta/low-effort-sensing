@@ -44,6 +44,7 @@ class NotificationCreator {
     func createNotificationForFood() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
         
+        // generate notification
         if currentInfo["isfood"] == "yes" {
             // ask for food type
             if currentInfo["foodtype"] == "" {
@@ -153,12 +154,16 @@ class NotificationCreator {
     func createNotificationForQueue() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
         
+        // generate location phrase
         var locationPhrase = ""
         if self.locationCommonName == "" {
             locationPhrase = "here"
         } else {
             locationPhrase = "at \(self.locationCommonName)"
         }
+        
+        // generate notification
+        // check if there is a line to track here
         if currentInfo["isline"] == "yes" {
             // ask for line time
             if currentInfo["linetime"] == "" {
@@ -250,6 +255,107 @@ class NotificationCreator {
     
     func createNotificationForSpace() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
+        
+        // generate location phrase
+        var locationPhrase = ""
+        if self.locationCommonName == "" {
+            locationPhrase = "here"
+        } else {
+            locationPhrase = "at \(self.locationCommonName)"
+        }
+        
+        // generate notification
+        // check if valid space to track
+        if currentInfo["isspace"] == "yes" {
+            // check if there is seating available in the space
+            if currentInfo["isavailable"]  == "yes"{
+                // ask for seating type
+                if currentInfo["seatingtype"] == "" {
+                    output["notificationCategory"] = "space_seatingtype"
+                    output["message"] = "There's space available \(locationPhrase). What kind of seating is available here currently?"
+                } else {
+                    // ask if seating near power
+                    if currentInfo["seatingnearpower"] == "" {
+                        output["notificationCategory"] = "space_seatingnearpower"
+                        output["message"] = "There's a communal space \(locationPhrase) with \(currentInfo["seatingtype"]!) available. Are there any seats near power outlets?"
+                    } else {
+                        // ask about wifi connection
+                        if currentInfo["iswifi"] == "" {
+                            output["notificationCategory"] = "space_iswifi"
+                            output["message"] = "There's a communal space \(locationPhrase) with \(currentInfo["seatingtype"]!) available. Does the place have wifi?"
+                        } else {
+                            // check for noise level
+                            if currentInfo["loudness"] == "" {
+                                output["notificationCategory"] = "space_loudness"
+                                output["message"] = "There's a communal space \(locationPhrase) with \(currentInfo["seatingtype"]!) available. How loud is it here?"
+                            } else if currentInfo["loudness"] == "loud" {
+                                // check if space is still the same
+                                output["notificationCategory"] = "space_isspace"
+                                output["message"] = "There's a communal space \(locationPhrase) with \(currentInfo["seatingtype"]!) available, but it's on the louder side. Might not be a great place to work. Is it still like this?"
+                            } else {
+                                // check if space is still the same
+                                if currentInfo["iswifi"] == "yes" {
+                                    output["notificationCategory"] = "space_isspace"
+                                    output["message"] = "There's a communal space \(locationPhrase) with \(currentInfo["seatingtype"]!) and WiFi available. It's quiet, so might be a good place to work! Is it still like this?"
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if currentInfo["isavailable"] == "no" {
+                // check if lots of people
+                if currentInfo["manypeople"] == "" {
+                    output["notificationCategory"] = "space_manypeople"
+                    output["message"] = "There space here \(locationPhrase) seems to be very busy. Are there a lot of people there?"
+                } else if currentInfo["manypeople"] == "yes" {
+                    // check how loud the place is
+                    if currentInfo["loudness"] == "" {
+                        output["notificationCategory"] = "space_loudness"
+                        output["message"] = "There seems to be a lot of people \(locationPhrase). How loud is it here?"
+                    } else {
+                        // check if event going on
+                        if currentInfo["event"] == "" {
+                            output["notificationCategory"] = "space_event"
+                            output["message"] = "The space \(locationPhrase) seems to be busy. Is there an event going on here?"
+                        } else if currentInfo["event"] == "no" {
+                            // check is space is still the same
+                            output["notificationCategory"] = "space_isspace"
+                            output["message"] = "The space \(locationPhrase) seems to be busy with \(currentInfo["loudness"]!) noise level. Is it still like this?"
+                        } else {
+                            // check is space is still the same
+                            output["notificationCategory"] = "space_isspace"
+                            output["message"] = "The space \(locationPhrase) seems to be busy with an event (\(currentInfo["event"]!)) going on. Is it still like this?"
+                        }
+                    }
+                } else {
+                    // check how loud the place is
+                    if currentInfo["loudness"] == "" {
+                        output["notificationCategory"] = "space_loudness"
+                        output["message"] = "The space here \(locationPhrase) seems to be busy. How loud is it here?"
+                    } else {
+                        // check if event going on
+                        if currentInfo["event"] == "" {
+                            output["notificationCategory"] = "space_event"
+                            output["message"] = "The space \(locationPhrase) seems to be busy. Is there an event going on here?"
+                        } else if currentInfo["event"] == "no" {
+                            // check is space is still the same
+                            output["notificationCategory"] = "space_isspace"
+                            output["message"] = "The space \(locationPhrase) seems to be busy with \(currentInfo["loudness"]!) noise level. Is it still like this?"
+                        } else {
+                            // check is space is still the same
+                            output["notificationCategory"] = "space_isspace"
+                            output["message"] = "The space \(locationPhrase) seems to be busy with an event (\(currentInfo["event"]!)) going on. Is it still like this?"
+                        }
+                    }
+                }
+            } else {
+                output["notificationCategory"] = "space_isavailable"
+                output["message"] = "Someone reported a communal space to track \(locationPhrase). Is there seating or space available here?"
+            }
+        } else {
+            output["notificationCategory"] = "space_isspace"
+            output["message"] = "Someone reported a communal space to track \(locationPhrase). Do you see one here?"
+        }
         return output
     }
     
