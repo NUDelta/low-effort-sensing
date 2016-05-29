@@ -309,12 +309,13 @@
 			isa = PBXGroup;
 			children = (
 				001627CE1CF297430049107E /* WelcomeScreens */,
+				0092F78F1CFA7AFC006A9C2C /* MapView */,
+				0092F7901CFA7BD8006A9C2C /* LocationAndNotification */,
 				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
 				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
 				00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */,
 				001A8FCC1C55CE6E009F964C /* AppDelegate.swift */,
-				000447451CD3AB830033DCD3 /* MyPretracker.swift */,
 				001A8FCE1C55CE6E009F964C /* ViewController.swift */,
 				00305B051C7DA8F1003242F2 /* InformationAdderView.swift */,
 				001A8FD01C55CE6E009F964C /* Main.storyboard */,
@@ -322,12 +323,6 @@
 				001A8FD51C55CE6E009F964C /* LaunchScreen.storyboard */,
 				001A8FD81C55CE6E009F964C /* Info.plist */,
 				0026F54A1CEA9B75004C20F2 /* low-effort-sensing-Bridging-Header.h */,
-				00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */,
-				00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */,
-				00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */,
-				006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */,
-				0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */,
-				0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */,
 			);
 			path = "low-effort-sensing";
 			sourceTree = "<group>";
@@ -394,6 +389,27 @@
 				94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0092F78F1CFA7AFC006A9C2C /* MapView */ = {
+			isa = PBXGroup;
+			children = (
+				00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */,
+				00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */,
+				0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */,
+				0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */,
+			);
+			name = MapView;
+			sourceTree = "<group>";
+		};
+		0092F7901CFA7BD8006A9C2C /* LocationAndNotification */ = {
+			isa = PBXGroup;
+			children = (
+				000447451CD3AB830033DCD3 /* MyPretracker.swift */,
+				00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */,
+				006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */,
+			);
+			name = LocationAndNotification;
 			sourceTree = "<group>";
 		};
 		00D06D731CE1A92A002E8CCA /* LES Widget */ = {

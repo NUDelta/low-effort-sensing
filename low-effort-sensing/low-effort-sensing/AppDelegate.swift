@@ -196,7 +196,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
             
-//            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: false)
+            NSTimer.scheduledTimerWithTimeInterval(5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: false)
         }
         else {
             print("First launch, going to welcome screen")

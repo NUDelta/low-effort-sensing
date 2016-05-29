@@ -704,7 +704,6 @@
                     <connections>
                         <outlet property="question" destination="rsE-ii-l7Z" id="u4c-yV-Wfy"/>
                         <outlet property="responseTextField" destination="AWz-gF-8Hg" id="Jbg-H1-dFb"/>
-                        <segue destination="waM-V0-2Ds" kind="show" identifier="BackToMainSegue" id="Z6f-6h-sQT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zcm-gK-jXl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -716,7 +715,4 @@
         <image name="AuthorizationScreen" width="300" height="109"/>
         <image name="WelcomeScreen" width="200" height="200"/>
     </resources>
-    <inferredMetricsTieBreakers>
-        <segue reference="Z6f-6h-sQT"/>
-    </inferredMetricsTieBreakers>
 </document>
