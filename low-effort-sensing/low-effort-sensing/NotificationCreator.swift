@@ -361,6 +361,45 @@ class NotificationCreator {
     
     func createNotificationForSurprising() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
+        
+        // generate notification
+        // check what is happeneing at location
+        if currentInfo["whatshappening"] == "" {
+            output["notificationCategory"] = "surprising_whatshappening"
+            output["message"] = "Someone said there was something unexpected happening here! Do you see anything unsusual?"
+        } else if currentInfo["whatshappening"] == "celebrity" {
+            // ask how celebrity got their fame
+            if currentInfo["famefrom"] == "" {
+                output["notificationCategory"] = "surprising_famefrom"
+                output["message"] = "There's a celebrity here! If they are still there, do you know what they are famous for?"
+            } else {
+                if currentInfo["famefrom"] != "other" || currentInfo["famefrom"] != "I don't know" {
+                    output["notificationCategory"] = "surprising_whatshappening"
+                    output["message"] = "There was a celebrity who's famous for being a \(currentInfo["famefrom"]!) here! Is he/she still there?"
+                } else {
+                    output["notificationCategory"] = "surprising_whatshappening"
+                    output["message"] = "There was a celebrity here! Is he/she still there?"
+                }
+            }
+        } else if currentInfo["whatshappening"] == "emergency vehicles" {
+            // ask what kind of emergency vehicles are here for
+            if currentInfo["vehicles"] == "" {
+                output["notificationCategory"] = "surprising_vehicles"
+                output["message"] = "Someone said there were emergency vehicles here. If they are still there, what kind of vehicles do you see?"
+            } else {
+                output["notificationCategory"] = "surprising_whatshappening"
+                output["message"] = "There were emergency vehicles (\(currentInfo["vehicles"]!)) here. Are they still there?"
+            }
+        } else if currentInfo["whatshappening"] == "lots of people" {
+            // ask why there are so many people here
+            if currentInfo["peopledoing"] == "" {
+                output["notificationCategory"] = "surprising_peopledoing"
+                output["message"] = "Someone said there was a large gathering of people here. If they are still there, any idea what they are there for?"
+            } else {
+                output["notificationCategory"] = "surprising_whatshappening"
+                output["message"] = "There were a lot of people here for an event (\(currentInfo["peopledoing"]!)). Are they still there?"
+            }
+        }
         return output
     }
 }
