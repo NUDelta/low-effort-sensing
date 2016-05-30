@@ -52,7 +52,8 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                   'objectId': locations[i].id,
                   'location': locations[i].get('location'),
                   'tag': locations[i].get('tag'),
-                  'preference': preferenceDict[locations[i].get('tag')]
+                  'preference': preferenceDict[locations[i].get('tag')],
+                  'archived': locations[i].get('archived')
                 };
 
                 currentHotspot.distance = getDistance(currentLocation,
@@ -77,7 +78,12 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                   didUserCreateLocation = true;
                 }
 
-                if (!hotspotPrevNotified && !didUserCreateLocation) {
+                // check if current hotspot is archived from previous responses
+                var isArchived = currentHotspot.archived;
+
+                // push hotspot to array if conditions are met
+                if (!hotspotPrevNotified && !didUserCreateLocation &&
+                    !isArchived) {
                   distanceToHotspots.push(currentHotspot);
                 }
               }
