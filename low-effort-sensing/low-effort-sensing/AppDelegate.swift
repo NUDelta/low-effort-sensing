@@ -22,8 +22,8 @@ let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user 
 var vendorId: String = ""
 
 // App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
-let appGroup = "group.com.delta.les-debug" // for debug builds
-// let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+//let appGroup = "group.com.delta.les-debug" // for debug builds
+ let appGroup = "group.com.delta.les"       // for enterprise distribution builds
 
 // extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
 extension UIViewController {
