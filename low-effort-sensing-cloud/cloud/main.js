@@ -1,3 +1,64 @@
+// aggregates data and archives locations if they are no longer valid
+Parse.Cloud.afterSave('pingResponse', function (request) {
+  // thresholds for adding info and archiving hotspot
+  var infoAddThreshold = 2;
+  var archiveHotspotThreshold = 2;
+
+  // get values from just saved object
+  var responseId = request.object.id;
+  var hotspotId = request.object.get('hotspotId');
+  var question = request.object.get('question');
+  var questionResponse = request.object.get('response');
+  var timestamp = request.object.get('timestamp');
+
+  var getHotspotData = new Parse.Query('hotspot');
+  getHotspotData.equalTo('objectId', hotspotId);
+  getHotspotData.first({
+    success: function (hotspotObject) {
+      var lastUpdateTimestamp = hotspotObject.get('timestampLastUpdate');
+
+      var responseForHotspot = new Parse.Query('pingResponse');
+      responseForHotspot.equalTo('hotspotId', hotspotId);
+      responseForHotspot.equalTo('question', question);
+      responseForHotspot.greaterThanOrEqualTo('timestamp', lastUpdateTimestamp);
+      responseForHotspot.find({
+        success: function (hotspotResponses) {
+          var similarResponseCount = 0;
+
+          for (var i = 0; i < hotspotResponses.length; i++) {
+            var currentResponse = hotspotResponses[i].get('response');
+            var currentId = hotspotResponses[i].id;
+
+            if (currentId != responseId &&
+                currentResponse == questionResponse) {
+              similarResponseCount++;
+            }
+          }
+
+          if (similarResponseCount >= infoAddThreshold) {
+            var newUpdateTimestamp = Math.round(Date.now() / 1000);
+            var newInfo = hotspotObject.get('info');
+            newInfo.question = questionResponse;
+            hotspotObject.set('timestampLastUpdate', newUpdateTimestamp);
+            hotspotObject.set('info', newInfo);
+            hotspotObject.save();
+          }
+        },
+        error: function (error) {
+          /*jshint ignore:start*/
+          console.log(error);
+          /*jshint ignore:end*/
+        }
+      });
+    },
+    error: function (error) {
+      /*jshint ignore:start*/
+      console.log(error);
+      /*jshint ignore:end*/
+    }
+  });
+});
+
 // Get n closest hotspots ranked by distance and preference
 // request = {latitude: Int, longitude: Int, vendorId: Str, count: Int}
 Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
