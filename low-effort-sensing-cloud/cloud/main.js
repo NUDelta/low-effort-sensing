@@ -16,7 +16,7 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
   // "I don't come here regularly" for queues
   var responseExceptions = ['I don\'t know', 'I don\'t come here regularly'];
   if (responseExceptions.indexOf(questionResponse) != -1) {
-    console.log('special case');
+    return;
   }
 
   var getHotspotData = new Parse.Query('hotspot');
