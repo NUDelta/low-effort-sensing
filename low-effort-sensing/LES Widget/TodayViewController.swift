@@ -275,22 +275,28 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 newMonitoredLocation["locationCommonName"] = ""
                 
                 
-                // set info dict based on tag
+                // set info dict and saveTimeForQuestion based on tag
                 switch tag {
-                    case "food":
-                        newMonitoredLocation["info"] = foodInfo
-                        break
-                    case "queue":
-                        newMonitoredLocation["info"] = queueInfo
-                        break
-                    case "space":
-                        newMonitoredLocation["info"] = spaceInfo
-                        break
-                    case "surprising":
-                        newMonitoredLocation["info"] = surprisingInfo
-                        break
-                    default:
-                        break
+                case "food":
+                    newMonitoredLocation["info"] = foodInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
+                        "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
+                    break
+                case "queue":
+                    newMonitoredLocation["info"] = queueInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
+                    break
+                case "space":
+                    newMonitoredLocation["info"] = spaceInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
+                        "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
+                    break
+                case "surprising":
+                    newMonitoredLocation["info"] = surprisingInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
+                    break
+                default:
+                    break
                 }
                 
                 // push to parse

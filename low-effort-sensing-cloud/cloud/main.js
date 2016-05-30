@@ -15,7 +15,8 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
   getHotspotData.equalTo('objectId', hotspotId);
   getHotspotData.first({
     success: function (hotspotObject) {
-      var lastUpdateTimestamp = hotspotObject.get('timestampLastUpdate');
+      var saveTimes = hotspotObject.get('saveTimeForQuestion');
+      var lastUpdateTimestamp = saveTimes[question];
 
       var responseForHotspot = new Parse.Query('pingResponse');
       responseForHotspot.equalTo('hotspotId', hotspotId);
@@ -38,8 +39,10 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
           if (similarResponseCount >= infoAddThreshold) {
             var newUpdateTimestamp = Math.round(Date.now() / 1000);
             var newInfo = hotspotObject.get('info');
-            newInfo.question = questionResponse;
-            hotspotObject.set('timestampLastUpdate', newUpdateTimestamp);
+            newInfo[question] = questionResponse;
+            saveTimes[question] = newUpdateTimestamp;
+
+            hotspotObject.set('saveTimeForQuestion', saveTimes);
             hotspotObject.set('info', newInfo);
             hotspotObject.save();
           }
