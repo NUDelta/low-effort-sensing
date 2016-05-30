@@ -36,10 +36,8 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
 
           for (var i = 0; i < hotspotResponses.length; i++) {
             var currentResponse = hotspotResponses[i].get('response');
-            var currentId = hotspotResponses[i].id;
 
-            if (currentId != responseId &&
-                currentResponse == questionResponse) {
+            if (currentResponse == questionResponse) {
               similarResponseCount++;
             }
           }
