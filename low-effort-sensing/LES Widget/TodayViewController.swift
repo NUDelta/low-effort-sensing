@@ -11,12 +11,12 @@ import NotificationCenter
 import Parse
 
 // App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
-//let appGroup = "group.com.delta.les-debug" // for debug builds
- let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+let appGroup = "group.com.delta.les-debug" // for debug builds
+// let appGroup = "group.com.delta.les"       // for enterprise distribution builds
 
 // Containing Application for Parse (MUST BE CHANGED DEPENDING ON BUILD
-//let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
-let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
+let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
+//let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 
 // blank location info
 let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",

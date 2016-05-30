@@ -26,12 +26,37 @@ class CompletionViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-        if (segue.identifier == "CompletionSegue") {
-            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
-            
-            let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionaryForKey("welcomeData"))
-            newUser.saveInBackground()
-        }
+//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+//        if (segue.identifier == "CompletionSegue") {
+//            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+//            
+//            let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionaryForKey("welcomeData"))
+//            newUser.saveInBackground()
+//            
+//            // add view to hierarchy
+//            let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+//            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
+//            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//            appDelegate.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+//            
+//            appDelegate.window?.rootViewController = homeViewController
+//            appDelegate.window?.makeKeyAndVisible()
+//        }
+//    }
+    
+    @IBAction func setupComplete(sender: AnyObject) {
+        NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+        
+        let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionaryForKey("welcomeData"))
+        newUser.saveInBackground()
+        
+        // add view to hierarchy
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
+        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        
+        appDelegate.window?.rootViewController = homeViewController
+        appDelegate.window?.makeKeyAndVisible()
     }
 }

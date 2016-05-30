@@ -364,7 +364,7 @@
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="20"/>
                                 <state key="normal" title="Got it!"/>
                                 <connections>
-                                    <segue destination="waM-V0-2Ds" kind="show" identifier="CompletionSegue" id="7A4-Lr-bRV"/>
+                                    <action selector="setupComplete:" destination="gWh-0g-QGJ" eventType="touchUpInside" id="YLe-kH-SY8"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="clip" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="lSg-dQ-qPD">
