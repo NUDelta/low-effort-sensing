@@ -11,6 +11,14 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
   var questionResponse = request.object.get('response');
   var timestamp = request.object.get('timestamp');
 
+  // special cases --> don't save answer
+  // "I don't know" for surprising things
+  // "I don't come here regularly" for queues
+  var responseExceptions = ['I don\'t know', 'I don\'t come here regularly'];
+  if (responseExceptions.indexOf(questionResponse) != -1) {
+    console.log('special case');
+  }
+
   var getHotspotData = new Parse.Query('hotspot');
   getHotspotData.equalTo('objectId', hotspotId);
   getHotspotData.first({
