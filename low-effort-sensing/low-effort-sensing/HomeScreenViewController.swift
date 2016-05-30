@@ -41,6 +41,9 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         myLocationsButton.titleLabel!.adjustsFontSizeToFitWidth = true
         myLocationsButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
         myLocationsButton.titleLabel!.minimumScaleFactor = 0.5
+        
+        // check for changes in NSUserDefaults
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(HomeScreenViewController.defaultsChanged), name: NSUserDefaultsDidChangeNotification, object: nil)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -60,6 +63,13 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func defaultsChanged(notification:NSNotification){
+        if (notification.object as? NSUserDefaults) != nil {
+            let monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+            drawNewAnnotations(monitoredHotspotDictionary)
+        }
     }
     
     func centerMapOnLocation(location: CLLocation) {
