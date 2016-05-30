@@ -78,7 +78,7 @@ Parse.Cloud.beforeSave('hotspot', function (request, response) {
   response.success();
 });
 
-// Archives old locations
+// Archives old hotspots on either user response or system archive
 Parse.Cloud.afterSave('hotspot', function (request) {
   var hotspot = request.object;
   var tag = hotspot.get('tag');
@@ -119,7 +119,7 @@ Parse.Cloud.afterSave('hotspot', function (request) {
       break;
   }
 
-  if (terminatorsExist) {
+  if (terminatorsExist || hotspot.get('archiver') == 'system') {
     // archive old hotspot (user is archiver unless background job archives)
     hotspot.set('archived', true);
     if (hotspot.get('archiver') === '') {
@@ -167,6 +167,27 @@ var checkForTerminators = function (terminators, info) {
 
   return false;
 };
+
+// Background job to reset all locations after 12 hours if not already archived
+Parse.Cloud.job('archiveOldHotspots', function (request, status) {
+  // setup time thresholding variables
+  var currentTime = Math.round(Date.now() / 1000);
+  var thresholdAmount = 60 * 60 * 12; // 60s * 60m * 12hr
+  var timeExpiryThreshold = currentTime - thresholdAmount;
+
+  // fetch objects that are ready to be archived
+  var hotspotQuery = new Parse.Query('hotspot');
+  hotspotQuery.notEqualTo('archived', true);
+  hotspotQuery.lessThan('timestampCreated', timeExpiryThreshold);
+  hotspotQuery.each(function (hotspot) {
+    hotspot.set('archiver', 'system');
+    hotspot.save();
+  }).then(function () {
+    status.success('Routine archiving completed successfully.');
+  }, function (error) {
+    status.error('Routine archiving failed with error ' + error);
+  });
+});
 
 // Get n closest hotspots ranked by distance and preference
 // request = {latitude: Int, longitude: Int, vendorId: Str, count: Int}
