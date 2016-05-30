@@ -70,6 +70,104 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
   });
 });
 
+// Set Archiver value before saving
+Parse.Cloud.beforeSave('hotspot', function (request, response) {
+  if (!request.object.get('archiver')) {
+    request.object.set('archiver', '');
+  }
+  response.success();
+});
+
+// Archives old locations
+Parse.Cloud.afterSave('hotspot', function (request) {
+  var hotspot = request.object;
+  var tag = hotspot.get('tag');
+  var hotspotInfo = hotspot.get('info');
+  var locationCommonName = hotspot.get('locationCommonName');
+
+  // check if archived = true, if so stop
+  if (hotspot.get('archived')) {
+    return;
+  }
+
+  // check if any tracking terminators have been saved to info object
+  var foodTerminators = {'isfood': 'no', 'foodtype': 'no food here',
+                         'howmuchfood': 'none'};
+  var queueTerminators = {'isline': 'no'};
+  var spaceTerminators = {'isspace': 'no'};
+  var surprisingTerminators = {'whatshappening': 'no',
+                               'famefrom': 'no longer here',
+                               'vehicles': 'no longer here',
+                               'peopledoing': 'no longer here'};
+
+  var terminatorsExist = false;
+  switch (tag) {
+    case 'food':
+      terminatorsExist = checkForTerminators(foodTerminators, hotspotInfo);
+      break;
+    case 'queue':
+      terminatorsExist = checkForTerminators(queueTerminators, hotspotInfo);
+      break;
+    case 'space':
+      terminatorsExist = checkForTerminators(spaceTerminators, hotspotInfo);
+      break;
+    case 'surprising':
+      terminatorsExist = checkForTerminators(surprisingTerminators,
+                                             hotspotInfo);
+      break;
+    default:
+      break;
+  }
+
+  if (terminatorsExist) {
+    // archive old hotspot (user is archiver unless background job archives)
+    hotspot.set('archived', true);
+    if (hotspot.get('archiver') === '') {
+      hotspot.set('archiver', 'user');
+    }
+    hotspot.save();
+
+    // recreate pre-marked locations
+    if (locationCommonName !== '') {
+      // create new values for hotspot
+      var timestamp = Math.round(Date.now() / 1000);
+      var newInfo = JSON.parse(JSON.stringify(hotspotInfo));
+      var newSaveTimes = JSON.parse(JSON.stringify(hotspotInfo));
+      for (var i in hotspotInfo) {
+        newInfo[i] = '';
+        newSaveTimes[i] = timestamp;
+      }
+
+      // save new hotspot
+      var parseHotspot = Parse.Object.extend('hotspot');
+      var newHotspot = new parseHotspot();
+      newHotspot.set('vendorId', '');
+      newHotspot.set('tag', tag);
+      newHotspot.set('info', newInfo);
+      newHotspot.set('location', hotspot.get('location'));
+      newHotspot.set('archived', false);
+      newHotspot.set('archiver', '');
+      newHotspot.set('timestampCreated', timestamp);
+      newHotspot.set('gmtOffset', hotspot.get('gmtOffset'));
+      newHotspot.set('timestampLastUpdate', timestamp);
+      newHotspot.set('submissionMethod', '');
+      newHotspot.set('locationCommonName', locationCommonName);
+      newHotspot.set('saveTimeForQuestion', newSaveTimes);
+      newHotspot.save();
+    }
+  }
+});
+
+var checkForTerminators = function (terminators, info) {
+  for (var i in terminators) {
+    if (info[i] == terminators[i]) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 // Get n closest hotspots ranked by distance and preference
 // request = {latitude: Int, longitude: Int, vendorId: Str, count: Int}
 Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
