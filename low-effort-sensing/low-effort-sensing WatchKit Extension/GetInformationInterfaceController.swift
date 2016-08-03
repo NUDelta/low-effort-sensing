@@ -124,4 +124,9 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
                 print("Error in pushing data to Parse: \(error)")
         })
     }
+    
+    @available(watchOSApplicationExtension 2.2, *)
+    func session(session: WCSession, activationDidCompleteWithState activationState: WCSessionActivationState, error: NSError?) {
+        
+    }
 }
