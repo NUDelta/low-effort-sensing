@@ -11,6 +11,7 @@
 //  Notification (authorization page), Thomas Helbig from thenounproject.com
 
 import UIKit
+import UserNotifications
 import Parse
 import Bolts
 import WatchConnectivity
@@ -196,6 +197,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         
         // hide status bar on all pages
         application.statusBarHidden = true
+        
+        // PLAYING AROUND WITH NEW NOTIFICATIONS
+        if #available(iOS 10.0, *) {
+            // create notification center simpleton
+            let center = UNUserNotificationCenter.currentNotificationCenter()
+            center.requestAuthorizationWithOptions([.Alert, .Sound, .Badge], completionHandler: { (granted, error) in
+                // authorization logic here
+            })
+            
+            // declare actions for notification
+            let action1 = UNNotificationAction(identifier: "action1", title: "Action 1", options: [])
+            let action2 = UNNotificationAction(identifier: "action2", title: "Action 2", options: [])
+            let action3 = UNNotificationAction(identifier: "action3", title: "Action 3", options: [])
+            let action4 = UNNotificationAction(identifier: "action4", title: "Action 4", options: [])
+            let action5 = UNNotificationAction(identifier: "action5", title: "Action 5", options: [])
+            let action6 = UNNotificationAction(identifier: "action6", title: "Action 6", options: [])
+            let action7 = UNNotificationAction(identifier: "action7", title: "Action 7", options: [])
+            let action8 = UNNotificationAction(identifier: "action8", title: "Action 8", options: [])
+            let action9 = UNNotificationAction(identifier: "action9", title: "Action 9", options: [])
+            let action10 = UNNotificationAction(identifier: "action10", title: "Action 10", options: [])
+            
+            // create notification category, store actions in category, and register with notification center
+            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3, action4, action5, action6, action7, action8, action9, action10], intentIdentifiers: [], options: [.CustomDismissAction])
+            center.setNotificationCategories([category])
+            
+            // create notification
+            let content = UNMutableNotificationContent()
+            content.title = "This is the title"
+            content.subtitle = "This is the subtitle"
+            content.body = "This is the body"
+            content.sound = UNNotificationSound.defaultSound()
+            content.categoryIdentifier = "default category"
+            
+            // deliver the notification in five seconds.
+            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 5, repeats: false)
+            
+            let notificationId = "sampleNotification"
+            let notificationRequest = UNNotificationRequest(identifier: notificationId, content: content, trigger: trigger)
+            
+            // Schedule the notification.
+            center.addNotificationRequest(notificationRequest, withCompletionHandler: { (NSError) in
+                print("Notification from new API sent")
+            })
+        } else {
+            // Fallback on earlier versions
+        }
         
         return performShortcutDelegate
     }
@@ -746,12 +793,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     @available(iOS 9.3, *)
-    func sessionDidBecomeInactive(_ session: WCSession) {
+    func sessionDidBecomeInactive(session: WCSession) {
         
     }
     
     @available(iOS 9.3, *)
-    func sessionDidDeactivate(_ session: WCSession) {
+    func sessionDidDeactivate(session: WCSession) {
         
     }
 
