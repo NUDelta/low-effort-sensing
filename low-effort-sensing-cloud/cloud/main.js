@@ -234,6 +234,9 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
 
           // return locations sorted by distance and ranking for user
           var locationQuery = new Parse.Query('hotspot');
+          locationQuery.limit(1000);
+          locationQuery.notEqualTo('archived', true);
+
           locationQuery.find({
             success: function (locations) {
               for (var i = 0; i < locations.length; i++) {
