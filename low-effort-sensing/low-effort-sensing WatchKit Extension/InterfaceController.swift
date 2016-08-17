@@ -21,7 +21,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     let watchSession = WCSession.default()
     
     // MARK: Class Functions
-    override func awake(withContext context: AnyObject?) {
+    override func awake(withContext context: Any?) {
         super.awake(withContext: context)
     }
 

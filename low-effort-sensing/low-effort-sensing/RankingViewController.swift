@@ -158,7 +158,7 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         return snapshot
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
         if (segue.identifier == "RankingSegue") {
             var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
             userInfo!["firstPreference"] = simplifyTag(categories[0])

@@ -131,10 +131,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     var notificationCategories = Set<UIUserNotificationCategory>()
     
     // MARK: - AppDelegate Functions
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Check active state for 3D Touch Home actions
         var performShortcutDelegate = true
-        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
+        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
             print("Application launched via shortcut")
             self.shortcutItem = shortcutItem
             
@@ -420,7 +420,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     //MARK: - Contextual Notification Handler
-    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
+    private func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
         // get UTC timestamp and timezone of notification
         let epochTimestamp = Int(Date().timeIntervalSince1970)
         let gmtOffset = NSTimeZone.local.secondsFromGMT()
@@ -465,7 +465,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                let notificationUserInfo = notification.userInfo
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
@@ -492,7 +492,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                let notificationUserInfo = notification.userInfo
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
@@ -519,7 +519,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                let notificationUserInfo = notification.userInfo
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
@@ -545,7 +545,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
                 let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo as? [String : AnyObject]
+                let notificationUserInfo = notification.userInfo
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
@@ -588,7 +588,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     
     // MARK: 3D Touch shortcut handler
     // TODO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void){
         completionHandler(handleShortcut(shortcutItem))
     }
     
@@ -684,7 +684,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     // MARK: WatchSession communication handler
-    func session(_ session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
+    private func session(_ session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: @escaping ([String : AnyObject]) -> Void) {
         guard let command = message["command"] as! String! else {return}
         
         // Run command and return data to watch
@@ -707,8 +707,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                             (success: Bool, error: Error?) -> Void in
                             if (success) {
                                 // add new location to monitored regions
-                                let newRegionLat = newMonitoredLocation["location"].latitude
-                                let newRegionLong = newMonitoredLocation["location"].longitude
+                                let newRegionLat = (newMonitoredLocation["location"] as AnyObject).latitude
+                                let newRegionLong = (newMonitoredLocation["location"] as AnyObject).longitude
                                 let newRegionId = newMonitoredLocation.objectId!
                                 MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat!, longitude: newRegionLong!, radius: geofenceRadius, name: newRegionId)
                                 
@@ -717,19 +717,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                 
                                 // Add data to user defaults
                                 var unwrappedEntry = [String : AnyObject]()
-                                unwrappedEntry["latitude"] = newRegionLat
-                                unwrappedEntry["longitude"] = newRegionLong
-                                unwrappedEntry["id"] = newMonitoredLocation.objectId
-                                unwrappedEntry["tag"] = newMonitoredLocation["tag"]
+                                unwrappedEntry["latitude"] = newRegionLat as AnyObject
+                                unwrappedEntry["longitude"] = newRegionLong as AnyObject
+                                unwrappedEntry["id"] = newMonitoredLocation.objectId as AnyObject
+                                unwrappedEntry["tag"] = newMonitoredLocation["tag"] as AnyObject
                                 let info : [String : AnyObject]? = newMonitoredLocation["info"] as? [String : AnyObject]
-                                unwrappedEntry["info"] = info
+                                unwrappedEntry["info"] = info as AnyObject
                                 
                                 monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
                                 self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                                 self.appUserDefaults?.synchronize()
                                 
                                 // return information to apple watch
-                                replyHandler(["response": unwrappedEntry])
+                                replyHandler(["response": unwrappedEntry as AnyObject])
                             }
                         }))
                     }
@@ -757,7 +757,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         print("Error in pushing data to Parse: \(error)")
                         
                         // return information to apple watch
-                        replyHandler(["response": false])
+                        replyHandler(["response": false as AnyObject])
                     } else if let hotspot = hotspot {
                         hotspot["info"] = watchDict["info"]
                         hotspot.saveInBackground()
@@ -766,7 +766,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         print(hotspot)
                         
                         // return information to apple watch
-                        replyHandler(["response": true])
+                        replyHandler(["response": true as AnyObject])
                     }
                 }))
                 break
@@ -779,7 +779,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
                 
                 // return information to apple watch
-                replyHandler(["response": currentHotspot])
+                replyHandler(["response": currentHotspot as AnyObject])
                 break
             default:
                 break

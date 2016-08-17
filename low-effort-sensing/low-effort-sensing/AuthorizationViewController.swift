@@ -26,7 +26,7 @@ class AuthorizationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
         if (segue.identifier == "AuthSegue") {
             // request for notification authorization
             let appDelegate = UIApplication.shared.delegate as! AppDelegate

@@ -49,7 +49,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     override func viewDidAppear(_ animated: Bool) {
         // add pins for marked locations
         let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-        drawNewAnnotations(monitoredHotspotDictionary)
+        drawNewAnnotations(monitoredHotspotDictionary as [String : AnyObject])
         
         // set nearby shown
         showingNearby = true
@@ -68,7 +68,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     func defaultsChanged(_ notification:Notification){
         if (notification.object as? UserDefaults) != nil {
             let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-            drawNewAnnotations(monitoredHotspotDictionary)
+            drawNewAnnotations(monitoredHotspotDictionary as [String : AnyObject])
         }
     }
     
@@ -164,20 +164,20 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
                         
                         // Add data to user defaults
                         var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["id"] = id
-                        unwrappedEntry["vendorId"] = object["vendorId"] as! String
-                        unwrappedEntry["tag"] = object["tag"] as! String
-                        unwrappedEntry["info"] = info
-                        unwrappedEntry["latitude"] = currLat
-                        unwrappedEntry["longitude"] = currLong
-                        unwrappedEntry["archived"] = object["archived"] as? Bool
-                        unwrappedEntry["timestampCreated"] = object["timestampCreated"] as? Int
-                        unwrappedEntry["gmtOffset"] = object["gmtOffset"] as? Int
-                        unwrappedEntry["timestampLastUpdate"] = object["timestampLastUpdate"] as? Int
-                        unwrappedEntry["submissionMethod"] = object["submissionMethod"] as? String
-                        unwrappedEntry["locationCommonName"] = object["locationCommonName"] as? String
+                        unwrappedEntry["id"] = id as AnyObject
+                        unwrappedEntry["vendorId"] = (object["vendorId"] as! String) as AnyObject
+                        unwrappedEntry["tag"] = (object["tag"] as! String) as AnyObject
+                        unwrappedEntry["info"] = info as AnyObject
+                        unwrappedEntry["latitude"] = currLat as AnyObject
+                        unwrappedEntry["longitude"] = currLong as AnyObject
+                        unwrappedEntry["archived"] = (object["archived"] as? Bool) as AnyObject
+                        unwrappedEntry["timestampCreated"] = (object["timestampCreated"] as? Int) as AnyObject
+                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
+                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
+                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
+                        unwrappedEntry["locationCommonName"] = (object["locationCommonName"] as? String) as AnyObject
                         
-                        monitoredHotspotDictionary[id] = unwrappedEntry
+                        monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
                     }
                     
                     self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: myHotspotsRegionKey)
@@ -216,9 +216,9 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         // get data for hotspot
         var monitoredHotspotDictionary: [String : AnyObject]
         if showingNearby {
-            monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
+            monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
         } else {
-            monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: myHotspotsRegionKey) ?? Dictionary()
+            monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: myHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
         }
         
         let annotationMarkedLocation = view.annotation as! MarkedLocation
@@ -237,7 +237,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         if !showingNearby {
             // draw new annotations
             let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-            drawNewAnnotations(monitoredHotspotDictionary)
+            drawNewAnnotations(monitoredHotspotDictionary as [String : AnyObject])
             
             // update buttons
             showingNearby = true

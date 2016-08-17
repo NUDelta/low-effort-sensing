@@ -133,9 +133,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                       "longitude": (geoPoint?.longitude)!,
                                                       "vendorId": vendorId,
                                                       "count": 10],
-                                     block: ({
-                                        (foundObjs: AnyObject?, error: Error?) -> Void in
-                                        print("Response from parse given")
+                                     block: ({ (foundObjs: Any?, error: Error?) -> Void in
                                         if error == nil {
                                             // parse response
                                             if let foundObjs = foundObjs {
@@ -154,20 +152,20 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         
                                                         // Add data to user defaults
                                                         var unwrappedEntry = [String : AnyObject]()
-                                                        unwrappedEntry["id"] = id
-                                                        unwrappedEntry["vendorId"] = object["vendorId"] as! String
-                                                        unwrappedEntry["tag"] = object["tag"] as! String
-                                                        unwrappedEntry["info"] = info
-                                                        unwrappedEntry["latitude"] = currLat
-                                                        unwrappedEntry["longitude"] = currLong
-                                                        unwrappedEntry["archived"] = object["archived"] as? Bool
-                                                        unwrappedEntry["timestampCreated"] = object["timestampCreated"] as? Int
-                                                        unwrappedEntry["gmtOffset"] = object["gmtOffset"] as? Int
-                                                        unwrappedEntry["timestampLastUpdate"] = object["timestampLastUpdate"] as? Int
-                                                        unwrappedEntry["submissionMethod"] = object["submissionMethod"] as? String
-                                                        unwrappedEntry["locationCommonName"] = object["locationCommonName"] as? String
+                                                        unwrappedEntry["id"] = id as AnyObject
+                                                        unwrappedEntry["vendorId"] = (object["vendorId"] as! String) as AnyObject
+                                                        unwrappedEntry["tag"] = (object["tag"] as! String) as AnyObject
+                                                        unwrappedEntry["info"] = info as AnyObject
+                                                        unwrappedEntry["latitude"] = currLat as AnyObject
+                                                        unwrappedEntry["longitude"] = currLong as AnyObject
+                                                        unwrappedEntry["archived"] = (object["archived"] as? Bool) as AnyObject
+                                                        unwrappedEntry["timestampCreated"] = (object["timestampCreated"] as? Int) as AnyObject
+                                                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
+                                                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
+                                                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
+                                                        unwrappedEntry["locationCommonName"] = (object["locationCommonName"] as? String) as AnyObject
                                                         
-                                                        monitoredHotspotDictionary[id] = unwrappedEntry
+                                                        monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
                                                     }
                                                 }
                                                 // save regions to user defaults

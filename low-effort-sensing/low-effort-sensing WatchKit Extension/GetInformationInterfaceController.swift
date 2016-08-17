@@ -27,7 +27,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
     let watchSession = WCSession.default()
     
     // MARK: Class Functions
-    override func awake(withContext context: AnyObject?) {
+    override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         // setup watch session
         watchSession.delegate = self
@@ -103,7 +103,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
                             let currentQuestion = self.questions[rowIndex]
                             var currentInfoDict = self.locationInstanceDictionary["info"] as! [String : String]
                             currentInfoDict[currentQuestion] = completionArray[0] as? String
-                            self.locationInstanceDictionary["info"] = currentInfoDict
+                            self.locationInstanceDictionary["info"] = currentInfoDict as AnyObject
                             
                             // update UI
                             controller.question = ["question": currentQuestion, "answer": (completionArray[0] as? String)!]
