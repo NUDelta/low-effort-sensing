@@ -9,7 +9,7 @@
 import Foundation
 
 class NameViewController: UIViewController {
-    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     
     @IBOutlet weak var firstName: UITextField!
     @IBOutlet weak var lastName: UITextField!
@@ -25,13 +25,13 @@ class NameViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject!) {
         if (segue.identifier == "NameSegue") {
-            var userInfo = appUserDefaults?.dictionaryForKey("welcomeData")
+            var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
             userInfo!["firstName"] = firstName.text
             userInfo!["lastName"] = lastName.text
             
-            self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
+            self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
             self.appUserDefaults?.synchronize()
         }
     }

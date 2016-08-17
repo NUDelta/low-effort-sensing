@@ -55,14 +55,14 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         // Do any additional setup after loading the view from its nib.
         if (Parse.isLocalDatastoreEnabled() == false) {
             Parse.enableLocalDatastore()
-            Parse.enableDataSharingWithApplicationGroupIdentifier(appGroup,
+            Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup,
                                                                   containingApplication: containingApplication)
             Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
                                    clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         }
         
         // Capture device's unique vendor id
-        if let uuid = UIDevice.currentDevice().identifierForVendor?.UUIDString {
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             vendorId = uuid
         }
         
@@ -76,22 +76,22 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         // dyanmic font sizing for buttons
         foodButton.titleLabel!.numberOfLines = 0
         foodButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        foodButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        foodButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
         foodButton.titleLabel!.minimumScaleFactor = 0.5
         
         queueButton.titleLabel!.numberOfLines = 0
         queueButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        queueButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        queueButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
         queueButton.titleLabel!.minimumScaleFactor = 0.5
         
         spaceButton.titleLabel!.numberOfLines = 0
         spaceButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
         spaceButton.titleLabel!.minimumScaleFactor = 0.5
         
         surprisingButton.titleLabel!.numberOfLines = 0
         surprisingButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        surprisingButton.titleLabel!.lineBreakMode = NSLineBreakMode.ByClipping
+        surprisingButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
         surprisingButton.titleLabel!.minimumScaleFactor = 0.5
     }
     
@@ -100,17 +100,17 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         // Dispose of any resources that can be recreated.
     }
     
-    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
+    func widgetPerformUpdate(completionHandler: ((NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
 
         // If an error is encountered, use NCUpdateResult.Failed
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
 
-        completionHandler(NCUpdateResult.NewData)
+        completionHandler(NCUpdateResult.newData)
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         if foodSelected {
             pushDataToParse("food")
             unmarkLocation("food")
@@ -129,12 +129,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
     }
     
-    @IBAction func markLocationForFood(sender: AnyObject) {
+    @IBAction func markLocationForFood(_ sender: AnyObject) {
         // show user that button has been selected/deselected
         if !foodSelected {
             foodButton.alpha = 1
             foodButton.backgroundColor = brightGreenColor
-            foodButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            foodButton.setTitleColor(UIColor.white, for: UIControlState())
             submittedLabel.text = "Location will be marked for Food tracking when you exit the notification center. \n\nClick Food again to untrack or click another button to change the category"
             
             foodSelected = true
@@ -153,12 +153,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
     }
     
-    @IBAction func markLocationForQueue(sender: AnyObject) {
+    @IBAction func markLocationForQueue(_ sender: AnyObject) {
         // show user that button has been selected/deselected
         if !queueSelected {
             queueButton.alpha = 1
             queueButton.backgroundColor = brightGreenColor
-            queueButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            queueButton.setTitleColor(UIColor.white, for: UIControlState())
             submittedLabel.text = "Location will be marked for Queue tracking when you exit the notification center \n\nClick Queue again to untrack or click another button to change the category"
             
             queueSelected = true
@@ -177,12 +177,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
     }
     
-    @IBAction func markLocationForSpace(sender: AnyObject) {
+    @IBAction func markLocationForSpace(_ sender: AnyObject) {
         // show user that button has been selected/deselected
         if !spaceSelected {
             spaceButton.alpha = 1
             spaceButton.backgroundColor = brightGreenColor
-            spaceButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            spaceButton.setTitleColor(UIColor.white, for: UIControlState())
             submittedLabel.text = "Location will be marked for Space tracking when you exit the notification center \n\nClick Space again to untrack or click another button to change the category"
             
             spaceSelected = true
@@ -201,12 +201,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
     }
     
-    @IBAction func markLocationForSurprisingThing(sender: AnyObject) {
+    @IBAction func markLocationForSurprisingThing(_ sender: AnyObject) {
         // show user that button has been selected/deselected
         if !surprisingSelected {
             surprisingButton.alpha = 1
             surprisingButton.backgroundColor = brightGreenColor
-            surprisingButton.setTitleColor(UIColor.whiteColor(), forState: .Normal)
+            surprisingButton.setTitleColor(UIColor.white, for: UIControlState())
             submittedLabel.text = "Location will be marked for Surprising Things tracking when you exit the notification center \n\nClick Surprising Things again to untrack or click another button to change the category"
             
             surprisingSelected = true
@@ -226,82 +226,82 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         }
     }
     
-    func unmarkLocation(location: String) {
+    func unmarkLocation(_ location: String) {
         if location == "food" {
             foodButton.alpha = defaultAlpha
-            foodButton.backgroundColor = UIColor.whiteColor()
-            foodButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            foodButton.backgroundColor = UIColor.white
+            foodButton.setTitleColor(UIColor.black, for: UIControlState())
             
             foodSelected = false
         } else if location == "queue" {
             queueButton.alpha = defaultAlpha
-            queueButton.backgroundColor = UIColor.whiteColor()
-            queueButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            queueButton.backgroundColor = UIColor.white
+            queueButton.setTitleColor(UIColor.black, for: UIControlState())
             
             queueSelected = false
         } else if location == "space" {
             spaceButton.alpha = defaultAlpha
-            spaceButton.backgroundColor = UIColor.whiteColor()
-            spaceButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            spaceButton.backgroundColor = UIColor.white
+            spaceButton.setTitleColor(UIColor.black, for: UIControlState())
             
             spaceSelected = false
         }  else if location == "surprising" {
             surprisingButton.alpha = defaultAlpha
-            surprisingButton.backgroundColor = UIColor.whiteColor()
-            surprisingButton.setTitleColor(UIColor.blackColor(), forState: .Normal)
+            surprisingButton.backgroundColor = UIColor.white
+            surprisingButton.setTitleColor(UIColor.black, for: UIControlState())
             
             surprisingSelected = false
         }
     }
     
-    func pushDataToParse(tag: String) {
-        PFGeoPoint.geoPointForCurrentLocationInBackground {
-            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
-            if error == nil {
-                // get UTC timestamp and timezone of notification
-                let epochTimestamp = Int(NSDate().timeIntervalSince1970)
-                let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
-                
-                // Get location and push to Parse
-                let newMonitoredLocation = PFObject(className: "hotspot")
-                newMonitoredLocation["vendorId"] = self.vendorId
-                newMonitoredLocation["location"] = geoPoint
-                newMonitoredLocation["tag"] = tag
-                newMonitoredLocation["archived"] = false
-                newMonitoredLocation["timestampCreated"] = epochTimestamp
-                newMonitoredLocation["gmtOffset"] = gmtOffset
-                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
-                newMonitoredLocation["submissionMethod"] = "today_widget"
-                newMonitoredLocation["locationCommonName"] = ""
-                
-                
-                // set info dict and saveTimeForQuestion based on tag
-                switch tag {
-                case "food":
-                    newMonitoredLocation["info"] = foodInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
-                        "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
-                    break
-                case "queue":
-                    newMonitoredLocation["info"] = queueInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
-                    break
-                case "space":
-                    newMonitoredLocation["info"] = spaceInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
-                        "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
-                    break
-                case "surprising":
-                    newMonitoredLocation["info"] = surprisingInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
-                    break
-                default:
-                    break
-                }
-                
-                // push to parse
-                newMonitoredLocation.saveInBackground()
-            }
-        }
+    func pushDataToParse(_ tag: String) {
+//        PFGeoPoint.geoPointForCurrentLocation {
+//            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+//            if error == nil {
+//                // get UTC timestamp and timezone of notification
+//                let epochTimestamp = Int(Date().timeIntervalSince1970)
+//                let gmtOffset = TimeZone.local.secondsFromGMT
+//                
+//                // Get location and push to Parse
+//                let newMonitoredLocation = PFObject(className: "hotspot")
+//                newMonitoredLocation["vendorId"] = self.vendorId
+//                newMonitoredLocation["location"] = geoPoint
+//                newMonitoredLocation["tag"] = tag
+//                newMonitoredLocation["archived"] = false
+//                newMonitoredLocation["timestampCreated"] = epochTimestamp
+//                newMonitoredLocation["gmtOffset"] = gmtOffset
+//                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
+//                newMonitoredLocation["submissionMethod"] = "today_widget"
+//                newMonitoredLocation["locationCommonName"] = ""
+//                
+//                
+//                // set info dict and saveTimeForQuestion based on tag
+//                switch tag {
+//                case "food":
+//                    newMonitoredLocation["info"] = foodInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
+//                        "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
+//                    break
+//                case "queue":
+//                    newMonitoredLocation["info"] = queueInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
+//                    break
+//                case "space":
+//                    newMonitoredLocation["info"] = spaceInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
+//                        "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
+//                    break
+//                case "surprising":
+//                    newMonitoredLocation["info"] = surprisingInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
+//                    break
+//                default:
+//                    break
+//                }
+//                
+//                // push to parse
+//                newMonitoredLocation.saveInBackground()
+//            }
+//        }
     }
 }

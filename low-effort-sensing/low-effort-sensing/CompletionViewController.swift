@@ -12,7 +12,7 @@ import Parse
 class CompletionViewController: UIViewController {
     @IBOutlet weak var viewLabel: UILabel!
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
 
     // MARK: Class Functions
     override func viewDidLoad() {
@@ -44,17 +44,17 @@ class CompletionViewController: UIViewController {
 //        }
 //    }
     
-    @IBAction func setupComplete(sender: AnyObject) {
-        NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
+    @IBAction func setupComplete(_ sender: AnyObject) {
+        UserDefaults.standard.set(true, forKey: "launchedBefore")
         
-        let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionaryForKey("welcomeData"))
+        let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionary(forKey: "welcomeData"))
         newUser.saveInBackground()
         
         // add view to hierarchy
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
-        let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-        appDelegate.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! HomeScreenViewController
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window = UIWindow(frame: UIScreen.main.bounds)
         
         appDelegate.window?.rootViewController = homeViewController
         appDelegate.window?.makeKeyAndVisible()

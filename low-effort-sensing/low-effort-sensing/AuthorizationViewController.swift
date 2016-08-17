@@ -11,7 +11,7 @@ import Foundation
 class AuthorizationViewController: UIViewController {
     @IBOutlet weak var authLabel: UILabel!
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     
     // MARK: Class Functions
     override func viewDidLoad() {
@@ -26,10 +26,10 @@ class AuthorizationViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject!) {
         if (segue.identifier == "AuthSegue") {
             // request for notification authorization
-            let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+            let appDelegate = UIApplication.shared.delegate as! AppDelegate
             appDelegate.registerForNotifications()
             
             // request location authorization

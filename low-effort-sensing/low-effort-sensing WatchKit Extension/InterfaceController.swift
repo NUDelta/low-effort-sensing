@@ -11,14 +11,18 @@ import Foundation
 import WatchConnectivity
 
 class InterfaceController: WKInterfaceController, WCSessionDelegate {
+    @available(watchOSApplicationExtension 2.2, *)
+    internal func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?){
+    }
+    
     // MARK: Class Variables
     
     // session for communicating with iphone
-    let watchSession = WCSession.defaultSession()
+    let watchSession = WCSession.default()
     
     // MARK: Class Functions
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
+    override func awake(withContext context: AnyObject?) {
+        super.awake(withContext: context)
     }
 
     override func willActivate() {
@@ -35,24 +39,24 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     @IBAction func reportLocation() {
         print("reporting location")
         watchSession.delegate = self
-        watchSession.activateSession()
-        print(watchSession.reachable)
+        watchSession.activate()
+        print(watchSession.isReachable)
         
         watchSession.sendMessage(["command": "reportLocation", "value": ""],
             replyHandler: { replyDict in
                 guard let responseDictionary = replyDict["response"] as! [String: AnyObject]? else {return}
-                self.presentControllerWithName("getInfoController", context: responseDictionary)
+                self.presentController(withName: "getInfoController", context: responseDictionary)
             }, errorHandler: { error in
                 print("Error in reporting location notification: \(error)")
             })
     }
     
     // handle notification
-    override func handleActionWithIdentifier(identifier: String?, forLocalNotification localNotification: UILocalNotification) {
-        let watchSession = WCSession.defaultSession()
+    override func handleAction(withIdentifier identifier: String?, for localNotification: UILocalNotification) {
+        let watchSession = WCSession.default()
         watchSession.delegate = self
-        watchSession.activateSession()
-        print(watchSession.reachable)
+        watchSession.activate()
+        print(watchSession.isReachable)
         
         switch(identifier!) {
             case "INVESTIGATE_EVENT_IDENTIFIER":
@@ -61,7 +65,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
                 watchSession.sendMessage(["command": "notificationOccured", "value": locationID],
                     replyHandler: { replyDict in
                         guard let responseDictionary = replyDict["response"] as! Dictionary<String, AnyObject>? else {return}
-                        self.presentControllerWithName("getInfoController", context: responseDictionary)
+                        self.presentController(withName: "getInfoController", context: responseDictionary)
                     }, errorHandler: { error in
                         print("Error in handling notification: \(error)")
                 })
@@ -72,7 +76,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     }
     
     @available(watchOSApplicationExtension 2.2, *)
-    func session(session: WCSession, activationDidCompleteWithState activationState: WCSessionActivationState, error: NSError?) {
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: NSError?) {
         
     }
 }

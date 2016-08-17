@@ -960,7 +960,7 @@
 				PROVISIONING_PROFILE = "fcc1e013-a648-4297-9707-ebe8317fb8c2";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
 				WK_APP_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.watchkitapp";
@@ -982,7 +982,7 @@
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
 				WK_APP_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp;
@@ -1006,7 +1006,7 @@
 				PROVISIONING_PROFILE = "1a39600b-7faf-4224-b71d-2d104ff908f9";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
 				WK_COMPANION_APP_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug";
@@ -1030,7 +1030,7 @@
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.1;
 				WK_COMPANION_APP_BUNDLE_IDENTIFIER = edu.northwestern.delta.les;
@@ -1060,7 +1060,7 @@
 				PROVISIONING_PROFILE = "eabe9821-adf2-4e41-9ad5-02208d96ca81";
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -1087,7 +1087,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -1109,7 +1109,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bf50fb1f-8da4-479e-9728-96b9bdbb207b";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1130,7 +1130,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

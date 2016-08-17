@@ -9,20 +9,20 @@
 import Foundation
 
 class RankingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     
     @IBOutlet var tableView: UITableView!
     var categories: [String] = ["Free or Sold Food", "Lines at Popular Places (e.g. Tech Express)", "Space Availability (e.g. Coffee Lab, Main Library)", "Surprising Things (e.g. cute animals, celebrities)"]
     
     var snapShot: UIView?
-    var sourceIndexPath: NSIndexPath?
+    var sourceIndexPath: IndexPath?
     
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
         
-        self.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        self.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.tableFooterView = UIView()
         self.tableView.estimatedRowHeight = 50.0
         self.tableView.rowHeight = UITableViewAutomaticDimension
@@ -35,21 +35,21 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         // Dispose of any resources that can be recreated.
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.categories.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("cell")! as UITableViewCell
-        cell.textLabel?.text = self.categories[indexPath.row]
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell = self.tableView.dequeueReusableCell(withIdentifier: "cell")! as UITableViewCell
+        cell.textLabel?.text = self.categories[(indexPath as NSIndexPath).row]
         cell.textLabel?.adjustsFontSizeToFitWidth = true
         cell.textLabel?.minimumScaleFactor = 0.5
         
         return cell
     }
     
-    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        print("You selected cell #\(indexPath.row)!")
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("You selected cell #\((indexPath as NSIndexPath).row)!")
     }
     
     func addLongGestureRecognizerForTableView() {
@@ -58,17 +58,17 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     
-    func handleTableViewLongGesture(sender: UILongPressGestureRecognizer) {
+    func handleTableViewLongGesture(_ sender: UILongPressGestureRecognizer) {
         let state = sender.state
-        let location = sender.locationInView(tableView)
-        guard let indexPath = tableView.indexPathForRowAtPoint(location) else {
+        let location = sender.location(in: tableView)
+        guard let indexPath = tableView.indexPathForRow(at: location) else {
             return
         }
         
         switch state {
-        case .Began:
+        case .began:
             sourceIndexPath = indexPath
-            guard let cell = tableView.cellForRowAtIndexPath(indexPath) else {
+            guard let cell = tableView.cellForRow(at: indexPath) else {
                 return
             }
             
@@ -80,18 +80,18 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
             snapShot?.center = center
             snapShot?.alpha = 0.0
             tableView.addSubview(snapShot!)
-            UIView.animateWithDuration(0.25, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 // Offset for gesture location.
                 center.y = location.y
                 self.snapShot?.center = center
-                self.snapShot?.transform = CGAffineTransformMakeScale(1.05, 1.05)
+                self.snapShot?.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
                 self.snapShot?.alpha = 0.98
                 
                 cell.alpha = 0.0
                 }, completion: { _ in
-                    cell.hidden = true
+                    cell.isHidden = true
             })
-        case .Changed:
+        case .changed:
             guard let snapShot = snapShot else {
                 return
             }
@@ -103,16 +103,16 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
             snapShot.center = center
             
             // Is destination valid and is it different from source?
-            if !indexPath.isEqual(sourceIndexPathTmp) {
+            if indexPath != sourceIndexPathTmp {
                 //self made exchange method
-                let oldIndices = [indexPath.row, sourceIndexPathTmp.row]
+                let oldIndices = [(indexPath as NSIndexPath).row, (sourceIndexPathTmp as NSIndexPath).row]
                 let oldValues = [categories[oldIndices[0]], categories[oldIndices[1]]]
                 
                 self.categories[oldIndices[0]] = oldValues[1]
                 self.categories[oldIndices[1]] = oldValues[0]
                 
                 // ... move the rows.
-                tableView.moveRowAtIndexPath(sourceIndexPathTmp, toIndexPath: indexPath)
+                tableView.moveRow(at: sourceIndexPathTmp, to: indexPath)
                 // ... and update source so it is in sync with UI changes.
                 sourceIndexPath = indexPath
             }
@@ -121,15 +121,15 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
             guard let sourceIndexPathTmp = sourceIndexPath else {
                 return
             }
-            guard let cell = tableView.cellForRowAtIndexPath(sourceIndexPathTmp) else {
+            guard let cell = tableView.cellForRow(at: sourceIndexPathTmp) else {
                 return
             }
-            cell.hidden = false
+            cell.isHidden = false
             cell.alpha = 0.0
             
-            UIView.animateWithDuration(0.25, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.snapShot?.center = cell.center
-                self.snapShot?.transform = CGAffineTransformIdentity
+                self.snapShot?.transform = CGAffineTransform.identity
                 self.snapShot?.alpha = 0.0
                 
                 cell.alpha = 1.0
@@ -141,10 +141,10 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-    func customSnapShotFromView(inputView: UIView) -> UIImageView{
+    func customSnapShotFromView(_ inputView: UIView) -> UIImageView{
         // Make an image from the input view.
         UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0)
-        inputView.layer.renderInContext(UIGraphicsGetCurrentContext()!)
+        inputView.layer.render(in: UIGraphicsGetCurrentContext()!)
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
@@ -158,20 +158,20 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
         return snapshot
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
+    override func prepare(for segue: UIStoryboardSegue, sender: AnyObject!) {
         if (segue.identifier == "RankingSegue") {
-            var userInfo = appUserDefaults?.dictionaryForKey("welcomeData")
+            var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
             userInfo!["firstPreference"] = simplifyTag(categories[0])
             userInfo!["secondPreference"] = simplifyTag(categories[1])
             userInfo!["thirdPreference"] = simplifyTag(categories[2])
             userInfo!["fourthPreference"] = simplifyTag(categories[3])
                 
-            self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
+            self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
             self.appUserDefaults?.synchronize()
         }
     }
     
-    func simplifyTag(labelText: String) -> String {
+    func simplifyTag(_ labelText: String) -> String {
         switch labelText {
         case "Free or Sold Food":
             return "food"

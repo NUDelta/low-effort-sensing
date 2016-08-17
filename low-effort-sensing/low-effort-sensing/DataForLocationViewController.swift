@@ -26,15 +26,15 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         // Dispose of any resources that can be recreated.
     }
     
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tableData.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("LocationDataCellPrototype") as! LocationDataCell
-        cell.questionLabel.text = tableData[indexPath.row].firstRowLabel
-        cell.answerLabel.text = tableData[indexPath.row].secondRowLabel
-        cell.userInteractionEnabled = false
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationDataCellPrototype") as! LocationDataCell
+        cell.questionLabel.text = tableData[(indexPath as NSIndexPath).row].firstRowLabel
+        cell.answerLabel.text = tableData[(indexPath as NSIndexPath).row].secondRowLabel
+        cell.isUserInteractionEnabled = false
         
         // dyanmic font sizing
         cell.questionLabel.adjustsFontSizeToFitWidth = true
@@ -44,7 +44,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         return cell
     }
     
-    func loadDataForHotspotDictionary(hotspotDictionary: [String : AnyObject], distance: String) {
+    func loadDataForHotspotDictionary(_ hotspotDictionary: [String : AnyObject], distance: String) {
         let tag = hotspotDictionary["tag"] as! String
         
         // set value for first row
@@ -66,7 +66,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         tableData = tableData + fillDataForQuestions(hotspotDictionary)
     }
     
-    func createTitleFromTag(tag: String) -> String{
+    func createTitleFromTag(_ tag: String) -> String{
         switch tag {
             case "food":
                 return "Information for Free/Sold Food"
@@ -81,7 +81,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         }
     }
     
-    func fillDataForQuestions(hotspot: [String : AnyObject]) -> [LocationData] {
+    func fillDataForQuestions(_ hotspot: [String : AnyObject]) -> [LocationData] {
         let tag = hotspot["tag"] as! String
         let info = hotspot["info"] as! [String : String]
         var questionOrdering: [String] = []
@@ -127,7 +127,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         return filledData
     }
     
-    @IBAction func returnToMap(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func returnToMap(_ sender: AnyObject) {
+        self.dismiss(animated: true, completion: nil)
     }
 }

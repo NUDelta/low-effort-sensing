@@ -20,12 +20,12 @@ class QuestionRowController: NSObject {
                 if question["answer"] == "" {
                     if let newQuestionLabel = question["question"] {
                         questionLabel.setText(newQuestionLabel)
-                        separator.setColor(UIColor.redColor())
+                        separator.setColor(UIColor.red)
                     }
                 } else {
                     if let newQuestionLabel = question["answer"] {
                         questionLabel.setText(newQuestionLabel)
-                        separator.setColor(UIColor.greenColor())
+                        separator.setColor(UIColor.green)
                     }
                 }
             }

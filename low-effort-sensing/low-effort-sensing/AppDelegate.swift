@@ -124,14 +124,14 @@ let surprisingKeyToQuestion = ["whatshappening": "What’s happening here?",
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     // MARK: Class Variables
     var window: UIWindow?
-    let watchSession = WCSession.defaultSession()
+    let watchSession = WCSession.default()
     var shortcutItem: UIApplicationShortcutItem?
     
-    let appUserDefaults = NSUserDefaults.init(suiteName: appGroup)
+    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     var notificationCategories = Set<UIUserNotificationCategory>()
     
     // MARK: - AppDelegate Functions
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Check active state for 3D Touch Home actions
         var performShortcutDelegate = true
         if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
@@ -142,16 +142,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         }
         
         // Capture device's unique vendor id
-        if let uuid = UIDevice.currentDevice().identifierForVendor?.UUIDString {
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             vendorId = uuid
         }
         
         // Initalize WatchSession
         watchSession.delegate = self
-        watchSession.activateSession()
+        watchSession.activate()
         
         // Initialize Parse.
-        Parse.enableDataSharingWithApplicationGroupIdentifier(appGroup)
+        Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup)
         Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
             clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
         
@@ -168,15 +168,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         createSurprisingNotifications()
         
         // check if user has already opened app before, if not show welcome screen
-        let launchedBefore = NSUserDefaults.standardUserDefaults().boolForKey("launchedBefore")
+        let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
         if launchedBefore  {
             // register categories for notifications
             registerForNotifications()
             
             // open map view
-            self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
+            self.window = UIWindow(frame: UIScreen.main.bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewControllerWithIdentifier("HomeScreenViewController") as! HomeScreenViewController
+            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! HomeScreenViewController
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
@@ -191,18 +191,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                "thirdPreference": "",
                                                "fourthPreference": ""]
             
-            self.appUserDefaults?.setObject(userInfo, forKey: "welcomeData")
+            self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
             self.appUserDefaults?.synchronize()
         }
         
         // hide status bar on all pages
-        application.statusBarHidden = true
+        application.isStatusBarHidden = true
         
         // PLAYING AROUND WITH NEW NOTIFICATIONS
         if #available(iOS 10.0, *) {
             // create notification center simpleton
-            let center = UNUserNotificationCenter.currentNotificationCenter()
-            center.requestAuthorizationWithOptions([.Alert, .Sound, .Badge], completionHandler: { (granted, error) in
+            let center = UNUserNotificationCenter.current()
+            center.requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
                 // authorization logic here
             })
             
@@ -219,7 +219,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             let action10 = UNNotificationAction(identifier: "action10", title: "Action 10", options: [])
             
             // create notification category, store actions in category, and register with notification center
-            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3, action4, action5, action6, action7, action8, action9, action10], intentIdentifiers: [], options: [.CustomDismissAction])
+            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3, action4, action5, action6, action7, action8, action9, action10], intentIdentifiers: [], options: [.customDismissAction])
             center.setNotificationCategories([category])
             
             // create notification
@@ -227,7 +227,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             content.title = "This is the title"
             content.subtitle = "This is the subtitle"
             content.body = "This is the body"
-            content.sound = UNNotificationSound.defaultSound()
+            content.sound = UNNotificationSound.default()
             content.categoryIdentifier = "default category"
             
             // deliver the notification in five seconds.
@@ -237,7 +237,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             let notificationRequest = UNNotificationRequest(identifier: notificationId, content: content, trigger: trigger)
             
             // Schedule the notification.
-            center.addNotificationRequest(notificationRequest, withCompletionHandler: { (NSError) in
+            center.add(notificationRequest, withCompletionHandler: { (NSError) in
                 print("Notification from new API sent")
             })
         } else {
@@ -275,22 +275,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
 //    }
     
 
-    func applicationWillResignActive(application: UIApplication) {
+    func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
         print("App will resign active")
     }
 
-    func applicationDidEnterBackground(application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         print("App will enter background")
         
         // Log app going into background
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
+        let date = Date()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
+        let currentDateString = dateFormatter.string(from: date)
 
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
@@ -300,15 +300,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         newLog.saveInBackground()
     }
 
-    func applicationWillEnterForeground(application: UIApplication) {
+    func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
         print("App will enter foreground")
         
         // Log app going into foreground
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
+        let date = Date()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
+        let currentDateString = dateFormatter.string(from: date)
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
@@ -319,25 +319,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
 
     }
 
-    func applicationDidBecomeActive(application: UIApplication) {
+    func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         print("Application did become active")
         
         guard let shortcut = shortcutItem else { return }
         print("- Shortcut property has been set")
-        handleShortcut(shortcut)
+        let _ = handleShortcut(shortcut)
         self.shortcutItem = nil
     }
 
-    func applicationWillTerminate(application: UIApplication) {
+    func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         print("App will terminate")
         
         // Log app about to terminate
-        let date = NSDate()
-        let dateFormatter = NSDateFormatter()
+        let date = Date()
+        let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        let currentDateString = dateFormatter.stringFromDate(date)
+        let currentDateString = dateFormatter.string(from: date)
         
         let newLog = PFObject(className: "pretracking_debug")
         newLog["vendor_id"] = vendorId
@@ -353,8 +353,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     
     func registerForNotifications() {
         print("Registering categories for local notifications")
-        UIApplication.sharedApplication().registerUserNotificationSettings(UIUserNotificationSettings(forTypes: [.Sound, .Alert, .Badge], categories: notificationCategories))
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.sound, .alert, .badge], categories: notificationCategories))
+        UIApplication.shared.cancelAllLocalNotifications()
     }
     
     // MARK: - Create Custom Notifications for each question
@@ -394,39 +394,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         notificationCategories.insert(createNotificationCategory("no longer here", option2Title: "other", categoryIdentifier: "surprising_peopledoing", option2InForeground: true))
     }
     
-    func createNotificationCategory(option1Title: String, option2Title: String, categoryIdentifier: String, option2InForeground: Bool) -> UIMutableUserNotificationCategory {
+    func createNotificationCategory(_ option1Title: String, option2Title: String, categoryIdentifier: String, option2InForeground: Bool) -> UIMutableUserNotificationCategory {
         let option1HotspotAction = UIMutableUserNotificationAction()
         let option2HotspotAction = UIMutableUserNotificationAction()
         let notificationCategory = UIMutableUserNotificationCategory()
         
         option1HotspotAction.title = NSLocalizedString(option1Title, comment: "click for option 1")
         option1HotspotAction.identifier = "OPTION1_EVENT_IDENTIFIER"
-        option1HotspotAction.activationMode = UIUserNotificationActivationMode.Background
-        option1HotspotAction.authenticationRequired = false
+        option1HotspotAction.activationMode = UIUserNotificationActivationMode.background
+        option1HotspotAction.isAuthenticationRequired = false
         
         option2HotspotAction.title = NSLocalizedString(option2Title, comment: "click for option 2")
         option2HotspotAction.identifier = "OPTION2_EVENT_IDENTIFIER"
         if option2InForeground {
-            option2HotspotAction.activationMode = UIUserNotificationActivationMode.Foreground
+            option2HotspotAction.activationMode = UIUserNotificationActivationMode.foreground
         } else {
-            option2HotspotAction.activationMode = UIUserNotificationActivationMode.Background
+            option2HotspotAction.activationMode = UIUserNotificationActivationMode.background
         }
-        option2HotspotAction.authenticationRequired = false
+        option2HotspotAction.isAuthenticationRequired = false
         
-        notificationCategory.setActions([option2HotspotAction, option1HotspotAction], forContext: UIUserNotificationActionContext.Default)
+        notificationCategory.setActions([option2HotspotAction, option1HotspotAction], for: UIUserNotificationActionContext.default)
         notificationCategory.identifier = categoryIdentifier
         
         return notificationCategory
     }
     
     //MARK: - Contextual Notification Handler
-    func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+    func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
         // get UTC timestamp and timezone of notification
-        let epochTimestamp = Int(NSDate().timeIntervalSince1970)
-        let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
+        let epochTimestamp = Int(Date().timeIntervalSince1970)
+        let gmtOffset = NSTimeZone.local.secondsFromGMT()
         
         // get scenario and question as separate components
-        let notificationCategoryArr = notification.category?.componentsSeparatedByString("_")
+        let notificationCategoryArr = notification.category?.components(separatedBy: "_")
         
         // Setup response object to push to parse
         var notificationId = ""
@@ -464,13 +464,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             } else {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
                 let rootViewController = self.window!.rootViewController
-                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
             }
         } else if (notificationCategoryArr![0] == "queue") {
             // check binary responses
@@ -491,13 +491,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             } else {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
                 let rootViewController = self.window!.rootViewController
-                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
             }
         } else if (notificationCategoryArr![0] == "space") {
             // check binary responses
@@ -518,13 +518,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             } else {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
                 let rootViewController = self.window!.rootViewController
-                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
             }
         } else if (notificationCategoryArr![0] == "surprising") {
             if identifier == "OPTION1_EVENT_IDENTIFIER" {
@@ -544,13 +544,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             } else {
                 // if option 2, launch app and show picker
                 let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewControllerWithIdentifier("RespondToOtherViewController") as! RespondToOtherViewController
+                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
                 let notificationUserInfo = notification.userInfo as? [String : AnyObject]
                 
                 otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
                 
                 let rootViewController = self.window!.rootViewController
-                rootViewController?.presentViewController(otherResponseVC, animated: true, completion: nil)
+                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
             }
 
         }
@@ -562,7 +562,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         completionHandler()
     }
     
-    func getResponseForCategoryAndIdentifier(scenario: String, category: String, identifier: String) -> String {
+    func getResponseForCategoryAndIdentifier(_ scenario: String, category: String, identifier: String) -> String {
         // get answer index for binary answers
         var index = 0
         if identifier == "OPTION1_EVENT_IDENTIFIER" {
@@ -588,34 +588,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     
     // MARK: 3D Touch shortcut handler
     // TODO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
-    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
         completionHandler(handleShortcut(shortcutItem))
     }
     
-    func handleShortcut( shortcutItem:UIApplicationShortcutItem ) -> Bool {
+    func handleShortcut( _ shortcutItem:UIApplicationShortcutItem ) -> Bool {
         print("Handling \(shortcutItem.type)")
-        
-        PFGeoPoint.geoPointForCurrentLocationInBackground {
-            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+        PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
+            (geoPoint: PFGeoPoint?, error: Error?) -> Void in
             if error == nil {
                 // create tag based on shortcut
                 var tag = ""
                 switch shortcutItem.type {
-                    case "com.delta.low-effort-sensing.mark-food-location":
-                        tag = "food"
-                    case "com.delta.low-effort-sensing.mark-queue-location":
-                        tag = "queue"
-                    case "com.delta.low-effort-sensing.mark-space-location":
-                        tag = "space"
-                    case "com.delta.low-effort-sensing.mark-surprising-thing-location":
-                        tag = "surprising"
-                    default:
-                        return
+                case "com.delta.low-effort-sensing.mark-food-location":
+                    tag = "food"
+                case "com.delta.low-effort-sensing.mark-queue-location":
+                    tag = "queue"
+                case "com.delta.low-effort-sensing.mark-space-location":
+                    tag = "space"
+                case "com.delta.low-effort-sensing.mark-surprising-thing-location":
+                    tag = "surprising"
+                default:
+                    return
                 }
                 
                 // get UTC timestamp and timezone of notification
-                let epochTimestamp = Int(NSDate().timeIntervalSince1970)
-                let gmtOffset = NSTimeZone.localTimeZone().secondsFromGMT
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
                 
                 // Get location and push to Parse
                 let newMonitoredLocation = PFObject(className: "hotspot")
@@ -628,13 +627,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
                 newMonitoredLocation["submissionMethod"] = "3d_touch"
                 newMonitoredLocation["locationCommonName"] = ""
-
+                
                 // set info dict and saveTimeForQuestion based on tag
                 switch tag {
                 case "food":
                     newMonitoredLocation["info"] = foodInfo
                     newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
-                        "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
+                                                                   "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
                     break
                 case "queue":
                     newMonitoredLocation["info"] = queueInfo
@@ -643,7 +642,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 case "space":
                     newMonitoredLocation["info"] = spaceInfo
                     newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
-                        "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
+                                                                   "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
                     break
                 case "surprising":
                     newMonitoredLocation["info"] = surprisingInfo
@@ -674,29 +673,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 let title = "Location Marked for \(tagDescription) Tracking"
                 let message = "Your current location has been marked for \(tagDescription) tracking. Check back later to see if someone has contributed information to it!"
                 
-                let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: nil))
+                let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
                 
-                self.window?.rootViewController?.presentViewController(alert, animated: true, completion: nil)
+                self.window?.rootViewController?.present(alert, animated: true, completion: nil)
             }
-        }
+        }))
+        
         return true
     }
     
     // MARK: WatchSession communication handler
-    func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
+    func session(_ session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         guard let command = message["command"] as! String! else {return}
         
         // Run command and return data to watch
         switch (command) {
             case "reportLocation":
-                PFGeoPoint.geoPointForCurrentLocationInBackground {
-                    (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
+                PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
+                    (geoPoint: PFGeoPoint?, error: Error?) -> Void in
                     if error == nil {
                         // Get current date to make debug string
-                        let dateFormatter = NSDateFormatter()
+                        let dateFormatter = DateFormatter()
                         dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-                        let dateString = dateFormatter.stringFromDate(NSDate())
                         
                         // Get location and push to Parse
                         let newMonitoredLocation = PFObject(className: "hotspot")
@@ -704,17 +703,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         newMonitoredLocation["tag"] = "free food!"
                         newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
                         
-                        newMonitoredLocation.saveInBackgroundWithBlock {
-                            (success: Bool, error: NSError?) -> Void in
+                        newMonitoredLocation.saveInBackground(block: ({
+                            (success: Bool, error: Error?) -> Void in
                             if (success) {
                                 // add new location to monitored regions
                                 let newRegionLat = newMonitoredLocation["location"].latitude
                                 let newRegionLong = newMonitoredLocation["location"].longitude
                                 let newRegionId = newMonitoredLocation.objectId!
-                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
+                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat!, longitude: newRegionLong!, radius: geofenceRadius, name: newRegionId)
                                 
                                 // Add new region to user defaults
-                                var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
                                 
                                 // Add data to user defaults
                                 var unwrappedEntry = [String : AnyObject]()
@@ -722,19 +721,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                 unwrappedEntry["longitude"] = newRegionLong
                                 unwrappedEntry["id"] = newMonitoredLocation.objectId
                                 unwrappedEntry["tag"] = newMonitoredLocation["tag"]
-                                let info : Dictionary<String, AnyObject>? = newMonitoredLocation["info"] as? Dictionary<String, AnyObject>
+                                let info : [String : AnyObject]? = newMonitoredLocation["info"] as? [String : AnyObject]
                                 unwrappedEntry["info"] = info
                                 
                                 monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
-                                self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                                 self.appUserDefaults?.synchronize()
                                 
                                 // return information to apple watch
                                 replyHandler(["response": unwrappedEntry])
                             }
-                        }
+                        }))
                     }
-                }
+                }))
                 break
             case "pushToParse":
                 // Get dictionary from Watch app
@@ -742,18 +741,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 let currentHotspotId = watchDict["id"] as! String
                 
                 // Get current hotspot from stored hotspots
-                var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
                 var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
                 
                 currentHotspot["info"] = watchDict["info"]
                 monitoredHotspotDictionary[currentHotspotId] = currentHotspot
-                self.appUserDefaults?.setObject(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                 self.appUserDefaults?.synchronize()
                 
                 // Push data to parse
                 let query = PFQuery(className: "hotspot")
-                query.getObjectInBackgroundWithId(currentHotspotId) {
-                    (hotspot: PFObject?, error: NSError?) -> Void in
+                query.getObjectInBackground(withId: currentHotspotId, block: ({
+                    (hotspot: PFObject?, error: Error?) -> Void in
                     if error != nil {
                         print("Error in pushing data to Parse: \(error)")
                         
@@ -769,14 +768,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                         // return information to apple watch
                         replyHandler(["response": true])
                     }
-                }
+                }))
                 break
             case "notificationOccured":
                 // Get location id from Watch app
                 guard let locationID = message["value"] as! String? else {return}
                 
                 // Get current hotspot from stored hotspots
-                var monitoredHotspotDictionary = self.appUserDefaults?.dictionaryForKey(savedHotspotsRegionKey) ?? Dictionary()
+                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
                 let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
                 
                 // return information to apple watch
@@ -788,19 +787,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     @available(iOS 9.3, *)
-    func session(session: WCSession, activationDidCompleteWithState activationState: WCSessionActivationState, error: NSError?) {
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: NSError?) {
         
     }
     
     @available(iOS 9.3, *)
-    func sessionDidBecomeInactive(session: WCSession) {
+    func sessionDidBecomeInactive(_ session: WCSession) {
         
     }
     
     @available(iOS 9.3, *)
-    func sessionDidDeactivate(session: WCSession) {
+    func sessionDidDeactivate(_ session: WCSession) {
         
     }
-
+    
+    @available(iOS 9.3, *)
+    func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+    }
 }
 
