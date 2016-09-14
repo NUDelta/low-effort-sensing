@@ -26,13 +26,19 @@ class NameViewController: UIViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any!) {
+        print("Name Segue called")
         if (segue.identifier == "NameSegue") {
+            print("Seguing")
             var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
             userInfo!["firstName"] = firstName.text
             userInfo!["lastName"] = lastName.text
+            print(userInfo)
             
             self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
+            
             self.appUserDefaults?.synchronize()
+        } else {
+            print("problem")
         }
     }
 }

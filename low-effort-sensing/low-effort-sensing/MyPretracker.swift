@@ -22,7 +22,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     var parseRefreshTimer: Timer? = Timer() // refreshing locations being tracked
     
-    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
+    let appUserDefaults = UserDefaults(suiteName: appGroup)
     var window: UIWindow?
     
     // background task
@@ -169,8 +169,16 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                     }
                                                 }
                                                 // save regions to user defaults
-                                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-                                                self.appUserDefaults?.synchronize()
+                                                print(monitoredHotspotDictionary)
+                                                print(type(of: monitoredHotspotDictionary))
+                                                for (id, keys) in monitoredHotspotDictionary {
+                                                    for (newId, newKey) in keys as! [String:AnyObject] {
+                                                        print("For \(newId): \(type(of: newKey))")
+                                                    }
+                                                }
+
+//                                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+//                                                self.appUserDefaults?.synchronize()
                                                 
                                                 // refresh data every 10 minutes
                                                 self.parseRefreshTimer = Timer.scheduledTimer(timeInterval: 10.0 * 60.0,
@@ -182,8 +190,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                 // reset accuracy and distance filter to original
                                                 self.locationManager!.desiredAccuracy = self.accuracy
                                                 self.locationManager!.distanceFilter = self.distanceFilter
-                                                
-                                                print(monitoredHotspotDictionary)
                                             }
                                         } else {
                                             print("Error in querying regions from Parse: \(error). Trying again.")

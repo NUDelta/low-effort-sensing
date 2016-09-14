@@ -897,7 +897,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -936,7 +936,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -958,6 +958,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.watchkitapp.watchkitextension";
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "fcc1e013-a648-4297-9707-ebe8317fb8c2";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta LES WatchKit Extension Debug";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -980,6 +981,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta Lab Les Watch Kit App Extension";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -1004,11 +1006,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.watchkitapp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "1a39600b-7faf-4224-b71d-2d104ff908f9";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta LES WatchKit Debug";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 				WK_COMPANION_APP_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug";
 			};
 			name = Debug;
@@ -1028,11 +1031,12 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta Lab Les Watch Kit App";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.1;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 				WK_COMPANION_APP_BUNDLE_IDENTIFIER = edu.northwestern.delta.les;
 			};
 			name = Release;
@@ -1046,7 +1050,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1058,6 +1061,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "eabe9821-adf2-4e41-9ad5-02208d96ca81";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta LES Debug";
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
@@ -1086,6 +1090,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta Lab Les";
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1108,6 +1113,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "bf50fb1f-8da4-479e-9728-96b9bdbb207b";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta LES Widget Debug";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
@@ -1129,6 +1135,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "228df4d3-4dc3-45b4-9b57-f30e5c4da934";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta Lab Les Widget";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
