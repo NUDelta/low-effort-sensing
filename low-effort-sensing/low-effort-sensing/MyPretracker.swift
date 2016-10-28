@@ -169,16 +169,16 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                     }
                                                 }
                                                 // save regions to user defaults
-                                                print(monitoredHotspotDictionary)
-                                                print(type(of: monitoredHotspotDictionary))
-                                                for (id, keys) in monitoredHotspotDictionary {
-                                                    for (newId, newKey) in keys as! [String:AnyObject] {
-                                                        print("For \(newId): \(type(of: newKey))")
-                                                    }
-                                                }
+//                                                print(monitoredHotspotDictionary)
+//                                                print(type(of: monitoredHotspotDictionary))
+//                                                for (id, keys) in monitoredHotspotDictionary {
+//                                                    for (newId, newKey) in keys as! [String:AnyObject] {
+//                                                        print("For \(newId): \(type(of: newKey))")
+//                                                    }
+//                                                }
 
-//                                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-//                                                self.appUserDefaults?.synchronize()
+                                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+                                                self.appUserDefaults?.synchronize()
                                                 
                                                 // refresh data every 10 minutes
                                                 self.parseRefreshTimer = Timer.scheduledTimer(timeInterval: 10.0 * 60.0,

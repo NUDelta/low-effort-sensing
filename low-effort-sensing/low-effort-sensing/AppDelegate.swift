@@ -180,6 +180,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
+            
+//            // DEBUG NOTIFICATION
+//            Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: true)
         }
         else {
             print("First launch, going to welcome screen")
@@ -198,46 +201,46 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
         // hide status bar on all pages
         application.isStatusBarHidden = true
         
-        // PLAYING AROUND WITH NEW NOTIFICATIONS
-        if #available(iOS 10.0, *) {
-            // create notification center simpleton
-            let center = UNUserNotificationCenter.current()
-            center.requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
-                // authorization logic here
-            })
-            
-            // declare actions for notification
-            let action1 = UNNotificationAction(identifier: "action1", title: "Action 1", options: [])
-            let action2 = UNNotificationAction(identifier: "action2", title: "Action 2", options: [])
-            let action3 = UNNotificationAction(identifier: "action3", title: "Action 3", options: [])
-            
-            // create notification category, store actions in category, and register with notification center
-//            let category = UNNotificationCategory(identifier: "customNotificationId", actions: [action1, action2, action3], intentIdentifiers: [], options: [.customDismissAction])
-            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3], intentIdentifiers: [], options: [.customDismissAction])
-            center.setNotificationCategories([category])
-            
-            // create notification
-            let content = UNMutableNotificationContent()
-            content.title = "This is the title"
-            content.subtitle = "This is the subtitle"
-            content.body = "This is the body"
-            content.sound = UNNotificationSound.default()
-//            content.categoryIdentifier = "customNotificationId"
-            
-            // deliver the notification in five seconds.
-            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 5, repeats: false)
-            
-            let notificationId = "sampleNotification"
-            let notificationRequest = UNNotificationRequest(identifier: notificationId, content: content, trigger: trigger)
-            
-            // Schedule the notification.
-            center.add(notificationRequest, withCompletionHandler: { (NSError) in
-                print("Notification from new API sent")
-                print(NSError)
-            })
-        } else {
-            // Fallback on earlier versions
-        }
+//        // PLAYING AROUND WITH NEW NOTIFICATIONS
+//        if #available(iOS 10.0, *) {
+//            // create notification center simpleton
+//            let center = UNUserNotificationCenter.current()
+//            center.requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
+//                // authorization logic here
+//            })
+//            
+//            // declare actions for notification
+//            let action1 = UNNotificationAction(identifier: "action1", title: "Action 1", options: [])
+//            let action2 = UNNotificationAction(identifier: "action2", title: "Action 2", options: [])
+//            let action3 = UNNotificationAction(identifier: "action3", title: "Action 3", options: [])
+//            
+//            // create notification category, store actions in category, and register with notification center
+////            let category = UNNotificationCategory(identifier: "customNotificationId", actions: [action1, action2, action3], intentIdentifiers: [], options: [.customDismissAction])
+//            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3], intentIdentifiers: [], options: [.customDismissAction])
+//            center.setNotificationCategories([category])
+//            
+//            // create notification
+//            let content = UNMutableNotificationContent()
+//            content.title = "This is the title"
+//            content.subtitle = "This is the subtitle"
+//            content.body = "This is the body"
+//            content.sound = UNNotificationSound.default()
+////            content.categoryIdentifier = "customNotificationId"
+//            
+//            // deliver the notification in five seconds.
+//            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 5, repeats: false)
+//            
+//            let notificationId = "sampleNotification"
+//            let notificationRequest = UNNotificationRequest(identifier: notificationId, content: content, trigger: trigger)
+//            
+//            // Schedule the notification.
+//            center.add(notificationRequest, withCompletionHandler: { (NSError) in
+//                print("Notification from new API sent")
+//                print(NSError)
+//            })
+//        } else {
+//            // Fallback on earlier versions
+//        }
         
         return performShortcutDelegate
     }
@@ -246,12 +249,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
 //    func sendNotification() {
 //        print("Preparing notification")
 //        // Get NSUserDefaults
-//        var monitoredHotspotDictionary = NSUserDefaults.init(suiteName: appGroup)?.dictionaryForKey(savedHotspotsRegionKey) ?? [:]
+//        var monitoredHotspotDictionary = UserDefaults.init(suiteName: appGroup)?.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
 //        print(monitoredHotspotDictionary)
 //        
-//        // Get first region in monitored regions to use
+//        // Get first region in mo nitored regions to use
 //        if  monitoredHotspotDictionary.keys.count > 0 {
-//            let currentRegion = monitoredHotspotDictionary["jMWwRfcHRH"] as! [String : AnyObject]
+//            let currentRegion = monitoredHotspotDictionary["S8RBmI71YW"] as! [String : AnyObject]
 //            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
 //            let notificationContent = newNotification.createNotificationForTag()
 //            
@@ -263,9 +266,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
 //            notification.soundName = "Default"
 //            notification.category = notificationContent["notificationCategory"]
 //            notification.userInfo = currentRegion
-//            notification.fireDate = NSDate().dateByAddingTimeInterval(3)
+//            notification.fireDate = NSDate().addingTimeInterval(3) as Date
 //            
-//            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+//            UIApplication.shared.scheduleLocalNotification(notification)
 //        }
 //    }
     
