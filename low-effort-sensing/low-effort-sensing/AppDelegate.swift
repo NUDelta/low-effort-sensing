@@ -210,16 +210,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             let action1 = UNNotificationAction(identifier: "action1", title: "Action 1", options: [])
             let action2 = UNNotificationAction(identifier: "action2", title: "Action 2", options: [])
             let action3 = UNNotificationAction(identifier: "action3", title: "Action 3", options: [])
-            let action4 = UNNotificationAction(identifier: "action4", title: "Action 4", options: [])
-            let action5 = UNNotificationAction(identifier: "action5", title: "Action 5", options: [])
-            let action6 = UNNotificationAction(identifier: "action6", title: "Action 6", options: [])
-            let action7 = UNNotificationAction(identifier: "action7", title: "Action 7", options: [])
-            let action8 = UNNotificationAction(identifier: "action8", title: "Action 8", options: [])
-            let action9 = UNNotificationAction(identifier: "action9", title: "Action 9", options: [])
-            let action10 = UNNotificationAction(identifier: "action10", title: "Action 10", options: [])
             
             // create notification category, store actions in category, and register with notification center
-            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3, action4, action5, action6, action7, action8, action9, action10], intentIdentifiers: [], options: [.customDismissAction])
+//            let category = UNNotificationCategory(identifier: "customNotificationId", actions: [action1, action2, action3], intentIdentifiers: [], options: [.customDismissAction])
+            let category = UNNotificationCategory(identifier: "default category", actions: [action1, action2, action3], intentIdentifiers: [], options: [.customDismissAction])
             center.setNotificationCategories([category])
             
             // create notification
@@ -228,7 +222,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             content.subtitle = "This is the subtitle"
             content.body = "This is the body"
             content.sound = UNNotificationSound.default()
-            content.categoryIdentifier = "default category"
+//            content.categoryIdentifier = "customNotificationId"
             
             // deliver the notification in five seconds.
             let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 5, repeats: false)
@@ -239,6 +233,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
             // Schedule the notification.
             center.add(notificationRequest, withCompletionHandler: { (NSError) in
                 print("Notification from new API sent")
+                print(NSError)
             })
         } else {
             // Fallback on earlier versions
@@ -420,148 +415,148 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     }
     
     //MARK: - Contextual Notification Handler
-    private func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
-        // get UTC timestamp and timezone of notification
-        let epochTimestamp = Int(Date().timeIntervalSince1970)
-        let gmtOffset = NSTimeZone.local.secondsFromGMT()
-        
-        // get scenario and question as separate components
-        let notificationCategoryArr = notification.category?.components(separatedBy: "_")
-        
-        // Setup response object to push to parse
-        var notificationId = ""
-        if let unwrappedNotificationId = notification.userInfo!["id"] {
-            notificationId = unwrappedNotificationId as! String
-        }
-        
-        let newResponse = PFObject(className: "pingResponse")
-        newResponse["vendorId"] = vendorId
-        newResponse["hotspotId"] = notificationId
-        newResponse["question"] = notificationCategoryArr![1]
-        newResponse["response"] = ""
-        newResponse["tag"] = notificationCategoryArr![0]
-        newResponse["timestamp"] = epochTimestamp
-        newResponse["gmtOffset"] = gmtOffset
-        
-        if (notificationCategoryArr![0] == "food") {
-            // check for binary responses
-            if ["isfood", "freeorsold", "forstudentgroup"].contains(notificationCategoryArr![1]) {
-                newResponse["response"] = getResponseForCategoryAndIdentifier("food", category: notificationCategoryArr![1], identifier: identifier!)
-            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
-                // check if first answer of non-binary responses
-                switch notificationCategoryArr![1] {
-                case "foodtype":
-                    newResponse["response"] = "no food here"
-                case "howmuchfood":
-                    newResponse["response"] = "none"
-                case "cost":
-                    newResponse["response"] = "< $2"
-                case "sellingreason":
-                    newResponse["response"] = "fundraising"
-                default:
-                    newResponse["response"] = ""
-                }
-            } else {
-                // if option 2, launch app and show picker
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo
-                
-                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
-                
-                let rootViewController = self.window!.rootViewController
-                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
-            }
-        } else if (notificationCategoryArr![0] == "queue") {
-            // check binary responses
-            if ["isline", "isworthwaiting"].contains(notificationCategoryArr![1]) {
-                newResponse["response"] = getResponseForCategoryAndIdentifier("queue", category: notificationCategoryArr![1], identifier: identifier!)
-            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
-                // check if first answer of non-binary responses
-                switch notificationCategoryArr![1] {
-                case "linetime":
-                    newResponse["response"] = "< 5 mins"
-                case "islonger":
-                    newResponse["response"] = "I don't come here regularly"
-                case "npeople":
-                    newResponse["response"] = "< 5"
-                default:
-                    newResponse["response"] = ""
-                }
-            } else {
-                // if option 2, launch app and show picker
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo
-                
-                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
-                
-                let rootViewController = self.window!.rootViewController
-                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
-            }
-        } else if (notificationCategoryArr![0] == "space") {
-            // check binary responses
-            if ["isspace", "isavailable", "seatingnearpower", "iswifi", "manypeople"].contains(notificationCategoryArr![1]) {
-                newResponse["response"] = getResponseForCategoryAndIdentifier("space", category: notificationCategoryArr![1], identifier: identifier!)
-            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
-                // check if first answer of non-binary responses
-                switch notificationCategoryArr![1] {
-                case "seatingtype":
-                    newResponse["response"] = "small tables"
-                case "loudness":
-                    newResponse["response"] = "quiet"
-                case "event":
-                    newResponse["response"] = "no"
-                default:
-                    newResponse["response"] = ""
-                }
-            } else {
-                // if option 2, launch app and show picker
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo
-                
-                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
-                
-                let rootViewController = self.window!.rootViewController
-                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
-            }
-        } else if (notificationCategoryArr![0] == "surprising") {
-            if identifier == "OPTION1_EVENT_IDENTIFIER" {
-                // check if first answer of non-binary responses
-                switch notificationCategoryArr![1] {
-                case "whatshappening":
-                    newResponse["response"] = "no"
-                case "famefrom":
-                    newResponse["response"] = "no longer here"
-                case "vehicles":
-                    newResponse["response"] = "no longer here"
-                case "peopledoing":
-                    newResponse["response"] = "no longer here"
-                default:
-                    newResponse["response"] = ""
-                }
-            } else {
-                // if option 2, launch app and show picker
-                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
-                let notificationUserInfo = notification.userInfo
-                
-                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
-                
-                let rootViewController = self.window!.rootViewController
-                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
-            }
-
-        }
-        
-        // if response field is not blank, save to parse
-        if newResponse["response"] as! String != "" {
-            newResponse.saveInBackground()
-        }
-        completionHandler()
-    }
-    
+//    private func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Void) {
+//        // get UTC timestamp and timezone of notification
+//        let epochTimestamp = Int(Date().timeIntervalSince1970)
+//        let gmtOffset = NSTimeZone.local.secondsFromGMT()
+//        
+//        // get scenario and question as separate components
+//        let notificationCategoryArr = notification.category?.components(separatedBy: "_")
+//        
+//        // Setup response object to push to parse
+//        var notificationId = ""
+//        if let unwrappedNotificationId = notification.userInfo!["id"] {
+//            notificationId = unwrappedNotificationId as! String
+//        }
+//        
+//        let newResponse = PFObject(className: "pingResponse")
+//        newResponse["vendorId"] = vendorId
+//        newResponse["hotspotId"] = notificationId
+//        newResponse["question"] = notificationCategoryArr![1]
+//        newResponse["response"] = ""
+//        newResponse["tag"] = notificationCategoryArr![0]
+//        newResponse["timestamp"] = epochTimestamp
+//        newResponse["gmtOffset"] = gmtOffset
+//        
+//        if (notificationCategoryArr![0] == "food") {
+//            // check for binary responses
+//            if ["isfood", "freeorsold", "forstudentgroup"].contains(notificationCategoryArr![1]) {
+//                newResponse["response"] = getResponseForCategoryAndIdentifier("food", category: notificationCategoryArr![1], identifier: identifier!)
+//            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+//                // check if first answer of non-binary responses
+//                switch notificationCategoryArr![1] {
+//                case "foodtype":
+//                    newResponse["response"] = "no food here"
+//                case "howmuchfood":
+//                    newResponse["response"] = "none"
+//                case "cost":
+//                    newResponse["response"] = "< $2"
+//                case "sellingreason":
+//                    newResponse["response"] = "fundraising"
+//                default:
+//                    newResponse["response"] = ""
+//                }
+//            } else {
+//                // if option 2, launch app and show picker
+//                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+//                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
+//                let notificationUserInfo = notification.userInfo
+//                
+//                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+//                
+//                let rootViewController = self.window!.rootViewController
+//                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
+//            }
+//        } else if (notificationCategoryArr![0] == "queue") {
+//            // check binary responses
+//            if ["isline", "isworthwaiting"].contains(notificationCategoryArr![1]) {
+//                newResponse["response"] = getResponseForCategoryAndIdentifier("queue", category: notificationCategoryArr![1], identifier: identifier!)
+//            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+//                // check if first answer of non-binary responses
+//                switch notificationCategoryArr![1] {
+//                case "linetime":
+//                    newResponse["response"] = "< 5 mins"
+//                case "islonger":
+//                    newResponse["response"] = "I don't come here regularly"
+//                case "npeople":
+//                    newResponse["response"] = "< 5"
+//                default:
+//                    newResponse["response"] = ""
+//                }
+//            } else {
+//                // if option 2, launch app and show picker
+//                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+//                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
+//                let notificationUserInfo = notification.userInfo
+//                
+//                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+//                
+//                let rootViewController = self.window!.rootViewController
+//                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
+//            }
+//        } else if (notificationCategoryArr![0] == "space") {
+//            // check binary responses
+//            if ["isspace", "isavailable", "seatingnearpower", "iswifi", "manypeople"].contains(notificationCategoryArr![1]) {
+//                newResponse["response"] = getResponseForCategoryAndIdentifier("space", category: notificationCategoryArr![1], identifier: identifier!)
+//            } else if identifier == "OPTION1_EVENT_IDENTIFIER" {
+//                // check if first answer of non-binary responses
+//                switch notificationCategoryArr![1] {
+//                case "seatingtype":
+//                    newResponse["response"] = "small tables"
+//                case "loudness":
+//                    newResponse["response"] = "quiet"
+//                case "event":
+//                    newResponse["response"] = "no"
+//                default:
+//                    newResponse["response"] = ""
+//                }
+//            } else {
+//                // if option 2, launch app and show picker
+//                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+//                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
+//                let notificationUserInfo = notification.userInfo
+//                
+//                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+//                
+//                let rootViewController = self.window!.rootViewController
+//                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
+//            }
+//        } else if (notificationCategoryArr![0] == "surprising") {
+//            if identifier == "OPTION1_EVENT_IDENTIFIER" {
+//                // check if first answer of non-binary responses
+//                switch notificationCategoryArr![1] {
+//                case "whatshappening":
+//                    newResponse["response"] = "no"
+//                case "famefrom":
+//                    newResponse["response"] = "no longer here"
+//                case "vehicles":
+//                    newResponse["response"] = "no longer here"
+//                case "peopledoing":
+//                    newResponse["response"] = "no longer here"
+//                default:
+//                    newResponse["response"] = ""
+//                }
+//            } else {
+//                // if option 2, launch app and show picker
+//                let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+//                let otherResponseVC : RespondToOtherViewController = mainStoryboard.instantiateViewController(withIdentifier: "RespondToOtherViewController") as! RespondToOtherViewController
+//                let notificationUserInfo = notification.userInfo
+//                
+//                otherResponseVC.setCurrentVariables(notificationUserInfo!["id"] as! String, scenario: notificationCategoryArr![0], question: notificationCategoryArr![1], notification: notification.alertBody!)
+//                
+//                let rootViewController = self.window!.rootViewController
+//                rootViewController?.present(otherResponseVC, animated: true, completion: nil)
+//            }
+//
+//        }
+//        
+//        // if response field is not blank, save to parse
+//        if newResponse["response"] as! String != "" {
+//            newResponse.saveInBackground()
+//        }
+//        completionHandler()
+//    }
+//    
     func getResponseForCategoryAndIdentifier(_ scenario: String, category: String, identifier: String) -> String {
         // get answer index for binary answers
         var index = 0

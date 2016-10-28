@@ -41,6 +41,11 @@
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */; };
+		006709C81D89AB5F001E4528 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C71D89AB5F001E4528 /* UserNotifications.framework */; };
+		006709CA1D89AB5F001E4528 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */; };
+		006709CD1D89AB5F001E4528 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006709CC1D89AB5F001E4528 /* NotificationViewController.swift */; };
+		006709D01D89AB5F001E4528 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 006709CE1D89AB5F001E4528 /* MainInterface.storyboard */; };
+		006709D41D89AB5F001E4528 /* CustomNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 006709C61D89AB5F001E4528 /* CustomNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */; };
 		0092F78E1CFA08F7006A9C2C /* LocationDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */; };
 		00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */; };
@@ -87,6 +92,13 @@
 			remoteGlobalIDString = 001A8FE91C55CE6E009F964C;
 			remoteInfo = "low-effort-sensing WatchKit Extension";
 		};
+		006709D21D89AB5F001E4528 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 001A8FC11C55CE6E009F964C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 006709C51D89AB5F001E4528;
+			remoteInfo = CustomNotification;
+		};
 		00D06D7A1CE1A92A002E8CCA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 001A8FC11C55CE6E009F964C /* Project object */;
@@ -125,6 +137,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				006709D41D89AB5F001E4528 /* CustomNotification.appex in Embed App Extensions */,
 				00D06D7C1CE1A92A002E8CCA /* LES Widget.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -175,6 +188,12 @@
 		0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
 		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
 		006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondToOtherViewController.swift; sourceTree = "<group>"; };
+		006709C61D89AB5F001E4528 /* CustomNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CustomNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		006709C71D89AB5F001E4528 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		006709CC1D89AB5F001E4528 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		006709CF1D89AB5F001E4528 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		006709D11D89AB5F001E4528 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForLocationViewController.swift; sourceTree = "<group>"; };
 		0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDataCell.swift; sourceTree = "<group>"; };
 		00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "LES Widget Debug.entitlements"; sourceTree = "<group>"; };
@@ -235,6 +254,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		006709C31D89AB5F001E4528 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				006709CA1D89AB5F001E4528 /* UserNotificationsUI.framework in Frameworks */,
+				006709C81D89AB5F001E4528 /* UserNotifications.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00D06D6D1CE1A92A002E8CCA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -281,6 +309,7 @@
 			isa = PBXGroup;
 			children = (
 				00D06D731CE1A92A002E8CCA /* LES Widget */,
+				006709CB1D89AB5F001E4528 /* CustomNotification */,
 				001A900B1C55D0B6009F964C /* Frameworks */,
 				001A8FCB1C55CE6E009F964C /* low-effort-sensing */,
 				001A8FDF1C55CE6E009F964C /* low-effort-sensing WatchKit App */,
@@ -297,6 +326,7 @@
 				001A8FDB1C55CE6E009F964C /* low-effort-sensing WatchKit App.app */,
 				001A8FEA1C55CE6E009F964C /* low-effort-sensing WatchKit Extension.appex */,
 				00D06D701CE1A92A002E8CCA /* LES Widget.appex */,
+				006709C61D89AB5F001E4528 /* CustomNotification.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -381,8 +411,20 @@
 				B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */,
 				4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */,
 				94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */,
+				006709C71D89AB5F001E4528 /* UserNotifications.framework */,
+				006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		006709CB1D89AB5F001E4528 /* CustomNotification */ = {
+			isa = PBXGroup;
+			children = (
+				006709CC1D89AB5F001E4528 /* NotificationViewController.swift */,
+				006709CE1D89AB5F001E4528 /* MainInterface.storyboard */,
+				006709D11D89AB5F001E4528 /* Info.plist */,
+			);
+			path = CustomNotification;
 			sourceTree = "<group>";
 		};
 		0092F78F1CFA7AFC006A9C2C /* MapView */ = {
@@ -452,6 +494,7 @@
 			dependencies = (
 				001A8FDE1C55CE6E009F964C /* PBXTargetDependency */,
 				00D06D7B1CE1A92A002E8CCA /* PBXTargetDependency */,
+				006709D31D89AB5F001E4528 /* PBXTargetDependency */,
 			);
 			name = "low-effort-sensing";
 			productName = "low-effort-sensing";
@@ -498,6 +541,23 @@
 			productReference = 001A8FEA1C55CE6E009F964C /* low-effort-sensing WatchKit Extension.appex */;
 			productType = "com.apple.product-type.watchkit2-extension";
 		};
+		006709C51D89AB5F001E4528 /* CustomNotification */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 006709D51D89AB5F001E4528 /* Build configuration list for PBXNativeTarget "CustomNotification" */;
+			buildPhases = (
+				006709C21D89AB5F001E4528 /* Sources */,
+				006709C31D89AB5F001E4528 /* Frameworks */,
+				006709C41D89AB5F001E4528 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CustomNotification;
+			productName = CustomNotification;
+			productReference = 006709C61D89AB5F001E4528 /* CustomNotification.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		00D06D6F1CE1A92A002E8CCA /* LES Widget */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00D06D7F1CE1A92B002E8CCA /* Build configuration list for PBXNativeTarget "LES Widget" */;
@@ -521,7 +581,7 @@
 		001A8FC11C55CE6E009F964C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0730;
+				LastSwiftUpdateCheck = 0800;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Kapil Garg";
 				TargetAttributes = {
@@ -561,6 +621,11 @@
 							};
 						};
 					};
+					006709C51D89AB5F001E4528 = {
+						CreatedOnToolsVersion = 8.0;
+						DevelopmentTeam = W4E2C6X642;
+						ProvisioningStyle = Manual;
+					};
 					00D06D6F1CE1A92A002E8CCA = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = W4E2C6X642;
@@ -593,6 +658,7 @@
 				00D06D6F1CE1A92A002E8CCA /* LES Widget */,
 				001A8FDA1C55CE6E009F964C /* low-effort-sensing WatchKit App */,
 				001A8FE91C55CE6E009F964C /* low-effort-sensing WatchKit Extension */,
+				006709C51D89AB5F001E4528 /* CustomNotification */,
 			);
 		};
 /* End PBXProject section */
@@ -625,6 +691,14 @@
 			files = (
 				00AFE22D1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements in Resources */,
 				001A8FFC1C55CE6E009F964C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		006709C41D89AB5F001E4528 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				006709D01D89AB5F001E4528 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -797,6 +871,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		006709C21D89AB5F001E4528 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				006709CD1D89AB5F001E4528 /* NotificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00D06D6C1CE1A92A002E8CCA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -817,6 +899,11 @@
 			isa = PBXTargetDependency;
 			target = 001A8FE91C55CE6E009F964C /* low-effort-sensing WatchKit Extension */;
 			targetProxy = 001A8FEC1C55CE6E009F964C /* PBXContainerItemProxy */;
+		};
+		006709D31D89AB5F001E4528 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 006709C51D89AB5F001E4528 /* CustomNotification */;
+			targetProxy = 006709D21D89AB5F001E4528 /* PBXContainerItemProxy */;
 		};
 		00D06D7B1CE1A92A002E8CCA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -848,6 +935,14 @@
 				001A8FE11C55CE6E009F964C /* Base */,
 			);
 			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+		006709CE1D89AB5F001E4528 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				006709CF1D89AB5F001E4528 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 		00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */ = {
@@ -1045,6 +1140,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 674E991FB331CC094C713AF4 /* Pods-low-effort-sensing.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -1073,6 +1169,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AC0232147E86A95B90D88FD /* Pods-low-effort-sensing.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
@@ -1094,6 +1191,49 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		006709D61D89AB5F001E4528 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
+				DEVELOPMENT_TEAM = W4E2C6X642;
+				INFOPLIST_FILE = CustomNotification/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.CustomNotification";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "a80cf24a-3154-4789-8d46-335332d73898";
+				PROVISIONING_PROFILE_SPECIFIER = "Delta LES Notification Extension Debug";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		006709D71D89AB5F001E4528 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
+				DEVELOPMENT_TEAM = W4E2C6X642;
+				INFOPLIST_FILE = CustomNotification/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.CustomNotification;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "db474737-fd3d-4197-9deb-952fdea179d0";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1176,6 +1316,15 @@
 			buildConfigurations = (
 				001A90091C55CE6E009F964C /* Debug */,
 				001A900A1C55CE6E009F964C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		006709D51D89AB5F001E4528 /* Build configuration list for PBXNativeTarget "CustomNotification" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				006709D61D89AB5F001E4528 /* Debug */,
+				006709D71D89AB5F001E4528 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
