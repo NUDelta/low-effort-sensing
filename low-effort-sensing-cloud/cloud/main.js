@@ -361,6 +361,83 @@ var getRankForCategory = function (category, preferences) {
   }
 };
 
+// Get ranking for each user by contribution
+// Weight primary contribute as 2x more than response to ping
+Parse.Cloud.define('rankingsByContribution', function(request, response) {
+  var userQuery = new Parse.Query('user');
+  userQuery.find({
+    success: function (users){
+      var numberUsers = users.length;
+
+      // convert users into object with location mark count and ping response count
+      var userContribution = {};
+
+      for (var i in users) {
+        var currentUser = users[i];
+        var displayName = currentUser.get('firstName');
+        displayName = displayName.concat(currentUser.get('lastName').charAt(0));
+        displayName = displayName.toLowerCase();
+        if (displayName === '') {
+          displayName = 'anonymous';
+        }
+
+        userContribution[currentUser.get('vendorId')] = {
+          'displayName': displayName,
+          'locationsMarked': 0,
+          'notificationResponses': 0,
+          'totalScore': 0
+        };
+      }
+
+      // grab notification responses and aggregate for user
+      var notificationResponseQuery = new Parse.Query('pingResponse');
+      notificationResponseQuery.find({
+        success: function (notificationResponses) {
+          var notificationResponsesLen = notificationResponses.length;
+          for(var i in notificationResponses) {
+            var currentVendorId = notificationResponses[i].get('vendorId');
+            userContribution[currentVendorId].notificationResponses += 1;
+            userContribution[currentVendorId].totalScore += 1;
+          }
+
+          // grab hotspots and aggregate for user
+          var locationQuery = new Parse.Query('hotspot');
+          locationQuery.limit(1000);
+          locationQuery.find({
+            success: function (locations) {
+              var locationCount = locations.length;
+              for (var i in locations) {
+                var currentVendorId = locations[i].get('vendorId');
+                if (currentVendorId !== '') {
+                  userContribution[currentVendorId].locationsMarked += 1;
+                  userContribution[currentVendorId].totalScore += 2;
+                }
+              }
+
+              response.success(userContribution);
+            },
+            error: function (error) {
+              /*jshint ignore:start*/
+              console.log(error);
+              /*jshint ignore:end*/
+            }
+          });
+        },
+        error: function (error) {
+          /*jshint ignore:start*/
+          console.log(error);
+          /*jshint ignore:end*/
+        }
+      });
+    },
+    error: function (error) {
+      /*jshint ignore:start*/
+      console.log(error);
+      /*jshint ignore:end*/
+    }
+  });
+});
+
 /*jshint ignore:start*/
 // multicolumn sorting function
 // from: http://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
