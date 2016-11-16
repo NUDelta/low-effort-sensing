@@ -268,6 +268,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         // show Leaderboard view
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let leaderboard : LeaderboardViewController = mainStoryboard.instantiateViewController(withIdentifier: "LeaderboardView") as! LeaderboardViewController
+        
         self.show(leaderboard, sender: leaderboard)
     }
 }
