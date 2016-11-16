@@ -69,6 +69,8 @@
 		00D06D8C1CE1AD69002E8CCA /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A901E1C55D249009F964C /* SystemConfiguration.framework */; };
 		00D06D8D1CE1AD7C002E8CCA /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90201C55D252009F964C /* libz.tbd */; };
 		00D06D8E1CE1AD85002E8CCA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
+		00D93F5E1DDCB5A8006DFB8B /* LeaderboardDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D93F5D1DDCB5A8006DFB8B /* LeaderboardDataCell.swift */; };
+		00D93F601DDCB5D1006DFB8B /* LeaderboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D93F5F1DDCB5D1006DFB8B /* LeaderboardViewController.swift */; };
 		00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */; };
 		00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */; };
 		00F1B8A71CF4398F006D2FBD /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00F1B8A21CF41775006D2FBD /* MapKit.framework */; };
@@ -208,6 +210,8 @@
 		00D06D791CE1A92A002E8CCA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00D06D811CE1AC1B002E8CCA /* LES Widget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "LES Widget.entitlements"; sourceTree = "<group>"; };
 		00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		00D93F5D1DDCB5A8006DFB8B /* LeaderboardDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeaderboardDataCell.swift; sourceTree = "<group>"; };
+		00D93F5F1DDCB5D1006DFB8B /* LeaderboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeaderboardViewController.swift; sourceTree = "<group>"; };
 		00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing.entitlements"; sourceTree = "<group>"; };
 		00EF7FCE1C6B3A1900FE51E8 /* low-effort-sensing WatchKit App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App.entitlements"; sourceTree = "<group>"; };
 		00EF7FCF1C6B3A2500FE51E8 /* low-effort-sensing WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension.entitlements"; sourceTree = "<group>"; };
@@ -334,6 +338,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				00D93F611DDCB5E3006DFB8B /* Leaderboard */,
 				001627CE1CF297430049107E /* WelcomeScreens */,
 				0092F78F1CFA7AFC006A9C2C /* MapView */,
 				0092F7901CFA7BD8006A9C2C /* LocationAndNotification */,
@@ -458,6 +463,15 @@
 				00D06D791CE1A92A002E8CCA /* Info.plist */,
 			);
 			path = "LES Widget";
+			sourceTree = "<group>";
+		};
+		00D93F611DDCB5E3006DFB8B /* Leaderboard */ = {
+			isa = PBXGroup;
+			children = (
+				00D93F5F1DDCB5D1006DFB8B /* LeaderboardViewController.swift */,
+				00D93F5D1DDCB5A8006DFB8B /* LeaderboardDataCell.swift */,
+			);
+			name = Leaderboard;
 			sourceTree = "<group>";
 		};
 		5CD65CEC838A81E03B179DF5 /* Pods */ = {
@@ -848,10 +862,12 @@
 				00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */,
 				0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */,
 				001627D61CF297D60049107E /* CompletionViewController.swift in Sources */,
+				00D93F601DDCB5D1006DFB8B /* LeaderboardViewController.swift in Sources */,
 				001A8FCD1C55CE6E009F964C /* AppDelegate.swift in Sources */,
 				001627D01CF297610049107E /* NameViewController.swift in Sources */,
 				0092F78E1CFA08F7006A9C2C /* LocationDataCell.swift in Sources */,
 				001627D41CF297C10049107E /* RankingViewController.swift in Sources */,
+				00D93F5E1DDCB5A8006DFB8B /* LeaderboardDataCell.swift in Sources */,
 				00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */,
 				00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */,
 			);

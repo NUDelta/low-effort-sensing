@@ -263,4 +263,12 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             nearbyButton.setTitleColor(UIColor.black, for: UIControlState())
         }
     }
+    
+    @IBAction func presentLeaderBoard(_ sender: Any) {
+        // show Leaderboard view
+        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let leaderboard : LeaderboardViewController = mainStoryboard.instantiateViewController(withIdentifier: "LeaderboardView") as! LeaderboardViewController
+        
+        self.show(leaderboard, sender: leaderboard)
+    }
 }
