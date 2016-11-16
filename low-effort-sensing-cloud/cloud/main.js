@@ -414,7 +414,18 @@ Parse.Cloud.define('rankingsByContribution', function(request, response) {
                 }
               }
 
-              response.success(userContribution);
+              // convert userContribution into array
+              var leaderBoard = [];
+              for(var key in userContribution) {
+                  leaderBoard.push(userContribution[key]);
+              }
+
+              // order by total score
+              leaderBoard.sort(function(a,b) {
+                return (a.totalScore < b.totalScore) ? 1 : ((b.totalScore < a.totalScore) ? -1 : 0);
+              });
+
+              response.success(leaderBoard);
             },
             error: function (error) {
               /*jshint ignore:start*/
