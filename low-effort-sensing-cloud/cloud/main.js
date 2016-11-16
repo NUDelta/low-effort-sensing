@@ -374,8 +374,8 @@ Parse.Cloud.define('rankingsByContribution', function(request, response) {
 
       for (var i in users) {
         var currentUser = users[i];
-        var displayName = currentUser.get('firstName');
-        displayName = displayName.concat(currentUser.get('lastName').charAt(0));
+        var displayName = currentUser.get('firstName').trim();
+        displayName = displayName.concat(currentUser.get('lastName').trim().charAt(0));
         displayName = displayName.toLowerCase();
         if (displayName === '') {
           displayName = 'anonymous';
