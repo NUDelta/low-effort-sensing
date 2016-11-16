@@ -32,7 +32,7 @@ class NameViewController: UIViewController {
             var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
             userInfo!["firstName"] = firstName.text
             userInfo!["lastName"] = lastName.text
-            print(userInfo)
+            print(userInfo as Any)
             
             self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
             

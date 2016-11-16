@@ -126,7 +126,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         print("Getting monitored regions")
         PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
             (geoPoint: PFGeoPoint?, error: Error?) -> Void in
-            print(geoPoint)
+            print(geoPoint as Any)
             if error == nil {
                 PFCloud.callFunction(inBackground: "retrieveLocationsForTracking",
                                      withParameters: ["latitude": (geoPoint?.latitude)!,
