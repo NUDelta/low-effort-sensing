@@ -601,7 +601,7 @@
 				TargetAttributes = {
 					001A8FC81C55CE6E009F964C = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = W4E2C6X642;
+						DevelopmentTeam = 823S57WQK3;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -617,7 +617,7 @@
 					};
 					001A8FDA1C55CE6E009F964C = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = W4E2C6X642;
+						DevelopmentTeam = 823S57WQK3;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -627,7 +627,7 @@
 					};
 					001A8FE91C55CE6E009F964C = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = W4E2C6X642;
+						DevelopmentTeam = 823S57WQK3;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -637,12 +637,12 @@
 					};
 					006709C51D89AB5F001E4528 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = W4E2C6X642;
+						DevelopmentTeam = 823S57WQK3;
 						ProvisioningStyle = Manual;
 					};
 					00D06D6F1CE1A92A002E8CCA = {
 						CreatedOnToolsVersion = 7.3.1;
-						DevelopmentTeam = W4E2C6X642;
+						DevelopmentTeam = 823S57WQK3;
 						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1093,7 +1093,7 @@
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing WatchKit Extension/low-effort-sensing WatchKit Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Distribution: Northwestern University";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 823S57WQK3;
 				INFOPLIST_FILE = "low-effort-sensing WatchKit Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp.watchkitextension;
@@ -1145,7 +1145,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Distribution: Northwestern University";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 823S57WQK3;
 				IBSC_MODULE = low_effort_sensing_WatchKit_Extension;
 				INFOPLIST_FILE = "low-effort-sensing WatchKit App/Info.plist";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.watchkitapp;
@@ -1201,7 +1201,7 @@
 				CODE_SIGN_ENTITLEMENTS = "low-effort-sensing/low-effort-sensing.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 823S57WQK3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1249,7 +1249,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 823S57WQK3;
 				INFOPLIST_FILE = CustomNotification/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.CustomNotification;
@@ -1291,7 +1291,7 @@
 				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Northwestern University";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 823S57WQK3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
