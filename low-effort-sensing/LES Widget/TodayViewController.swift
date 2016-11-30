@@ -276,12 +276,16 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 newMonitoredLocation["submissionMethod"] = "today_widget"
                 newMonitoredLocation["locationCommonName"] = ""
                 
-                if (appUserDefaults?.object(forKey: "currentBeaconRegion") != nil) {
-                    newMonitoredLocation["beaconId"] = (appUserDefaults?.object(forKey: "currentBeaconRegion") as! String)
+                if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
+                    if currBeaconRegion as? String != nil {
+                        newMonitoredLocation["beaconId"] = currBeaconRegion as? String
+                    } else {
+                        newMonitoredLocation["beaconId"] = ""
+                    }
                 } else {
                     newMonitoredLocation["beaconId"] = ""
                 }
-                
+
                 // set info dict and saveTimeForQuestion based on tag
                 switch tag {
                 case "food":

@@ -631,8 +631,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 newMonitoredLocation["submissionMethod"] = "3d_touch"
                 newMonitoredLocation["locationCommonName"] = ""
                 
-                if (self.appUserDefaults?.object(forKey: "currentBeaconRegion") != nil) {
-                    newMonitoredLocation["beaconId"] = (self.appUserDefaults?.object(forKey: "currentBeaconRegion") as! String)
+                if let currBeaconRegion = self.appUserDefaults?.object(forKey: "currentBeaconRegion") {
+                    if currBeaconRegion as? String != nil {
+                        newMonitoredLocation["beaconId"] = currBeaconRegion as? String
+                    } else {
+                        newMonitoredLocation["beaconId"] = ""
+                    }
                 } else {
                     newMonitoredLocation["beaconId"] = ""
                 }
