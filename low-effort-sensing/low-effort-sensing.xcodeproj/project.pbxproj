@@ -42,6 +42,7 @@
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
+		005DD76A1DEF699200D89088 /* NotificationCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */; };
 		006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */; };
 		006709C81D89AB5F001E4528 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C71D89AB5F001E4528 /* UserNotifications.framework */; };
 		006709CA1D89AB5F001E4528 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */; };
@@ -986,6 +987,7 @@
 			files = (
 				0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */,
 				00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */,
+				005DD76A1DEF699200D89088 /* NotificationCreator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1356,6 +1358,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4485ED9B1A95F20035FB6A32 /* Pods-LES Widget.debug.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget Debug.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Kapil Garg (AWPNMA4JST)";
@@ -1381,6 +1384,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A351C0A9C6CA74555A94EE32 /* Pods-LES Widget.release.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_ENTITLEMENTS = "LES Widget/LES Widget.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Northwestern University";

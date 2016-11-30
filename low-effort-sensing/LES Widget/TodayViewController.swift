@@ -18,6 +18,9 @@ let appGroup = "group.com.delta.les-debug" // for debug builds
 let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
 //let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 
+let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
+let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
+
 // blank location info
 let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
                 "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]

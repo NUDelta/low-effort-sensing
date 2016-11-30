@@ -14,9 +14,15 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     // tracker parameters and storage variables
     var beaconManager: ESTBeaconManager?
     let appUserDefaults = UserDefaults(suiteName: appGroup)
+    var vendorId = ""
     
     required public override init() {
         super.init()
+        
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+            self.vendorId = uuid
+        }
+        
         appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
         
         self.beaconManager = ESTBeaconManager()
@@ -78,10 +84,52 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         }))
     }
     
+    public func notifyPeople(_ currentRegion: [String : AnyObject], regionId: String) {
+            //        print("notify for region id \(region.identifier)")
+            // Log notification to parse
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+        
+            // Log notification sent event to parse
+            let newResponse = PFObject(className: "notificationSent")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = currentRegion["id"] as! String
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["notificationString"] = "Notified for beacon region \(regionId)"
+            newResponse.saveInBackground()
+            
+            // Show alert if app active, else local notification
+                // Create context for notification
+                let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
+                let notificationContent = newNotification.createNotificationForTag()
+                
+                // Display notification with context
+                let notification = UILocalNotification()
+                notification.alertBody = notificationContent["message"]
+                notification.soundName = "Default"
+                notification.category = notificationContent["notificationCategory"]
+                notification.userInfo = currentRegion
+                UIApplication.shared.presentLocalNotificationNow(notification)
+    }
+    
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
+        // set current beacon value
         appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
-        let notification = UILocalNotification()
-        notification.alertBody = "Entered region: \(region.identifier)"
+        
+        // iterate through all monitored regions and find any that match the beaconId
+        let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
+        
+        for (_, info) in monitoredHotspotDictionary {
+            let parsedInfo = info as! [String : AnyObject]
+            let beaconId = parsedInfo["beaconId"] as! String
+            if beaconId == region.identifier {
+                self.notifyPeople(parsedInfo, regionId: region.identifier)
+            }
+        }
+        
+//        let notification = UILocalNotification()
+//        notification.alertBody = "Entered region: \(region.identifier)"
 //        UIApplication.shared.presentLocalNotificationNow(notification)
     }
     
