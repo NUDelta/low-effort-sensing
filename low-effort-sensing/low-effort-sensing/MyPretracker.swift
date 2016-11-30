@@ -69,8 +69,11 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     public func clearAllMonitoredRegions() {
+        print("Monitored regions: \(locationManager!.monitoredRegions)")
         for region in locationManager!.monitoredRegions {
-            locationManager!.stopMonitoring(for: region)
+            if !(region is CLBeaconRegion) {
+                locationManager!.stopMonitoring(for: region)
+            }
         }
     }
     
