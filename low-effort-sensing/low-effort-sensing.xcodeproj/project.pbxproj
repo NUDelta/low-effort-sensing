@@ -41,6 +41,7 @@
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
+		0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */; };
 		006709C81D89AB5F001E4528 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C71D89AB5F001E4528 /* UserNotifications.framework */; };
 		006709CA1D89AB5F001E4528 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */; };
@@ -983,6 +984,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */,
 				00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1364,11 +1366,13 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "LES Widget/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "edu.northwestern.delta.les-debug.widget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "Delta LES Widget Debug";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -1387,12 +1391,14 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = "LES Widget/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = edu.northwestern.delta.les.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "Delta Lab Les Widget";
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "low-effort-sensing/low-effort-sensing-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

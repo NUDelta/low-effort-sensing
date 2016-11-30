@@ -29,6 +29,8 @@ let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingne
 
 let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
 
+let appUserDefaults = UserDefaults(suiteName: appGroup)
+
 class TodayViewController: UIViewController, NCWidgetProviding {
         
     @IBOutlet weak var foodButton: UIButton!
@@ -274,6 +276,11 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 newMonitoredLocation["submissionMethod"] = "today_widget"
                 newMonitoredLocation["locationCommonName"] = ""
                 
+                if (appUserDefaults?.object(forKey: "currentBeaconRegion") != nil) {
+                    newMonitoredLocation["beaconId"] = (appUserDefaults?.object(forKey: "currentBeaconRegion") as! String)
+                } else {
+                    newMonitoredLocation["beaconId"] = ""
+                }
                 
                 // set info dict and saveTimeForQuestion based on tag
                 switch tag {

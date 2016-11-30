@@ -13,13 +13,11 @@ import Parse
 public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     // tracker parameters and storage variables
     var beaconManager: ESTBeaconManager?
-    var withinCurrentRegion: CLBeaconRegion?
-    
     let appUserDefaults = UserDefaults(suiteName: appGroup)
     
     required public override init() {
         super.init()
-        self.withinCurrentRegion = nil
+        appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
         
         self.beaconManager = ESTBeaconManager()
         guard let beaconManager = self.beaconManager else {
@@ -69,7 +67,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                         let currentRegion = CLBeaconRegion(proximityUUID: UUID(uuidString: object["uuid"] as! String)!,
                                                            major: object["major"] as! UInt16,
                                                            minor: object["minor"] as! UInt16,
-                                                         identifier: object.objectId! as String)
+                                                           identifier: object.objectId! as String)
                         self.beaconManager?.startMonitoring(for: currentRegion)
                     }
                 }
@@ -81,19 +79,17 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     }
     
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
-        self.withinCurrentRegion = region
-        
-        print("did enter beacon region")
+        appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
         let notification = UILocalNotification()
         notification.alertBody = "Entered region: \(region.identifier)"
-        UIApplication.shared.presentLocalNotificationNow(notification)
+//        UIApplication.shared.presentLocalNotificationNow(notification)
     }
     
     public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
         print("Exited Region \(region.identifier)")
         
-        if self.withinCurrentRegion == region {
-            self.withinCurrentRegion = nil
+        if appUserDefaults?.object(forKey: "currentBeaconRegion") as! String == region.identifier {
+            appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
         }
     }
     
@@ -103,6 +99,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             print("Unknown beacon state")
         case CLRegionState.inside:
             print("inside region: \(region.identifier)")
+            appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
         case CLRegionState.outside:
             print("outside region: \(region.identifier)")
         }

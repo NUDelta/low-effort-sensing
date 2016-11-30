@@ -631,6 +631,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 newMonitoredLocation["submissionMethod"] = "3d_touch"
                 newMonitoredLocation["locationCommonName"] = ""
                 
+                if (self.appUserDefaults?.object(forKey: "currentBeaconRegion") != nil) {
+                    newMonitoredLocation["beaconId"] = (self.appUserDefaults?.object(forKey: "currentBeaconRegion") as! String)
+                } else {
+                    newMonitoredLocation["beaconId"] = ""
+                }
+                
                 // set info dict and saveTimeForQuestion based on tag
                 switch tag {
                 case "food":
