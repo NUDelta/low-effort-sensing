@@ -255,53 +255,53 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     }
     
     func pushDataToParse(_ tag: String) {
-//        PFGeoPoint.geoPointForCurrentLocation {
-//            (geoPoint: PFGeoPoint?, error: NSError?) -> Void in
-//            if error == nil {
-//                // get UTC timestamp and timezone of notification
-//                let epochTimestamp = Int(Date().timeIntervalSince1970)
-//                let gmtOffset = TimeZone.local.secondsFromGMT
-//                
-//                // Get location and push to Parse
-//                let newMonitoredLocation = PFObject(className: "hotspot")
-//                newMonitoredLocation["vendorId"] = self.vendorId
-//                newMonitoredLocation["location"] = geoPoint
-//                newMonitoredLocation["tag"] = tag
-//                newMonitoredLocation["archived"] = false
-//                newMonitoredLocation["timestampCreated"] = epochTimestamp
-//                newMonitoredLocation["gmtOffset"] = gmtOffset
-//                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
-//                newMonitoredLocation["submissionMethod"] = "today_widget"
-//                newMonitoredLocation["locationCommonName"] = ""
-//                
-//                
-//                // set info dict and saveTimeForQuestion based on tag
-//                switch tag {
-//                case "food":
-//                    newMonitoredLocation["info"] = foodInfo
-//                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
-//                        "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
-//                    break
-//                case "queue":
-//                    newMonitoredLocation["info"] = queueInfo
-//                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
-//                    break
-//                case "space":
-//                    newMonitoredLocation["info"] = spaceInfo
-//                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
-//                        "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
-//                    break
-//                case "surprising":
-//                    newMonitoredLocation["info"] = surprisingInfo
-//                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
-//                    break
-//                default:
-//                    break
-//                }
-//                
-//                // push to parse
-//                newMonitoredLocation.saveInBackground()
-//            }
-//        }
+        PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
+            (geoPoint: PFGeoPoint?, error: Error?) -> Void in
+            if error == nil {
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+                
+                // Get location and push to Parse
+                let newMonitoredLocation = PFObject(className: "hotspot")
+                newMonitoredLocation["vendorId"] = self.vendorId
+                newMonitoredLocation["location"] = geoPoint
+                newMonitoredLocation["tag"] = tag
+                newMonitoredLocation["archived"] = false
+                newMonitoredLocation["timestampCreated"] = epochTimestamp
+                newMonitoredLocation["gmtOffset"] = gmtOffset
+                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
+                newMonitoredLocation["submissionMethod"] = "today_widget"
+                newMonitoredLocation["locationCommonName"] = ""
+                
+                
+                // set info dict and saveTimeForQuestion based on tag
+                switch tag {
+                case "food":
+                    newMonitoredLocation["info"] = foodInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
+                                                                   "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
+                    break
+                case "queue":
+                    newMonitoredLocation["info"] = queueInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
+                    break
+                case "space":
+                    newMonitoredLocation["info"] = spaceInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
+                                                                   "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
+                    break
+                case "surprising":
+                    newMonitoredLocation["info"] = surprisingInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
+                    break
+                default:
+                    break
+                }
+                
+                // push to parse
+                newMonitoredLocation.saveInBackground()
+            }
+        }))
     }
 }
