@@ -3,3 +3,4 @@
 //
 
 #import "BackgroundTaskManager.h"
+#import <EstimoteSDK/EstimoteSDK.h>

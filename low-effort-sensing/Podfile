@@ -4,7 +4,7 @@
 use_frameworks!
 
 target 'low-effort-sensing' do
-    
+   pod 'EstimoteSDK'
 end
 
 target 'low-effort-sensing WatchKit App' do
@@ -15,3 +15,10 @@ target 'low-effort-sensing WatchKit Extension' do
 
 end
 
+target 'LES Widget' do
+   pod 'EstimoteSDK'
+end
+
+target 'CustomNotification' do
+   pod 'EstimoteSDK'
+end

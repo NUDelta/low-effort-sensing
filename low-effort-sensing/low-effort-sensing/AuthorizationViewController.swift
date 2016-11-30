@@ -34,6 +34,7 @@ class AuthorizationViewController: UIViewController {
             
             // request location authorization
             MyPretracker.sharedManager.getAuthorizationForLocationManager()
+            BeaconTracker.sharedBeaconManager.getAuthorizationForLocationManager()
         }
     }
 }

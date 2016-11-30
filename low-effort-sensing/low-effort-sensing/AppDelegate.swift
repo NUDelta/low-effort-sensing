@@ -130,6 +130,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     var notificationCategories = Set<UIUserNotificationCategory>()
     
+    let beaconManager = ESTBeaconManager()
+    
     // MARK: - AppDelegate Functions
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Check active state for 3D Touch Home actions
@@ -160,6 +162,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                                                      radius: geofenceRadius,
                                                      accuracy: kCLLocationAccuracyNearestTenMeters,
                                                      distanceFilter: nil)
+        
+        // setup beacon manager
+        BeaconTracker.sharedBeaconManager.initBeaconManager()
         
         // setup local notifications
         createFoodNotifications()
@@ -626,6 +631,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                 newMonitoredLocation["submissionMethod"] = "3d_touch"
                 newMonitoredLocation["locationCommonName"] = ""
                 
+                if let currBeaconRegion = self.appUserDefaults?.object(forKey: "currentBeaconRegion") {
+                    if currBeaconRegion as? String != nil {
+                        newMonitoredLocation["beaconId"] = currBeaconRegion as? String
+                    } else {
+                        newMonitoredLocation["beaconId"] = ""
+                    }
+                } else {
+                    newMonitoredLocation["beaconId"] = ""
+                }
+                
                 // set info dict and saveTimeForQuestion based on tag
                 switch tag {
                 case "food":
@@ -705,10 +720,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
                             (success: Bool, error: Error?) -> Void in
                             if (success) {
                                 // add new location to monitored regions
-                                let newRegionLat = (newMonitoredLocation["location"] as AnyObject).latitude
-                                let newRegionLong = (newMonitoredLocation["location"] as AnyObject).longitude
+                                let newRegionLat = (newMonitoredLocation["location"] as! PFGeoPoint).latitude
+                                let newRegionLong = (newMonitoredLocation["location"] as! PFGeoPoint).longitude
                                 let newRegionId = newMonitoredLocation.objectId!
-                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat!, longitude: newRegionLong!, radius: geofenceRadius, name: newRegionId)
+                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
                                 
                                 // Add new region to user defaults
                                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
@@ -803,4 +818,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate {
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
     }
 }
-
