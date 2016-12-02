@@ -56,6 +56,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.extensionContext?.widgetLargestAvailableDisplayMode = NCWidgetDisplayMode.expanded
         
         // Do any additional setup after loading the view from its nib.
         if (Parse.isLocalDatastoreEnabled() == false) {
@@ -103,6 +104,15 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+        if activeDisplayMode == NCWidgetDisplayMode.compact {
+            self.preferredContentSize = CGSize(width: 0.0, height: 200.0)
+        }
+        else if activeDisplayMode == NCWidgetDisplayMode.expanded {
+            self.preferredContentSize = CGSize(width: 0.0, height: 400.0)
+        }
     }
     
     func widgetPerformUpdate(completionHandler: @escaping ((NCUpdateResult) -> Void)) {
@@ -215,7 +225,6 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             submittedLabel.text = "Location will be marked for Surprising Things tracking when you exit the notification center \n\nClick Surprising Things again to untrack or click another button to change the category"
             
             surprisingSelected = true
-            print(surprisingSelected)
         } else {
             unmarkLocation("surprising")
             submittedLabel.text = ""
