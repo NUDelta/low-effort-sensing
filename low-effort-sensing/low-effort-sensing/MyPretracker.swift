@@ -131,7 +131,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             (geoPoint: PFGeoPoint?, error: Error?) -> Void in
             print(geoPoint as Any)
             if error == nil {
-                PFCloud.callFunction(inBackground: "retrieveLocationsForTracking",
+                PFCloud.callFunction(inBackground: "naivelyRetrieveLocationsForTracking",
                                      withParameters: ["latitude": (geoPoint?.latitude)!,
                                                       "longitude": (geoPoint?.longitude)!,
                                                       "vendorId": vendorId,
