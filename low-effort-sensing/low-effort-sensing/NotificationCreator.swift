@@ -36,6 +36,12 @@ class NotificationCreator {
             return createNotificationForSpace()
         case "surprising":
             return createNotificationForSurprising()
+        case "guestevent":
+            return createNotificationForGuestEvent()
+        case "dtrdonut":
+            return createNotificationForDtrDonut()
+        case "windowdrawing":
+            return createNotificationForWindowDrawing()
         default:
             return ["notificationCategory": "", "message": ""]
         }
@@ -400,6 +406,59 @@ class NotificationCreator {
                 output["message"] = "There were a lot of people here for an event (\(currentInfo["peopledoing"]!)). Are they still there?"
             }
         }
+        return output
+    }
+    
+    func createNotificationForGuestEvent() -> [String : String] {
+        var output = ["notificationCategory": "", "message": ""]
+        
+        // generate notification
+        if currentInfo["eventkind"] == "" {
+            output["notificationCategory"] = "guestevent_eventkind"
+            output["message"] = "Someone reported a guest event going on here. Can you tell us what's happening?"
+        } else {
+            if currentInfo["host"] == "" {
+                output["notificationCategory"] = "guestevent_host"
+                output["message"] = "There's a guest event (\(currentInfo["eventkind"]!)) going on here. Can you tell us who's hosting it?"
+            } else {
+                if currentInfo["eventlength"] == "" {
+                    output["notificationCategory"] = "guestevent_eventlength"
+                    output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here. Do you know how much longer it will last?"
+                } else {
+                    if currentInfo["isfood"] == "" {
+                        output["notificationCategory"] = "guestevent_isfood"
+                        output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here. Do they have food?"
+                    } else if currentInfo["isfood"] == "yes" {
+                        if currentInfo["foodkind"] == "" {
+                            output["notificationCategory"] = "guestevent_foodkind"
+                            output["message"] = "There's a guest event going on here with food. What kind of food do they have?"
+                        } else {
+                            if currentInfo["foodleft"] == "" {
+                                output["notificationCategory"] = "guestevent_foodleft"
+                                output["message"] = "There's a guest event with food (\(currentInfo["foodkind"]!)) here! How much food is left?"
+                            } else {
+                                output["notificationCategory"] = "no question"
+                                output["message"] = "A guest event (\(currentInfo["host"]!)) hosted by a \(currentInfo["host"]!) is happening here, and they have food (\(currentInfo["foodkind"]!))!"
+                            }
+                        }
+                    } else {
+                        output["notificationCategory"] = "no question"
+                        output["message"] = "A guest event (\(currentInfo["host"]!)) hosted by a \(currentInfo["host"]!) is happening here. Check it out!"
+                    }
+                }
+            }
+        }
+        
+        return output
+    }
+    
+    func createNotificationForDtrDonut() -> [String : String] {
+        var output = ["notificationCategory": "", "message": ""]
+        return output
+    }
+    
+    func createNotificationForWindowDrawing() -> [String : String] {
+        var output = ["notificationCategory": "", "message": ""]
         return output
     }
 }
