@@ -17,17 +17,17 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.3</string>
+	<string>1.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone&apos;s location and Bluetooth to notify you when you enter or leave a monitored region. </string>
-	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string>Low-Effort Sensing requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
