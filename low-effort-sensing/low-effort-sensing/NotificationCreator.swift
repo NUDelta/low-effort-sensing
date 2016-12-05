@@ -454,6 +454,54 @@ class NotificationCreator {
     
     func createNotificationForDtrDonut() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
+        
+        // generate notification
+        if currentInfo["room"] == "" {
+            output["notificationCategory"] = "dtrdonut_room"
+            output["message"] = "DONUTS!!! They're either in the Hackerspace or Delta Lab. Can you tell us where?"
+        } else {
+            if currentInfo["boxdrawing"] == "" {
+                output["notificationCategory"] = "dtrdonut_boxdrawing"
+                output["message"] = "There are DONUTS in the \(currentInfo["room"]!). While you're getting a donut...does the box has anything written on it?"
+            } else if currentInfo["boxdrawing"] == "yes" {
+                if currentInfo["boxcontent"] == "" {
+                    output["notificationCategory"] = "dtrdonut_boxcontent"
+                    output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with something written on the box. Can you tell us what it most closely resembles?"
+                } else {
+                    if currentInfo["markercolor"] == "" {
+                        output["notificationCategory"] = "dtrdonut_markercolor"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it. What color marker was used to write it?"
+                    } else {
+                        if currentInfo["plain"] == "" {
+                            output["notificationCategory"] = "dtrdonut_plain"
+                            output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Are there any plain/glazed donuts in the box?"
+                        } else {
+                            if currentInfo["frosted"] == "" {
+                                output["notificationCategory"] = "dtrdonut_frosted"
+                                output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Are there any frosted donuts in the box?"
+                            } else {
+                                output["notificationCategory"] = "no question"
+                                output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Enjoy!"
+                            }
+                        }
+                    }
+                }
+            } else {
+                if currentInfo["plain"] == "" {
+                    output["notificationCategory"] = "dtrdonut_plain"
+                    output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Are there any plain/glazed donuts in the box?"
+                } else {
+                    if currentInfo["frosted"] == "" {
+                        output["notificationCategory"] = "dtrdonut_frosted"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Are there any frosted donuts in the box?"
+                    } else {
+                        output["notificationCategory"] = "no question"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Enjoy!"
+                    }
+                }
+            }
+        }
+        
         return output
     }
     
