@@ -9,7 +9,7 @@ A platform for low-effort data contributions, supported on iOS and Apple Watch.
 
 # Development
 ## Development on iOS
-1. You will need 5 separate proivsioning profiles to build on device (iPhone Application, Today Widget, Watch Application, Watch Extension, and Notification Extension). Please talk to either Kapil or Yongsung to obtain these.
+1. You will need 5 separate provisioning profiles to build on device (iPhone Application, Today Widget, Watch Application, Watch Extension, and Notification Extension). Please talk to either Kapil or Yongsung to obtain these.
 2. Open **low-effort-sensing.xcworkspace** in Xcode. Navigate to **LES Widget/TodayViewController.swift** and ensure the following lines are correctly commented/uncommented:
     ```
     // App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
