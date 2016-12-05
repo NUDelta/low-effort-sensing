@@ -481,7 +481,7 @@ class NotificationCreator {
                                 output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Are there any frosted donuts in the box?"
                             } else {
                                 output["notificationCategory"] = "no question"
-                                output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Enjoy!"
+                                output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Please do take one! Enjoy!"
                             }
                         }
                     }
@@ -496,7 +496,7 @@ class NotificationCreator {
                         output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Are there any frosted donuts in the box?"
                     } else {
                         output["notificationCategory"] = "no question"
-                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Enjoy!"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Please do take one! Enjoy!"
                     }
                 }
             }
@@ -507,6 +507,41 @@ class NotificationCreator {
     
     func createNotificationForWindowDrawing() -> [String : String] {
         var output = ["notificationCategory": "", "message": ""]
+        
+        // generate response
+        if currentInfo["objectright"] == "" {
+            output["notificationCategory"] = "windowdrawing_objectright"
+            output["message"] = "Look up towards Ford, 2nd floor! See the two post-it note drawings? What's the object on the right?"
+        } else {
+            if currentInfo["colorright"] == "" {
+                output["notificationCategory"] = "windowdrawing_colorright"
+                output["message"] = "Look up towards Ford, 2nd floor! See the post-it drawing of a \(currentInfo["objectright"]!) on the right? Can you tell us what color it is?"
+            } else {
+                if currentInfo["valueright"] == "" {
+                    output["notificationCategory"] = "windowdrawing_valueright"
+                    output["message"] = "Look up towards Ford, 2nd floor! See the \(currentInfo["colorright"]!) post-it drawing of a \(currentInfo["objectright"]!) on the right? Can you tell us what its value is?"
+                } else {
+                    if currentInfo["objectleft"] == "" {
+                        output["notificationCategory"] = "windowdrawing_objectleft"
+                        output["message"] = "Look up towards Ford, 2nd floor! See the \(currentInfo["colorright"]!) post-it drawing of a \(currentInfo["valueright"]!) on the right? Can you tell us what the object to its left is?"
+                    } else {
+                        if currentInfo["colorleft"] == "" {
+                            output["notificationCategory"] = "windowdrawing_colorright"
+                            output["message"] = "Look up towards Ford, 2nd floor! See the post-it drawing of a \(currentInfo["objectleft"]!) on the left next to the \(currentInfo["valueright"]!)? Can you tell us what color it is?"
+                        } else {
+                            if currentInfo["valueleft"] == "" {
+                                output["notificationCategory"] = "windowdrawing_valueright"
+                                output["message"] = "Look up towards Ford, 2nd floor! See the \(currentInfo["colorleft"]!) post-it drawing of a \(currentInfo["objectleft"]!) on the left next to the \(currentInfo["valueright"]!)? Can you tell us what its value is?"
+                            } else {
+                                output["notificationCategory"] = "no question"
+                                output["message"] = "Look up towards Ford, 2nd floor! Someone made a \(currentInfo["colorleft"]!) \(currentInfo["valueleft"]!) and a \(currentInfo["colorright"]!) \(currentInfo["valueright"]!) with post-it notes! I wonder why..."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         return output
     }
 }

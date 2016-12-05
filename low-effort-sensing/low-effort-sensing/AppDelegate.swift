@@ -277,7 +277,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 //        
 //        // Get first region in mo nitored regions to use
 //        if  monitoredHotspotDictionary.keys.count > 0 {
-//            let currentRegion = monitoredHotspotDictionary["UOt1Q89cxL"] as! [String : AnyObject]
+//            let currentRegion = monitoredHotspotDictionary["ob333ez7Ij"] as! [String : AnyObject]
 //            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
 //            let notificationContent = newNotification.createNotificationForTag()
 //            
