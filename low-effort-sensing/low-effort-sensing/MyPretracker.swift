@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import UserNotifications
 import Parse
 
 public class MyPretracker: NSObject, CLLocationManagerDelegate {
@@ -335,12 +336,20 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 let notificationContent = newNotification.createNotificationForTag()
                 
                 // Display notification with context
-                let notification = UILocalNotification()
-                notification.alertBody = notificationContent["message"]
-                notification.soundName = "Default"
-                notification.category = notificationContent["notificationCategory"]
-                notification.userInfo = currentRegion
-                UIApplication.shared.presentLocalNotificationNow(notification)
+                let content = UNMutableNotificationContent()
+                content.body = notificationContent["message"]!
+                content.sound = UNNotificationSound.default()
+                content.categoryIdentifier = notificationContent["notificationCategory"]!
+                content.userInfo = currentRegion
+                
+                let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+                
+                UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                    if let error = error {
+                        print("Error in notifying from Pre-Tracker: \(error)")
+                    }
+                })
             }
         }
     }
