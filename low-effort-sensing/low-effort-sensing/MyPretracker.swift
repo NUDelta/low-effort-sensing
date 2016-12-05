@@ -173,14 +173,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
                                                     }
                                                 }
-                                                // save regions to user defaults
-//                                                print(monitoredHotspotDictionary)
-//                                                print(type(of: monitoredHotspotDictionary))
-//                                                for (id, keys) in monitoredHotspotDictionary {
-//                                                    for (newId, newKey) in keys as! [String:AnyObject] {
-//                                                        print("For \(newId): \(type(of: newKey))")
-//                                                    }
-//                                                }
 
                                                 self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                                                 self.appUserDefaults?.synchronize()

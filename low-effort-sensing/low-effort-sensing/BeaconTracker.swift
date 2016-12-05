@@ -16,6 +16,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     var beaconManager: ESTBeaconManager?
     let appUserDefaults = UserDefaults(suiteName: appGroup)
     var vendorId = ""
+    var prevNotifiedSet = Set<String>()
     
     required public override init() {
         super.init()
@@ -85,39 +86,44 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     }
     
     public func notifyPeople(_ currentRegion: [String : AnyObject], regionId: String) {
-        //        print("notify for region id \(region.identifier)")
-        // Log notification to parse
-        let epochTimestamp = Int(Date().timeIntervalSince1970)
-        let gmtOffset = NSTimeZone.local.secondsFromGMT()
-        
-        // Log notification sent event to parse
-        let newResponse = PFObject(className: "notificationSent")
-        newResponse["vendorId"] = vendorId
-        newResponse["hotspotId"] = currentRegion["id"] as! String
-        newResponse["timestamp"] = epochTimestamp
-        newResponse["gmtOffset"] = gmtOffset
-        newResponse["notificationString"] = "Notified for beacon region \(regionId)"
-        newResponse.saveInBackground()
-        
-        // Create context for notification
-        let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
-        let notificationContent = newNotification.createNotificationForTag()
-        
-        // Display notification with context
-        let content = UNMutableNotificationContent()
-        content.body = notificationContent["message"]!
-        content.sound = UNNotificationSound.default()
-        content.categoryIdentifier = notificationContent["notificationCategory"]!
-        content.userInfo = currentRegion
-        
-        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-            if let error = error {
-                print("Error in notifying from Pre-Tracker: \(error)")
-            }
-        })
+        if (!prevNotifiedSet.contains(regionId)) {
+            //        print("notify for region id \(region.identifier)")
+            // Log notification to parse
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+            
+            // Log notification sent event to parse
+            let newResponse = PFObject(className: "notificationSent")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = currentRegion["id"] as! String
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["notificationString"] = "Notified for beacon region \(regionId)"
+            newResponse.saveInBackground()
+            
+            // Create context for notification
+            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
+            let notificationContent = newNotification.createNotificationForTag()
+            
+            // Display notification with context
+            let content = UNMutableNotificationContent()
+            content.body = notificationContent["message"]!
+            content.sound = UNNotificationSound.default()
+            content.categoryIdentifier = notificationContent["notificationCategory"]!
+            content.userInfo = currentRegion
+            
+            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+            let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                if let error = error {
+                    print("Error in notifying from Pre-Tracker: \(error)")
+                }
+            })
+            
+            // add regionId to set so further notifications for region do not happen 
+            prevNotifiedSet.insert(regionId)
+        }
     }
     
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
