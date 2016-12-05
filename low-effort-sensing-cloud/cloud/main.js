@@ -120,7 +120,7 @@ Parse.Cloud.afterSave('hotspot', function (request) {
       break;
   }
 
-  if (terminatorsExist || hotspot.get('archiver') == 'system') {
+  if (terminatorsExist || hotspot.get('archiver') === 'system') {
     // archive old hotspot (user is archiver unless background job archives)
     hotspot.set('archived', true);
     if (hotspot.get('archiver') === '') {
@@ -260,7 +260,7 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                 if (prevNotificationLen > 0) {
                   for (var j = 0; j < prevNotificationLen; j++) {
                     var currentHotpotId = prevNotifications[j].get('hotspotId');
-                    if (currentHotpotId == currentHotspot.objectId) {
+                    if (currentHotpotId === currentHotspot.objectId) {
                       hotspotPrevNotified = true;
                       break;
                     }
@@ -269,7 +269,7 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
 
                 // check if user is one who initially marked it
                 var didUserCreateLocation = false;
-                if (locations[i].get('vendorId') == request.params.vendorId) {
+                if (locations[i].get('vendorId') === request.params.vendorId) {
                   didUserCreateLocation = true;
                 }
 
@@ -371,7 +371,7 @@ Parse.Cloud.define('naivelyRetrieveLocationsForTracking', function(request, resp
                 if (prevNotificationLen > 0) {
                   for (var j = 0; j < prevNotificationLen; j++) {
                     var currentHotpotId = prevNotifications[j].get('hotspotId');
-                    if (currentHotpotId == currentHotspot.objectId) {
+                    if (currentHotpotId === currentHotspot.objectId) {
                       hotspotPrevNotified = true;
                       break;
                     }
@@ -380,7 +380,7 @@ Parse.Cloud.define('naivelyRetrieveLocationsForTracking', function(request, resp
 
                 // check if user is one who initially marked it
                 var didUserCreateLocation = false;
-                if (locations[i].get('vendorId') == request.params.vendorId) {
+                if (locations[i].get('vendorId') === request.params.vendorId) {
                   didUserCreateLocation = true;
                 }
 
@@ -455,13 +455,13 @@ var getDistance = function (p1, p2) {
 };
 
 var getRankForCategory = function (category, preferences) {
-  if (preferences.firstPreference == category) {
+  if (preferences.firstPreference === category) {
     return 1;
-  } else if (preferences.secondPreference == category) {
+  } else if (preferences.secondPreference === category) {
     return 2;
-  } else if (preferences.thirdPreference == category) {
+  } else if (preferences.thirdPreference === category) {
     return 3;
-  } else if (preferences.fourthPreference == category) {
+  } else if (preferences.fourthPreference === category) {
     return 4;
   } else {
     return 0;
