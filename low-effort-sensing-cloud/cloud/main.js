@@ -1,7 +1,7 @@
 // aggregates data and archives locations if they are no longer valid
 Parse.Cloud.afterSave('pingResponse', function (request) {
   // thresholds for adding info and archiving hotspot
-  var infoAddThreshold = 2;
+  var infoAddThreshold = 1;
   var archiveHotspotThreshold = 2;
 
   // get values from just saved object
@@ -32,7 +32,7 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
       responseForHotspot.greaterThanOrEqualTo('timestamp', lastUpdateTimestamp);
       responseForHotspot.find({
         success: function (hotspotResponses) {
-          var similarResponseCount = 0;
+          var similarResponseCount = 1;
 
           for (var i = 0; i < hotspotResponses.length; i++) {
             var currentResponse = hotspotResponses[i].get('response');
@@ -72,6 +72,9 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
 Parse.Cloud.beforeSave('hotspot', function (request, response) {
   if (!request.object.get('archiver')) {
     request.object.set('archiver', '');
+  }
+  if (!request.object.get('beaconId')) {
+    request.object.set('beaconId', '');
   }
   response.success();
 });
@@ -117,7 +120,7 @@ Parse.Cloud.afterSave('hotspot', function (request) {
       break;
   }
 
-  if (terminatorsExist || hotspot.get('archiver') == 'system') {
+  if (terminatorsExist || hotspot.get('archiver') === 'system') {
     // archive old hotspot (user is archiver unless background job archives)
     hotspot.set('archived', true);
     if (hotspot.get('archiver') === '') {
@@ -257,7 +260,7 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
                 if (prevNotificationLen > 0) {
                   for (var j = 0; j < prevNotificationLen; j++) {
                     var currentHotpotId = prevNotifications[j].get('hotspotId');
-                    if (currentHotpotId == currentHotspot.objectId) {
+                    if (currentHotpotId === currentHotspot.objectId) {
                       hotspotPrevNotified = true;
                       break;
                     }
@@ -266,7 +269,7 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
 
                 // check if user is one who initially marked it
                 var didUserCreateLocation = false;
-                if (locations[i].get('vendorId') == request.params.vendorId) {
+                if (locations[i].get('vendorId') === request.params.vendorId) {
                   didUserCreateLocation = true;
                 }
 
@@ -330,6 +333,110 @@ Parse.Cloud.define('retrieveLocationsForTracking', function(request, response) {
   });
 });
 
+// return closest n locations for tracking without preference weighting
+Parse.Cloud.define('naivelyRetrieveLocationsForTracking', function(request, response) {
+  var currentLocation = {
+    'latitude': request.params.latitude,
+    'longitude': request.params.longitude
+  };
+  var distanceToHotspots = [];
+
+  var prevNotifiedQuery = new Parse.Query('notificationSent');
+      prevNotifiedQuery.equalTo('vendorId', request.params.vendorId);
+      prevNotifiedQuery.find({
+        success: function (prevNotifications) {
+          var prevNotificationLen = prevNotifications.length;
+
+          // return locations sorted by distance and ranking for user
+          var locationQuery = new Parse.Query('hotspot');
+          locationQuery.limit(1000);
+          locationQuery.notEqualTo('archived', true);
+
+          locationQuery.find({
+            success: function (locations) {
+              for (var i = 0; i < locations.length; i++) {
+                var currentHotspot = {
+                  'objectId': locations[i].id,
+                  'location': locations[i].get('location'),
+                  'tag': locations[i].get('tag'),
+                  'archived': locations[i].get('archived')
+                };
+
+                currentHotspot.distance = getDistance(currentLocation,
+                                                      currentHotspot.location);
+                currentHotspot.distance = Math.round(currentHotspot.distance);
+
+                // check if user has already been notified for the location
+                var hotspotPrevNotified = false;
+                if (prevNotificationLen > 0) {
+                  for (var j = 0; j < prevNotificationLen; j++) {
+                    var currentHotpotId = prevNotifications[j].get('hotspotId');
+                    if (currentHotpotId === currentHotspot.objectId) {
+                      hotspotPrevNotified = true;
+                      break;
+                    }
+                  }
+                }
+
+                // check if user is one who initially marked it
+                var didUserCreateLocation = false;
+                if (locations[i].get('vendorId') === request.params.vendorId) {
+                  didUserCreateLocation = true;
+                }
+
+                // check if current hotspot is archived from previous responses
+                var isArchived = currentHotspot.archived;
+
+                // push hotspot to array if conditions are met
+                if (!hotspotPrevNotified && !didUserCreateLocation &&
+                    !isArchived) {
+                  distanceToHotspots.push(currentHotspot);
+                }
+              }
+
+              distanceToHotspots.sort(function(a, b) {
+                return (a.distance > b.distance) ? 1 : ((b.distance > a.distance) ? -1 : 0);
+              });
+
+              var topHotspots = distanceToHotspots;
+              if (typeof request.params.count != 'undefined') {
+                topHotspots = distanceToHotspots.slice(0, request.params.count);
+              }
+
+              var hotspotList = [];
+              for (var k = 0; k < topHotspots.length; k++) {
+                hotspotList.push(topHotspots[k].objectId);
+              }
+
+              var hotspotQuery = new Parse.Query('hotspot');
+              hotspotQuery.containedIn('objectId', hotspotList);
+
+              hotspotQuery.find({
+                success: function (selectedHotspots) {
+                  response.success(selectedHotspots);
+                },
+                error: function (error) {
+                  /*jshint ignore:start*/
+                  console.log(error);
+                  /*jshint ignore:end*/
+                }
+              });
+            },
+            error: function (error) {
+              /*jshint ignore:start*/
+              console.log(error);
+              /*jshint ignore:end*/
+            }
+          });
+        },
+        error: function (error) {
+          /*jshint ignore:start*/
+          console.log(error);
+          /*jshint ignore:end*/
+        }
+      });
+});
+
 // Haversine formula for getting distance in miles.
 var getDistance = function (p1, p2) {
   var R = 6378137; // Earth’s mean radius in meter
@@ -348,13 +455,13 @@ var getDistance = function (p1, p2) {
 };
 
 var getRankForCategory = function (category, preferences) {
-  if (preferences.firstPreference == category) {
+  if (preferences.firstPreference === category) {
     return 1;
-  } else if (preferences.secondPreference == category) {
+  } else if (preferences.secondPreference === category) {
     return 2;
-  } else if (preferences.thirdPreference == category) {
+  } else if (preferences.thirdPreference === category) {
     return 3;
-  } else if (preferences.fourthPreference == category) {
+  } else if (preferences.fourthPreference === category) {
     return 4;
   } else {
     return 0;

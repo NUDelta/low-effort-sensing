@@ -36,6 +36,12 @@ class NotificationCreator {
             return createNotificationForSpace()
         case "surprising":
             return createNotificationForSurprising()
+        case "guestevent":
+            return createNotificationForGuestEvent()
+        case "dtrdonut":
+            return createNotificationForDtrDonut()
+        case "windowdrawing":
+            return createNotificationForWindowDrawing()
         default:
             return ["notificationCategory": "", "message": ""]
         }
@@ -400,6 +406,142 @@ class NotificationCreator {
                 output["message"] = "There were a lot of people here for an event (\(currentInfo["peopledoing"]!)). Are they still there?"
             }
         }
+        return output
+    }
+    
+    func createNotificationForGuestEvent() -> [String : String] {
+        var output = ["notificationCategory": "", "message": ""]
+        
+        // generate notification
+        if currentInfo["eventkind"] == "" {
+            output["notificationCategory"] = "guestevent_eventkind"
+            output["message"] = "Someone reported a guest event going on here. Can you tell us what's happening?"
+        } else {
+            if currentInfo["host"] == "" {
+                output["notificationCategory"] = "guestevent_host"
+                output["message"] = "There's a guest event (\(currentInfo["eventkind"]!)) going on here. Can you tell us who's hosting it?"
+            } else {
+                if currentInfo["eventlength"] == "" {
+                    output["notificationCategory"] = "guestevent_eventlength"
+                    output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here. Do you know how much longer it will last?"
+                } else {
+                    if currentInfo["isfood"] == "" {
+                        output["notificationCategory"] = "guestevent_isfood"
+                        output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here. Do they have food?"
+                    } else if currentInfo["isfood"] == "yes" {
+                        if currentInfo["foodkind"] == "" {
+                            output["notificationCategory"] = "guestevent_foodkind"
+                            output["message"] = "There's a guest event going on here with food. What kind of food do they have?"
+                        } else {
+                            if currentInfo["foodleft"] == "" {
+                                output["notificationCategory"] = "guestevent_foodleft"
+                                output["message"] = "There's a guest event with food (\(currentInfo["foodkind"]!)) here! How much food is left?"
+                            } else {
+                                output["notificationCategory"] = "no question"
+                                output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here, and they have food (\(currentInfo["foodkind"]!))!"
+                            }
+                        }
+                    } else {
+                        output["notificationCategory"] = "no question"
+                        output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here. Check it out!"
+                    }
+                }
+            }
+        }
+        
+        return output
+    }
+    
+    func createNotificationForDtrDonut() -> [String : String] {
+        var output = ["notificationCategory": "", "message": ""]
+        
+        // generate notification
+        if currentInfo["room"] == "" {
+            output["notificationCategory"] = "dtrdonut_room"
+            output["message"] = "DONUTS!!! They're either in the Hackerspace or Delta Lab. Can you tell us where?"
+        } else {
+            if currentInfo["boxdrawing"] == "" {
+                output["notificationCategory"] = "dtrdonut_boxdrawing"
+                output["message"] = "There are DONUTS in the \(currentInfo["room"]!). While you're getting a donut...does the box has anything written on it?"
+            } else if currentInfo["boxdrawing"] == "yes" {
+                if currentInfo["boxcontent"] == "" {
+                    output["notificationCategory"] = "dtrdonut_boxcontent"
+                    output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with something written on the box. Can you tell us what it most closely resembles?"
+                } else {
+                    if currentInfo["markercolor"] == "" {
+                        output["notificationCategory"] = "dtrdonut_markercolor"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it. What color marker was used to write it?"
+                    } else {
+                        if currentInfo["plain"] == "" {
+                            output["notificationCategory"] = "dtrdonut_plain"
+                            output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Are there any plain/glazed donuts in the box?"
+                        } else {
+                            if currentInfo["frosted"] == "" {
+                                output["notificationCategory"] = "dtrdonut_frosted"
+                                output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Are there any frosted donuts in the box?"
+                            } else {
+                                output["notificationCategory"] = "no question"
+                                output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!) with a \(currentInfo["boxcontent"]!) written on it in marker (color: \(currentInfo["markercolor"]!)). Please do take one! Enjoy!"
+                            }
+                        }
+                    }
+                }
+            } else {
+                if currentInfo["plain"] == "" {
+                    output["notificationCategory"] = "dtrdonut_plain"
+                    output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Are there any plain/glazed donuts in the box?"
+                } else {
+                    if currentInfo["frosted"] == "" {
+                        output["notificationCategory"] = "dtrdonut_frosted"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Are there any frosted donuts in the box?"
+                    } else {
+                        output["notificationCategory"] = "no question"
+                        output["message"] = "There's a box of DONUTS in the \(currentInfo["room"]!). Please do take one! Enjoy!"
+                    }
+                }
+            }
+        }
+        
+        return output
+    }
+    
+    func createNotificationForWindowDrawing() -> [String : String] {
+        var output = ["notificationCategory": "", "message": ""]
+        
+        // generate response
+        if currentInfo["objectright"] == "" {
+            output["notificationCategory"] = "windowdrawing_objectright"
+            output["message"] = "Look up towards Ford, 2nd floor! See the two post-it note drawings? What's the object on the right?"
+        } else {
+            if currentInfo["colorright"] == "" {
+                output["notificationCategory"] = "windowdrawing_colorright"
+                output["message"] = "Look up towards Ford, 2nd floor! See the post-it drawing of a \(currentInfo["objectright"]!) on the right? Can you tell us what color it is?"
+            } else {
+                if currentInfo["valueright"] == "" {
+                    output["notificationCategory"] = "windowdrawing_valueright"
+                    output["message"] = "Look up towards Ford, 2nd floor! See the \(currentInfo["colorright"]!) post-it drawing of a \(currentInfo["objectright"]!) on the right? Can you tell us what its value is?"
+                } else {
+                    if currentInfo["objectleft"] == "" {
+                        output["notificationCategory"] = "windowdrawing_objectleft"
+                        output["message"] = "Look up towards Ford, 2nd floor! See the \(currentInfo["colorright"]!) post-it drawing of a \(currentInfo["valueright"]!) on the right? Can you tell us what the object to its left is?"
+                    } else {
+                        if currentInfo["colorleft"] == "" {
+                            output["notificationCategory"] = "windowdrawing_colorright"
+                            output["message"] = "Look up towards Ford, 2nd floor! See the post-it drawing of a \(currentInfo["objectleft"]!) on the left next to the \(currentInfo["valueright"]!)? Can you tell us what color it is?"
+                        } else {
+                            if currentInfo["valueleft"] == "" {
+                                output["notificationCategory"] = "windowdrawing_valueright"
+                                output["message"] = "Look up towards Ford, 2nd floor! See the \(currentInfo["colorleft"]!) post-it drawing of a \(currentInfo["objectleft"]!) on the left next to the \(currentInfo["valueright"]!)? Can you tell us what its value is?"
+                            } else {
+                                output["notificationCategory"] = "no question"
+                                output["message"] = "Look up towards Ford, 2nd floor! Someone made a \(currentInfo["colorleft"]!) \(currentInfo["valueleft"]!) and a \(currentInfo["colorright"]!) \(currentInfo["valueright"]!) with post-it notes! I wonder why..."
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
         return output
     }
 }

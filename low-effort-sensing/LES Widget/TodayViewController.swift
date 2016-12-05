@@ -32,6 +32,12 @@ let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingne
 
 let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
 
+let guestEventInfo = ["eventkind": "", "host": "", "isfood": "", "foodkind": "", "foodleft": "", "eventlength": ""]
+
+let windowDrawingInfo = ["objectright": "", "colorright": "", "valueright": "", "objectleft": "", "colorleft": "", "valueleft": ""]
+
+let dtrDonutInfo = ["room": "", "boxdrawing": "", "boxcontent": "", "markercolor": "", "plain": "", "frosted": ""]
+
 let appUserDefaults = UserDefaults(suiteName: appGroup)
 
 class TodayViewController: UIViewController, NCWidgetProviding {
@@ -39,15 +45,15 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     @IBOutlet weak var foodButton: UIButton!
     @IBOutlet weak var queueButton: UIButton!
     @IBOutlet weak var spaceButton: UIButton!
-    @IBOutlet weak var surprisingButton: UIButton!
+//    @IBOutlet weak var surprisingButton: UIButton!
     
     @IBOutlet weak var submittedLabel: UILabel!
     @IBOutlet weak var infoLabel: UILabel!
     
-    var foodSelected: Bool = false
-    var queueSelected: Bool = false
-    var spaceSelected: Bool = false
-    var surprisingSelected: Bool = false
+    var guestEventSelected: Bool = false
+    var windowDrawingSelected: Bool = false
+    var dtrDonutSelected: Bool = false
+//    var surprisingSelected: Bool = false
     
     let brightGreenColor: UIColor = UIColor.init(red: 83.0 / 255.0, green: 215.0 / 255.0, blue: 105.0 / 255.0, alpha: 1.0)
     let defaultAlpha: CGFloat = 0.4
@@ -95,10 +101,10 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
         spaceButton.titleLabel!.minimumScaleFactor = 0.5
         
-        surprisingButton.titleLabel!.numberOfLines = 0
-        surprisingButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        surprisingButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
-        surprisingButton.titleLabel!.minimumScaleFactor = 0.5
+//        surprisingButton.titleLabel!.numberOfLines = 0
+//        surprisingButton.titleLabel!.adjustsFontSizeToFitWidth = true
+//        surprisingButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
+//        surprisingButton.titleLabel!.minimumScaleFactor = 0.5
     }
     
     override func didReceiveMemoryWarning() {
@@ -126,146 +132,151 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        if foodSelected {
-            pushDataToParse("food")
-            unmarkLocation("food")
+        if guestEventSelected {
+            pushDataToParse("guestevent")
+            unmarkLocation("guestevent")
             submittedLabel.text = ""
-        } else if queueSelected {
-            pushDataToParse("queue")
-            unmarkLocation("queue")
+        } else if windowDrawingSelected {
+            pushDataToParse("windowdrawing")
+            unmarkLocation("windowdrawing")
             submittedLabel.text = ""
-        } else if spaceSelected {
-            pushDataToParse("space")
-            unmarkLocation("space")
+        } else if dtrDonutSelected {
+            pushDataToParse("dtrdonut")
+            unmarkLocation("dtrdonut")
             submittedLabel.text = ""
-        } else if surprisingSelected {
-            pushDataToParse("surprising")
-            unmarkLocation("surprising")
         }
+//        else if surprisingSelected {
+//            pushDataToParse("surprising")
+//            unmarkLocation("surprising")
+//        }
     }
     
     @IBAction func markLocationForFood(_ sender: AnyObject) {
         // show user that button has been selected/deselected
-        if !foodSelected {
+        if !guestEventSelected {
             foodButton.alpha = 1
             foodButton.backgroundColor = brightGreenColor
             foodButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for Food tracking when you exit the notification center. \n\nClick Food again to untrack or click another button to change the category"
+            submittedLabel.text = "Location will be marked for Guest Event tracking when you exit the notification center. \n\nClick Guest Event again to untrack or click another button to change the category"
             
-            foodSelected = true
+            guestEventSelected = true
         } else {
-            unmarkLocation("food")
+            unmarkLocation("guestevent")
             submittedLabel.text = ""
         }
         
         // reset any other buttons selected
-        if queueSelected {
-            unmarkLocation("queue")
-        } else if spaceSelected {
-            unmarkLocation("space")
-        } else if surprisingSelected {
-            unmarkLocation("surprising")
+        if windowDrawingSelected {
+            unmarkLocation("windowdrawing")
+        } else if dtrDonutSelected {
+            unmarkLocation("dtrdonut")
         }
+//        else if surprisingSelected {
+//            unmarkLocation("surprising")
+//        }
     }
     
     @IBAction func markLocationForQueue(_ sender: AnyObject) {
         // show user that button has been selected/deselected
-        if !queueSelected {
+        if !windowDrawingSelected {
             queueButton.alpha = 1
             queueButton.backgroundColor = brightGreenColor
             queueButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for Queue tracking when you exit the notification center \n\nClick Queue again to untrack or click another button to change the category"
+            submittedLabel.text = "Location will be marked for Window Drawing tracking when you exit the notification center \n\nClick Window Drawing again to untrack or click another button to change the category"
             
-            queueSelected = true
+            windowDrawingSelected = true
         } else {
-            unmarkLocation("queue")
+            unmarkLocation("windowdrawing")
             submittedLabel.text = ""
         }
         
         // reset any other buttons selected
-        if foodSelected {
-            unmarkLocation("food")
-        } else if spaceSelected {
-            unmarkLocation("space")
-        } else if surprisingSelected {
-            unmarkLocation("surprising")
+        if guestEventSelected {
+            unmarkLocation("guestevent")
+        } else if dtrDonutSelected {
+            unmarkLocation("dtrdonut")
         }
+//        else if surprisingSelected {
+//            unmarkLocation("surprising")
+//        }
     }
     
     @IBAction func markLocationForSpace(_ sender: AnyObject) {
         // show user that button has been selected/deselected
-        if !spaceSelected {
+        if !dtrDonutSelected {
             spaceButton.alpha = 1
             spaceButton.backgroundColor = brightGreenColor
             spaceButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for Space tracking when you exit the notification center \n\nClick Space again to untrack or click another button to change the category"
+            submittedLabel.text = "Location will be marked for DTR Donut tracking when you exit the notification center \n\nClick DTR Donut again to untrack or click another button to change the category"
             
-            spaceSelected = true
+            dtrDonutSelected = true
         } else {
-            unmarkLocation("space")
+            unmarkLocation("dtrdonut")
             submittedLabel.text = ""
         }
         
         // reset any other buttons selected
-        if foodSelected {
-            unmarkLocation("food")
-        } else if queueSelected {
-            unmarkLocation("queue")
-        } else if surprisingSelected {
-            unmarkLocation("surprising")
+        if guestEventSelected {
+            unmarkLocation("guestevent")
+        } else if windowDrawingSelected {
+            unmarkLocation("windowdrawing")
         }
+//        else if surprisingSelected {
+//            unmarkLocation("surprising")
+//        }
     }
     
-    @IBAction func markLocationForSurprisingThing(_ sender: AnyObject) {
-        // show user that button has been selected/deselected
-        if !surprisingSelected {
-            surprisingButton.alpha = 1
-            surprisingButton.backgroundColor = brightGreenColor
-            surprisingButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for Surprising Things tracking when you exit the notification center \n\nClick Surprising Things again to untrack or click another button to change the category"
-            
-            surprisingSelected = true
-        } else {
-            unmarkLocation("surprising")
-            submittedLabel.text = ""
-        }
-        
-        // reset any other buttons selected
-        if foodSelected {
-            unmarkLocation("food")
-        } else if queueSelected {
-            unmarkLocation("queue")
-        } else if spaceSelected {
-            unmarkLocation("space")
-        }
-    }
+//    @IBAction func markLocationForSurprisingThing(_ sender: AnyObject) {
+//        // show user that button has been selected/deselected
+//        if !surprisingSelected {
+//            surprisingButton.alpha = 1
+//            surprisingButton.backgroundColor = brightGreenColor
+//            surprisingButton.setTitleColor(UIColor.white, for: UIControlState())
+//            submittedLabel.text = "Location will be marked for Surprising Things tracking when you exit the notification center \n\nClick Surprising Things again to untrack or click another button to change the category"
+//            
+//            surprisingSelected = true
+//        } else {
+//            unmarkLocation("surprising")
+//            submittedLabel.text = ""
+//        }
+//        
+//        // reset any other buttons selected
+//        if foodSelected {
+//            unmarkLocation("food")
+//        } else if queueSelected {
+//            unmarkLocation("queue")
+//        } else if spaceSelected {
+//            unmarkLocation("space")
+//        }
+//    }
     
     func unmarkLocation(_ location: String) {
-        if location == "food" {
+        if location == "guestevent" {
             foodButton.alpha = defaultAlpha
             foodButton.backgroundColor = UIColor.white
             foodButton.setTitleColor(UIColor.black, for: UIControlState())
             
-            foodSelected = false
-        } else if location == "queue" {
+            guestEventSelected = false
+        } else if location == "windowdrawing" {
             queueButton.alpha = defaultAlpha
             queueButton.backgroundColor = UIColor.white
             queueButton.setTitleColor(UIColor.black, for: UIControlState())
             
-            queueSelected = false
-        } else if location == "space" {
+            windowDrawingSelected = false
+        } else if location == "dtrdonut" {
             spaceButton.alpha = defaultAlpha
             spaceButton.backgroundColor = UIColor.white
             spaceButton.setTitleColor(UIColor.black, for: UIControlState())
             
-            spaceSelected = false
-        }  else if location == "surprising" {
-            surprisingButton.alpha = defaultAlpha
-            surprisingButton.backgroundColor = UIColor.white
-            surprisingButton.setTitleColor(UIColor.black, for: UIControlState())
-            
-            surprisingSelected = false
+            dtrDonutSelected = false
         }
+//        else if location == "surprising" {
+//            surprisingButton.alpha = defaultAlpha
+//            surprisingButton.backgroundColor = UIColor.white
+//            surprisingButton.setTitleColor(UIColor.black, for: UIControlState())
+//            
+//            surprisingSelected = false
+//        }
     }
     
     func pushDataToParse(_ tag: String) {
@@ -317,6 +328,18 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 case "surprising":
                     newMonitoredLocation["info"] = surprisingInfo
                     newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
+                    break
+                case "guestevent":
+                    newMonitoredLocation["info"] = guestEventInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["eventkind": epochTimestamp, "host": epochTimestamp, "isfood": epochTimestamp, "foodkind": epochTimestamp, "foodleft": epochTimestamp, "eventlength": epochTimestamp]
+                    break
+                case "windowdrawing":
+                    newMonitoredLocation["info"] = windowDrawingInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["objectright": epochTimestamp, "colorright": epochTimestamp, "valueright": epochTimestamp, "objectleft": epochTimestamp, "colorleft": epochTimestamp, "valueleft": epochTimestamp]
+                    break
+                case "dtrdonut":
+                    newMonitoredLocation["info"] = dtrDonutInfo
+                    newMonitoredLocation["saveTimeForQuestion"] = ["room": epochTimestamp, "boxdrawing": epochTimestamp, "boxcontent": epochTimestamp, "markercolor": epochTimestamp, "plain": epochTimestamp, "frosted": epochTimestamp]
                     break
                 default:
                     break

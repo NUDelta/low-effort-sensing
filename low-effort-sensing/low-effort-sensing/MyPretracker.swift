@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreLocation
+import UserNotifications
 import Parse
 
 public class MyPretracker: NSObject, CLLocationManagerDelegate {
@@ -131,7 +132,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             (geoPoint: PFGeoPoint?, error: Error?) -> Void in
             print(geoPoint as Any)
             if error == nil {
-                PFCloud.callFunction(inBackground: "retrieveLocationsForTracking",
+                PFCloud.callFunction(inBackground: "naivelyRetrieveLocationsForTracking",
                                      withParameters: ["latitude": (geoPoint?.latitude)!,
                                                       "longitude": (geoPoint?.longitude)!,
                                                       "vendorId": vendorId,
@@ -172,14 +173,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
                                                     }
                                                 }
-                                                // save regions to user defaults
-//                                                print(monitoredHotspotDictionary)
-//                                                print(type(of: monitoredHotspotDictionary))
-//                                                for (id, keys) in monitoredHotspotDictionary {
-//                                                    for (newId, newKey) in keys as! [String:AnyObject] {
-//                                                        print("For \(newId): \(type(of: newKey))")
-//                                                    }
-//                                                }
 
                                                 self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                                                 self.appUserDefaults?.synchronize()
@@ -259,7 +252,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 let currentRegion = monitoredHotspotDictionary[region.identifier] as! [String : AnyObject]
                 let beaconId = currentRegion["beaconId"] as! String
                 
-                if beaconId != "" {
+                if beaconId == "" {
                     print("Pretracker found a Geofence Region w/o beacon (\(region.identifier))...beginning pretracking.")
                     if let monitorRegion = region as? CLCircularRegion {
                         let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
@@ -335,12 +328,20 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 let notificationContent = newNotification.createNotificationForTag()
                 
                 // Display notification with context
-                let notification = UILocalNotification()
-                notification.alertBody = notificationContent["message"]
-                notification.soundName = "Default"
-                notification.category = notificationContent["notificationCategory"]
-                notification.userInfo = currentRegion
-                UIApplication.shared.presentLocalNotificationNow(notification)
+                let content = UNMutableNotificationContent()
+                content.body = notificationContent["message"]!
+                content.sound = UNNotificationSound.default()
+                content.categoryIdentifier = notificationContent["notificationCategory"]!
+                content.userInfo = currentRegion
+                
+                let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+                
+                UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                    if let error = error {
+                        print("Error in notifying from Pre-Tracker: \(error)")
+                    }
+                })
             }
         }
     }
