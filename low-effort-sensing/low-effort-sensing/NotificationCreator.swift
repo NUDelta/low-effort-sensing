@@ -438,12 +438,12 @@ class NotificationCreator {
                                 output["message"] = "There's a guest event with food (\(currentInfo["foodkind"]!)) here! How much food is left?"
                             } else {
                                 output["notificationCategory"] = "no question"
-                                output["message"] = "A guest event (\(currentInfo["host"]!)) hosted by a \(currentInfo["host"]!) is happening here, and they have food (\(currentInfo["foodkind"]!))!"
+                                output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here, and they have food (\(currentInfo["foodkind"]!))!"
                             }
                         }
                     } else {
                         output["notificationCategory"] = "no question"
-                        output["message"] = "A guest event (\(currentInfo["host"]!)) hosted by a \(currentInfo["host"]!) is happening here. Check it out!"
+                        output["message"] = "A guest event (\(currentInfo["eventkind"]!)) hosted by a \(currentInfo["host"]!) is happening here. Check it out!"
                     }
                 }
             }
