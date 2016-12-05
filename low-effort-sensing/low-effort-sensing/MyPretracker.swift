@@ -260,7 +260,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 let currentRegion = monitoredHotspotDictionary[region.identifier] as! [String : AnyObject]
                 let beaconId = currentRegion["beaconId"] as! String
                 
-                if beaconId != "" {
+                if beaconId == "" {
                     print("Pretracker found a Geofence Region w/o beacon (\(region.identifier))...beginning pretracking.")
                     if let monitorRegion = region as? CLCircularRegion {
                         let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
