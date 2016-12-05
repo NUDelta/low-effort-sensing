@@ -51,6 +51,10 @@ let surprisingQuestionOrdering = ["whatshappening", "famefrom", "vehicles", "peo
 
 let guestEventQuestionOrdering = ["eventkind", "host", "isfood", "foodkind", "foodleft", "eventlength"]
 
+let windowDrawingQuestionOrdering = ["objectright", "colorright", "valueright", "objectleft", "colorleft", "valueleft"]
+
+let dtrDonutQuestionOrdering = ["room", "boxdrawing", "boxcontent", "markercolor", "plain", "frosted"]
+
 // blank location info
 let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
                 "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
@@ -63,6 +67,10 @@ let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingne
 let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
 
 let guestEventInfo = ["eventkind": "", "host": "", "isfood": "", "foodkind": "", "foodleft": "", "eventlength": ""]
+
+let windowDrawingInfo = ["objectright": "", "colorright": "", "valueright": "", "objectleft": "", "colorleft": "", "valueleft": ""]
+
+let dtrDonutInfo = ["room": "", "boxdrawing": "", "boxcontent": "", "markercolor": "", "plain": "", "frosted": ""]
 
 // notification answers
 let foodAnswers = ["isfood": ["yes", "no"],
@@ -100,6 +108,20 @@ let guestEventAnswers = ["eventkind": ["lecture", "talk", "workshop", "other", "
                          "foodleft": ["still a lot", "less than half", "very little", "I don't know"],
                          "eventlength": ["< 1 hour", "1-2 hours", "> 2 hours", "I don't know"]]
 
+let windowDrawingAnswers = ["objectright": ["letter", "number", "I don't know"],
+                            "colorright": ["pink", "orange", "blue", "I don't know"],
+                            "valueright": ["1", "2", "3", "A", "B", "C", "I don't know"],
+                            "objectleft": ["letter", "number", "I don't know"],
+                            "colorleft": ["pink", "orange", "blue", "I don't know"],
+                            "valueleft": ["1", "2", "3", "A", "B", "C", "I don't know"]]
+
+let dtrDonutAnswers = ["room": ["hackerspace", "delta lab", "I don't know"],
+                       "boxdrawing": ["yes", "no", "I don't know"],
+                       "boxcontent": ["inspirational message", "quote", "I don't know"],
+                       "markercolor": ["red", "black", "green", "other", "I don't know"],
+                       "plain": ["yes", "no", "I don't know"],
+                       "frosted": ["yes", "no", "I don't know"]]
+
 // key to question dictionary
 let foodKeyToQuestion = ["isfood": "Is there food here?",
                          "foodtype": "What kind of food is here?",
@@ -135,6 +157,20 @@ let guestEventKeyToQuestion = ["eventkind": "What kind of event is happening?",
                                "foodkind": "What kind of food is there?",
                                "foodleft": "How much food is left?",
                                "eventlength": "How much longer will the event be going on?"]
+
+let windowDrawingKeyToQuestion = ["objectright": "What's drawn on the right?",
+                                  "colorright": "What color is the right drawing?",
+                                  "valueright": "What's the value of the right drawing?",
+                                  "objectleft": "What's drawn on the left?",
+                                  "colorleft": "What color is the left drawing?",
+                                  "valueleft": "What's the value of the left drawing?"]
+
+let dtrDonutKeyToQuestion = ["room": "Are the donuts in the Hackerspace or Delta Lab?",
+                             "boxdrawing": "Does the box have anything written on it?",
+                             "boxcontent": "What's written on the box?",
+                             "markercolor": "What color marker was used to write on the box?",
+                             "plain": "Are there any plain donuts?",
+                             "frosted": "Are there any frosted donuts?"]
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUserNotificationCenterDelegate {
@@ -182,11 +218,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         
         // setup local notifications
         UNUserNotificationCenter.current().delegate = self
+        
+        // create default category for notification without any questions asked
+        notificationCategories.insert(UNNotificationCategory(identifier: "no question", actions: [], intentIdentifiers: [], options: [.customDismissAction]))
+        
+        // create notifications for all types
         createFoodNotifications()
         createQueueNotifications()
         createSpaceNotifications()
         createSurprisingNotifications()
         createGuestEventNotifications()
+        createWindowDrawingNotifications()
+        createDtrDonutNotifications()
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
@@ -391,6 +434,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_foodkind", actions: createActionsForAnswers(guestEventAnswers["foodkind"]!), intentIdentifiers: [], options: [.customDismissAction]))
         notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_foodleft", actions: createActionsForAnswers(guestEventAnswers["foodleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
         notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_eventlength", actions: createActionsForAnswers(guestEventAnswers["eventlength"]!), intentIdentifiers: [], options: [.customDismissAction]))
+    }
+    
+    func createWindowDrawingNotifications() {
+        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_objectright", actions: createActionsForAnswers(windowDrawingAnswers["objectright"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_colorright", actions: createActionsForAnswers(windowDrawingAnswers["colorright"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_valueright", actions: createActionsForAnswers(windowDrawingAnswers["valueright"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_objectleft", actions: createActionsForAnswers(windowDrawingAnswers["objectleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_colorleft", actions: createActionsForAnswers(windowDrawingAnswers["colorleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_valueleft", actions: createActionsForAnswers(windowDrawingAnswers["valueleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
+    }
+    
+    func createDtrDonutNotifications() {
+        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_room", actions: createActionsForAnswers(dtrDonutAnswers["room"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_boxdrawing", actions: createActionsForAnswers(dtrDonutAnswers["boxdrawing"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_boxcontent", actions: createActionsForAnswers(dtrDonutAnswers["boxcontent"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_markercolor", actions: createActionsForAnswers(dtrDonutAnswers["markercolor"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_plain", actions: createActionsForAnswers(dtrDonutAnswers["plain"]!), intentIdentifiers: [], options: [.customDismissAction]))
+        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_frosted", actions: createActionsForAnswers(dtrDonutAnswers["frosted"]!), intentIdentifiers: [], options: [.customDismissAction]))
     }
     
     func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
