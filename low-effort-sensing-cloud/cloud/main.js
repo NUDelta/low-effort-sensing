@@ -14,7 +14,9 @@ Parse.Cloud.afterSave('pingResponse', function (request) {
   // special cases --> don't save answer
   // "I don't know" for surprising things
   // "I don't come here regularly" for queues
-  var responseExceptions = ['I don\'t know', 'I don\'t come here regularly', 'com.apple.UNNotificationDefaultActionIdentifier'];
+  var responseExceptions = ['I don\'t know', 'I don\'t come here regularly',
+                            'com.apple.UNNotificationDefaultActionIdentifier',
+                            'com.apple.UNNotificationDismissActionIdentifier'];
   if (responseExceptions.indexOf(questionResponse) != -1) {
     return;
   }
