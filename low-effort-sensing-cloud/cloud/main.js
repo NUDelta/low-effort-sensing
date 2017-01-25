@@ -558,6 +558,138 @@ Parse.Cloud.define('rankingsByContribution', function(request, response) {
   });
 });
 
+Parse.Cloud.define('fetchUserProfileData', function(request, response) {
+  var output = {
+    'username': '',
+    'initials': '',
+    'contributionCount': 0,
+    'markedLocationCount': 0,
+    'peopleHelped': 5,
+    'contributionLocations': []
+  };
+
+  var userQuery = new Parse.Query('user');
+  userQuery.equalTo('vendorId', request.params.vendorId);
+  userQuery.find({
+    success: function (users) {
+      if (users.length > 0) {
+        // parse out username and initials
+        var currentUser = users[0];
+        var username = currentUser.get('firstName').trim();
+        var initials = '';
+        username = username.concat(currentUser.get('lastName').trim().charAt(0));
+        username = username.toLowerCase();
+        if (username === '') {
+          username = 'anonymous';
+          initials = 'AN';
+        } else {
+          initials = currentUser.get('firstName').trim().charAt(0);
+          initials = initials.concat(currentUser.get('lastName').trim().charAt(0));
+          initials = initials.toUpperCase();
+        }
+        output.username = username;
+        output.initials = initials;
+
+        var responseQuery = new Parse.Query('pingResponse');
+        responseQuery.equalTo('vendorId', request.params.vendorId);
+        responseQuery.descending('timestamp');
+        responseQuery.find({
+          success: function (responses) {
+            // contribution count and contributions where user has responded to notifications
+            var contributionHotspots = [];
+            var contribLocationList = [];
+
+            if (responses.length > 0) {
+              output.contributionCount = responses.length;
+              for (var i in responses) {
+                var newContributionLocation = {
+                  'category': responses[i].get('tag').trim(),
+                  'timestamp': responses[i].get('timestamp') + responses[i].get('gmtOffset'),
+                  'contributionType': 'response',
+                  'hotspotId': responses[i].get('hotspotId')
+                };
+
+                contributionHotspots.push(responses[i].get('hotspotId'));
+                contribLocationList.push(newContributionLocation);
+              }
+            } else {
+              output.contributionCount = 0;
+            }
+
+            // get locations for contributionLocations and any marked locations
+            var genLocationQuery = new Parse.Query('hotspot');
+            var contributionLocationQuery = new Parse.Query('hotspot');
+            genLocationQuery.equalTo('vendorId', request.params.vendorId);
+            contributionLocationQuery.containedIn('objectId', contributionHotspots);
+
+            var mainQuery = new Parse.Query.or(genLocationQuery, contributionLocationQuery);
+            mainQuery.descending('timestampCreated');
+            mainQuery.find({
+              success: function (hotspots) {
+                if (hotspots.length > 0) {
+                  for (var j in hotspots) {
+                    if (hotspots[j].get('vendorId') === request.params.vendorId) {
+                      var newMarkedLocation = {
+                        'category': hotspots[j].get('tag').trim(),
+                        'timestamp': hotspots[j].get('timestampCreated') +
+                                     hotspots[j].get('gmtOffset'),
+                        'contributionType': 'marked',
+                        'hotspotId': hotspots[j].get('hotspotId'),
+                        'latitude': hotspots[j].get('location').latitude,
+                        'longitude': hotspots[j].get('location').longitude,
+                      };
+
+                      output.contributionLocations.push(newMarkedLocation);
+                      output.markedLocationCount++;
+                    } else {
+                      for (var k in contribLocationList) {
+                        if (contribLocationList[k].hotspotId === hotspots[j].id) {
+                          contribLocationList[k].latitude = hotspots[i].get('location').latitude;
+                          contribLocationList[k].longitude = hotspots[i].get('location').longitude;
+
+                          output.contributionLocations.push(contribLocationList[k]);
+                        }
+                      }
+                    }
+                  }
+                } else {
+                  output.markedLocationCount = 0;
+                }
+
+                response.success(output);
+              },
+              error: function (error) {
+                /*jshint ignore:start*/
+                console.log(error);
+                /*jshint ignore:end*/
+              }
+            });
+          },
+          error: function (error) {
+            /*jshint ignore:start*/
+            console.log(error);
+            /*jshint ignore:end*/
+          }
+        });
+      } else {
+        output.username = 'anonymous';
+        output.initials = 'AN';
+        output.ranking = 0;
+        output.contributionCount = 0;
+        output.markedLocationCount = 0;
+        output.peopleHelped = 0;
+
+        response.success(output);
+      }
+    },
+    error: function (error) {
+      /*jshint ignore:start*/
+      console.log(error);
+      /*jshint ignore:end*/
+    }
+  });
+});
+
 /*jshint ignore:start*/
 // multicolumn sorting function
 // from: http://stackoverflow.com/questions/6913512/how-to-sort-an-array-of-objects-by-multiple-fields
