@@ -558,6 +558,81 @@ Parse.Cloud.define('rankingsByContribution', function(request, response) {
   });
 });
 
+Parse.Cloud.define('fetchMapDataView', function (request, response) {
+  var output = [];
+  var responseQuery = new Parse.Query('pingResponse');
+  responseQuery.equalTo('hotspotId', request.params.hotspotId);
+  responseQuery.notContainedIn('response', ['com.apple.UNNotificationDismissActionIdentifier',
+                                            'com.apple.UNNotificationDefaultActionIdentifier',
+                                            'I don\'t know', 'I don\'t come here regularly']);
+  responseQuery.ascending('timestamp');
+  responseQuery.find({
+    success: function (responses) {
+      if (responses.length > 0) {
+        // parse out responses into relevant information
+        var users = [];
+        var responsesToAdd = [];
+
+        for (var i in responses) {
+          var newResponse = {
+            'question': responses[i].get('question'),
+            'answer': responses[i].get('response'),
+            'timestamp': responses[i].get('timestamp') + responses[i].get('gmtOffset'),
+            'vendorId': responses[i].get('vendorId'),
+            'initials': ''
+          };
+
+          users.push(responses[i].get('vendorId'));
+          responsesToAdd.push(newResponse);
+        }
+
+        // get initials for each response
+        var userQuery = new Parse.Query('user');
+        userQuery.containedIn('vendorId', users);
+        userQuery.find({
+          success: function (users) {
+            if (users.length > 0) {
+              for (var k in responsesToAdd) {
+                for (var j in users) {
+                  if (responsesToAdd[k].vendorId === users[j].get('vendorId')) {
+                    var initials = '';
+                    var username = users[j].get('firstName').trim();
+                    username = username.concat(users[j].get('lastName').trim().charAt(0));
+                    if (username === '') {
+                      initials = 'AN';
+                    } else {
+                      initials = users[j].get('firstName').trim().charAt(0);
+                      initials = initials.concat(users[j].get('lastName').trim().charAt(0));
+                      initials = initials.toUpperCase();
+                    }
+
+                    responsesToAdd[k].initials = initials;
+                    output.push(responsesToAdd[k]);
+                    break;
+                  }
+                }
+              }
+            }
+            response.success(output);
+          },
+          error: function (error) {
+            /*jshint ignore:start*/
+            console.log(error);
+            /*jshint ignore:end*/
+          }
+        });
+      } else {
+        response.success(output);
+      }
+    },
+    error: function (error) {
+      /*jshint ignore:start*/
+      console.log(error);
+      /*jshint ignore:end*/
+    }
+  });
+});
+
 Parse.Cloud.define('fetchUserProfileData', function(request, response) {
   var output = {
     'username': '',
