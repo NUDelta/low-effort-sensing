@@ -125,28 +125,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         return cell
     }
     
-//    func loadDataForHotspotDictionary(_ hotspotDictionary: [String : AnyObject], distance: String) {
-//        let tag = hotspotDictionary["tag"] as! String
-//        
-//        // set value for first row
-//        var firstRowLabelValue = ""
-//        let locationCommonName = hotspotDictionary["locationCommonName"] as! String
-//        if locationCommonName == "" {
-//            firstRowLabelValue = createTitleFromTag(tag)
-//        } else {
-//            if tag == "queue" {
-//                firstRowLabelValue = locationCommonName + " (line tracking)"
-//            } else if tag == "space" {
-//                firstRowLabelValue = locationCommonName + " (space tracking)"
-//            }
-//        }
-//        
-//        let firstRow = LocationData(firstRowLabel: firstRowLabelValue, secondRowLabel: distance + " from current location")
-//        tableData.append(firstRow)
-//        
-//        tableData = tableData + fillDataForQuestions(hotspotDictionary)
-//    }
-    
     func retrieveAndDrawData(_ hotspotId: String) {
         // fetch data
         PFCloud.callFunction(inBackground: "fetchMapDataView",
@@ -163,7 +141,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
                                         for object in answers {
                                             if let object = object as? [String : Any?] {
                                                 // convert objects
-                                                self.currentHotspot["tag"] as! String
                                                 let question = self.getQuestionForKey(object["question"] as! String,
                                                                                  tag: self.currentHotspot["tag"] as! String)
                                                 let answer = self.getAnswerForKey(object["question"] as! String)
@@ -252,52 +229,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
             return ""
         }
     }
-    
-//    func fillDataForQuestions(_ hotspot: [String : AnyObject]) -> [LocationData] {
-//        let tag = hotspot["tag"] as! String
-//        let info = hotspot["info"] as! [String : String]
-//        var questionOrdering: [String] = []
-//        
-//        var filledData: [LocationData] = []
-//        var questionDictionary: [String : String] = [:]
-//        
-//        switch tag {
-//        case "food":
-//            questionOrdering = ["foodtype", "howmuchfood", "freeorsold", "forstudentgroup", "cost", "sellingreason"]
-//            questionDictionary = foodKeyToQuestion
-//            break
-//        case "queue":
-//            questionOrdering = ["linetime", "islonger", "isworthwaiting", "npeople"]
-//            questionDictionary = queueKeyToQuestion
-//            break
-//        case "space":
-//            questionOrdering = ["isavailable", "seatingtype", "seatingnearpower", "iswifi", "manypeople", "loudness", "event"]
-//            questionDictionary = spaceKeyToQuestion
-//            break
-//        case "surprising":
-//            questionOrdering = ["whatshappening", "famefrom", "vehicles", "peopledoing"]
-//            questionDictionary = surprisingKeyToQuestion
-//            break
-//        default:
-//            break
-//        }
-//        
-//        // add data to table
-//        for questionKey in questionOrdering {
-//            let question = questionDictionary[questionKey]
-//            var questionAnswer: String = ""
-//            if info[questionKey]! == "" {
-//                questionAnswer = "Data has not been contributed yet"
-//            } else {
-//                questionAnswer = info[questionKey]!
-//            }
-//            
-//            let currentRow = LocationData(firstRowLabel: question!, secondRowLabel: questionAnswer)
-//            filledData.append(currentRow)
-//        }
-//        
-//        return filledData
-//    }
     
     @IBAction func returnToMap(_ sender: AnyObject) {
         self.dismiss(animated: true, completion: nil)
