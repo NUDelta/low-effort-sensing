@@ -49,6 +49,8 @@
 		006709CD1D89AB5F001E4528 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006709CC1D89AB5F001E4528 /* NotificationViewController.swift */; };
 		006709D01D89AB5F001E4528 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 006709CE1D89AB5F001E4528 /* MainInterface.storyboard */; };
 		006709D41D89AB5F001E4528 /* CustomNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 006709C61D89AB5F001E4528 /* CustomNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		008AAB7F1E3B287E0068B986 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008AAB7E1E3B287E0068B986 /* UserProfileViewController.swift */; };
+		008AAB811E3B29C50068B986 /* ContributionDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008AAB801E3B29C50068B986 /* ContributionDataCell.swift */; };
 		0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */; };
 		0092F78E1CFA08F7006A9C2C /* LocationDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */; };
 		00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */; };
@@ -202,6 +204,8 @@
 		006709CC1D89AB5F001E4528 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		006709CF1D89AB5F001E4528 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		006709D11D89AB5F001E4528 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		008AAB7E1E3B287E0068B986 /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
+		008AAB801E3B29C50068B986 /* ContributionDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContributionDataCell.swift; sourceTree = "<group>"; };
 		0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForLocationViewController.swift; sourceTree = "<group>"; };
 		0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDataCell.swift; sourceTree = "<group>"; };
 		00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "LES Widget Debug.entitlements"; sourceTree = "<group>"; };
@@ -356,6 +360,7 @@
 				001627CE1CF297430049107E /* WelcomeScreens */,
 				0092F78F1CFA7AFC006A9C2C /* MapView */,
 				0092F7901CFA7BD8006A9C2C /* LocationAndNotification */,
+				008AAB7D1E3B281F0068B986 /* UserProfile */,
 				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
 				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
@@ -446,6 +451,15 @@
 				006709D11D89AB5F001E4528 /* Info.plist */,
 			);
 			path = CustomNotification;
+			sourceTree = "<group>";
+		};
+		008AAB7D1E3B281F0068B986 /* UserProfile */ = {
+			isa = PBXGroup;
+			children = (
+				008AAB7E1E3B287E0068B986 /* UserProfileViewController.swift */,
+				008AAB801E3B29C50068B986 /* ContributionDataCell.swift */,
+			);
+			name = UserProfile;
 			sourceTree = "<group>";
 		};
 		0092F78F1CFA7AFC006A9C2C /* MapView */ = {
@@ -945,6 +959,8 @@
 				0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */,
 				006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */,
 				000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */,
+				008AAB811E3B29C50068B986 /* ContributionDataCell.swift in Sources */,
+				008AAB7F1E3B287E0068B986 /* UserProfileViewController.swift in Sources */,
 				00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */,
 				0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */,
 				001627D61CF297D60049107E /* CompletionViewController.swift in Sources */,
