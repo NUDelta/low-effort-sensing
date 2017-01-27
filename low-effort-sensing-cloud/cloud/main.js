@@ -722,9 +722,9 @@ Parse.Cloud.define('fetchUserProfileData', function(request, response) {
                         'timestamp': hotspots[j].get('timestampCreated') +
                           hotspots[j].get('gmtOffset'),
                         'contributionType': 'marked',
-                        'hotspotId': hotspots[j].get('hotspotId'),
+                        'hotspotId': hotspots[j].id,
                         'latitude': parseFloat(hotspots[j].get('location').latitude),
-                        'longitude': parseFloat(hotspots[j].get('location').longitude),
+                        'longitude': parseFloat(hotspots[j].get('location').longitude)
                       };
 
                       output.contributionLocations.push(newMarkedLocation);
