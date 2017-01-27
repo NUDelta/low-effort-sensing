@@ -240,8 +240,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             // open map view
             self.window = UIWindow(frame: UIScreen.main.bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-//            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! HomeScreenViewController
-            let homeViewController: UserProfileViewController = mainStoryboard.instantiateViewController(withIdentifier: "ProfileViewController") as! UserProfileViewController
+            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! HomeScreenViewController
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()

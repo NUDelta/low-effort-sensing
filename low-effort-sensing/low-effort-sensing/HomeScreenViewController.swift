@@ -229,7 +229,9 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let dataForLocation : DataForLocationViewController = mainStoryboard.instantiateViewController(withIdentifier: "DataForLocationView") as! DataForLocationViewController
         
-        dataForLocation.loadDataForHotspotDictionary(annotationHotpspotDictionary as! [String : AnyObject], distance: annotationDistance!!)
+        dataForLocation.updateClassVariables(annotationHotpspotDictionary as! [String : AnyObject],
+                                             distance: annotationDistance!!)
+        dataForLocation.retrieveAndDrawData(annotationMarkedLocation.hotspotId)
         self.show(dataForLocation, sender: dataForLocation)
     }
     

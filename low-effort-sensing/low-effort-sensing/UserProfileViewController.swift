@@ -73,18 +73,19 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
     
     func setUserImage(_ initials: String) {
         let initialLabel = UILabel()
-        initialLabel.frame.size = CGSize(width: 100.0, height: 100.0)
+        initialLabel.frame.size = CGSize(width: userProfileImage.frame.size.width / 2,
+                                         height: userProfileImage.frame.size.height / 2)
         initialLabel.textColor = UIColor.white
         initialLabel.text = initials
         initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 36)
         initialLabel.textAlignment = NSTextAlignment.center
         initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
-        initialLabel.layer.cornerRadius = 50.0
+        initialLabel.layer.cornerRadius = userProfileImage.frame.size.width / 2
         
         UIGraphicsBeginImageContext(initialLabel.frame.size)
         initialLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
         userProfileImage.image = UIGraphicsGetImageFromCurrentImageContext()
-        userProfileImage.layer.cornerRadius = userProfileImage.frame.size.width / 2;
+        userProfileImage.layer.cornerRadius = userProfileImage.frame.size.width / 2
         userProfileImage.clipsToBounds = true;
         UIGraphicsEndImageContext()
     }
