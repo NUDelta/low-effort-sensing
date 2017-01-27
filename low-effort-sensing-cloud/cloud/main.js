@@ -744,6 +744,8 @@ Parse.Cloud.define('fetchUserProfileData', function(request, response) {
                   output.markedLocationCount = 0;
                 }
 
+                // select only first 10 contributions
+                output.contributionLocations = output.contributionLocations.slice(0, 10);
                 response.success(output);
               },
               error: function(error) {
