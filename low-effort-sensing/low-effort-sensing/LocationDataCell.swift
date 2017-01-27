@@ -11,6 +11,8 @@ import Foundation
 class LocationDataCell: UITableViewCell {
     @IBOutlet weak var questionLabel: UILabel!
     @IBOutlet weak var answerLabel: UILabel!
+    @IBOutlet weak var timestampLabel: UILabel!
+    @IBOutlet weak var userImageLabel: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
