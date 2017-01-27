@@ -8,51 +8,82 @@
 import Foundation
 import Parse
 import MapKit
-import ChameleonFramework
 
-class UserProfileViewController: UIViewController, MKMapViewDelegate {
+class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var contributionLabel: UILabel!
     @IBOutlet weak var markedLocationLabel: UILabel!
     @IBOutlet weak var peopleHelpedLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
     @IBOutlet weak var userProfileImage: UIImageView!
     @IBOutlet weak var contributionMap: MKMapView!
+    @IBOutlet weak var contributionTableView: UITableView!
     
     let regionRadius: CLLocationDistance = 1000
     let appUserDefaults = UserDefaults.init(suiteName: appGroup)
+    let colors: [UIColor] = [UIColor(hue: 0.8639, saturation: 0.76, brightness: 0.73, alpha: 1.0),
+                             UIColor(hue: 0.7444, saturation: 0.64, brightness: 0.66, alpha: 1.0),
+                             UIColor(hue: 0.5194, saturation: 0.46, brightness: 0.45, alpha: 1.0),
+                             UIColor(hue: 0.0028, saturation: 0.89, brightness: 0.76, alpha: 1.0),
+                             UIColor(hue: 0.3333, saturation: 1, brightness: 0.51, alpha: 1.0)]
+    
+    struct ContributionData {
+        var category: String
+        var timestamp: String
+        var contributionType: String
+        var latitude: Float
+        var longitude: Float
+    }
+    var tableData: [ContributionData] = []
     
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // setup map view
         contributionMap.delegate = self
         contributionMap.showsUserLocation = true
         contributionMap.userTrackingMode = MKUserTrackingMode.follow
+        
+        // setup table view
+        contributionTableView.dataSource = self
+        contributionTableView.delegate = self
+        
+        // retrieve data and display
+        retrieveAndDrawData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        contributionLabel.text = "hello"
         
-        let lblNameInitialize = UILabel()
-        lblNameInitialize.frame.size = CGSize(width: 100.0, height: 100.0)
-        lblNameInitialize.textColor = UIColor.white
-        lblNameInitialize.text = "KG"
-        lblNameInitialize.font = UIFont(name: lblNameInitialize.font.fontName, size: 36)
-        lblNameInitialize.textAlignment = NSTextAlignment.center
-        lblNameInitialize.backgroundColor = UIColor.randomFlat()
-        lblNameInitialize.layer.cornerRadius = 50.0
-        
-        UIGraphicsBeginImageContext(lblNameInitialize.frame.size)
-        lblNameInitialize.layer.render(in: UIGraphicsGetCurrentContext()!)
-        userProfileImage.image = UIGraphicsGetImageFromCurrentImageContext()
-        userProfileImage.layer.cornerRadius = userProfileImage.frame.size.width / 2;
-        userProfileImage.clipsToBounds = true;
-        UIGraphicsEndImageContext()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func setTextElements(_ username: String, contributions: String, markedLocations: String, peopleHelped: String) {
+        usernameLabel.text = username
+        contributionLabel.text = contributions
+        markedLocationLabel.text = markedLocations
+        peopleHelpedLabel.text = peopleHelped
+    }
+    
+    func setUserImage(_ initials: String) {
+        let initialLabel = UILabel()
+        initialLabel.frame.size = CGSize(width: 100.0, height: 100.0)
+        initialLabel.textColor = UIColor.white
+        initialLabel.text = initials
+        initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 36)
+        initialLabel.textAlignment = NSTextAlignment.center
+        initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
+        initialLabel.layer.cornerRadius = 50.0
+        
+        UIGraphicsBeginImageContext(initialLabel.frame.size)
+        initialLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
+        userProfileImage.image = UIGraphicsGetImageFromCurrentImageContext()
+        userProfileImage.layer.cornerRadius = userProfileImage.frame.size.width / 2;
+        userProfileImage.clipsToBounds = true;
+        UIGraphicsEndImageContext()
     }
     
     func centerMapOnLocation(_ location: CLLocation) {
@@ -64,13 +95,19 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate {
     func createTitleFromTag(_ tag: String) -> String{
         switch tag {
         case "food":
-            return "Free/Sold Food Here"
+            return "Free/Sold Food"
         case "queue":
-            return "How Long is the Line Here?"
+            return "How Long is the Line?"
         case "space":
-            return "How Busy is the Space Here?"
+            return "How Busy is the Space?"
         case "surprising":
-            return "Something Surprising is Happening Here!"
+            return "Something Surprising is Happening!"
+        case "guestevent":
+            return "Guest Event Happening"
+        case "dtrdonut":
+            return "Donuts for DTR!"
+        case "windowdrawing":
+            return "What's on the windows?"
         default:
             return ""
         }
@@ -84,54 +121,59 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate {
         
     }
     
-    func getAndDrawMyMarkedLocations() {
-        let query = PFQuery(className: "hotspot")
-        query.whereKey("vendorId", equalTo: vendorId)
-        query.findObjectsInBackground(block: {(objects: [PFObject]?, error: Error?) -> Void in
-            if error == nil {
-                if let objects = objects {
-                    var monitoredHotspotDictionary = [String : AnyObject]()
-                    
-                    for object in objects {
-                        let currGeopoint = object["location"] as! PFGeoPoint
-                        let currLat = currGeopoint.latitude
-                        let currLong = currGeopoint.longitude
-                        let id = object.objectId!
-                        
-                        let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
-                        
-                        // Add data to user defaults
-                        var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["id"] = id as AnyObject
-                        unwrappedEntry["vendorId"] = (object["vendorId"] as! String) as AnyObject
-                        unwrappedEntry["tag"] = (object["tag"] as! String) as AnyObject
-                        unwrappedEntry["info"] = info as AnyObject
-                        unwrappedEntry["latitude"] = currLat as AnyObject
-                        unwrappedEntry["longitude"] = currLong as AnyObject
-                        unwrappedEntry["archived"] = (object["archived"] as? Bool) as AnyObject
-                        unwrappedEntry["timestampCreated"] = (object["timestampCreated"] as? Int) as AnyObject
-                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
-                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
-                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
-                        unwrappedEntry["locationCommonName"] = (object["locationCommonName"] as? String) as AnyObject
-                        
-                        monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
-                    }
-                    
-                    self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: myHotspotsRegionKey)
-                    self.appUserDefaults?.synchronize()
-                    
-                    // add annotations onto map view
-                    self.drawNewAnnotations(monitoredHotspotDictionary)
-                }
-            } else {
-                // Log details of the failure
-                print("Error: \(error!) \(error.debugDescription)")
-            }
-        })
+    func retrieveAndDrawData() {
+        // fetch data
+        PFCloud.callFunction(inBackground: "fetchUserProfileData",
+                             withParameters: ["vendorId": vendorId],
+                             block: ({ (foundObjs: Any?, error: Error?) -> Void in
+                                if error == nil {
+                                    // parse response
+                                    if let foundObjs = foundObjs as? [String:Any] {
+                                        // draw test elements and image
+                                        self.setTextElements(foundObjs["username"] as! String,
+                                                        contributions: String(foundObjs["contributionCount"] as! Int),
+                                                        markedLocations: String(foundObjs["markedLocationCount"] as! Int),
+                                                        peopleHelped: String(foundObjs["peopleHelped"] as! Int))
+                                        self.setUserImage(foundObjs["initials"] as! String)
+                                        
+                                        // get location data
+                                        let contributionArray = foundObjs["contributionLocations"] as! [AnyObject]
+                                        self.tableData = []
+                                        
+                                        for object in contributionArray {
+                                            if let object = object as? [String : Any?] {
+                                                // convert objects
+                                                let category = self.createTitleFromTag(object["category"] as! String)
+                                                let contributionType = object["contributionType"] as! String
+                                                let latitude = object["latitude"] as! Float
+                                                let longitude = object["longitude"] as! Float
+                                                
+                                                let date = Date(timeIntervalSince1970: TimeInterval(object["timestamp"] as! Int))
+                                                let dateFormatter = DateFormatter()
+                                                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                                                let dateString = dateFormatter.string(from: date as Date)
+                                                
+                                                // create ContributionData object and add to data
+                                                let currentRow = ContributionData(category: category, timestamp: dateString, contributionType: contributionType, latitude: latitude, longitude: longitude)
+                                                self.tableData.append(currentRow)
+                                            }
+                                        }
+                                        
+                                        // setup table view
+                                        DispatchQueue.main.async{
+                                            self.contributionTableView.reloadData()
+                                        }
+                                        
+                                        // setup map view
+                                    }
+                                } else {
+                                    print("Error in retrieving leaderboard from Parse: \(error). Trying again.")
+                                    self.retrieveAndDrawData()
+                                }
+                             }))
     }
     
-    func contributionMap(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if let annotation = annotation as? MarkedLocation {
             let identifier = "pin"
             var view: MKPinAnnotationView
@@ -151,8 +193,33 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate {
     }
     
     // TODO: connect this with the new contribution view
-    func contributionMap(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
     }
     
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tableData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "ContributionDataCellPrototype") as! ContributionDataCell
+        cell.categoryLabel.text = tableData[(indexPath as NSIndexPath).row].category
+        cell.dateLabel.text = tableData[(indexPath as NSIndexPath).row].timestamp
+        
+        if (tableData[(indexPath as NSIndexPath).row].contributionType == "marked") {
+            cell.contributionImage.image = UIImage(named: "AddLocation")
+        } else {
+            cell.contributionImage.image = UIImage(named: "RespondNotification")
+        }
+        cell.isUserInteractionEnabled = false
+        
+        // dynamic font sizing
+        cell.categoryLabel.adjustsFontSizeToFitWidth = true
+        cell.categoryLabel.minimumScaleFactor = 0.5
+        
+        cell.dateLabel.adjustsFontSizeToFitWidth = true
+        cell.dateLabel.minimumScaleFactor = 0.5
+
+        return cell
+    }
 }
 
