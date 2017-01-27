@@ -25,13 +25,16 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                              UIColor(hue: 0.5194, saturation: 0.46, brightness: 0.45, alpha: 1.0),
                              UIColor(hue: 0.0028, saturation: 0.89, brightness: 0.76, alpha: 1.0),
                              UIColor(hue: 0.3333, saturation: 1, brightness: 0.51, alpha: 1.0)]
+    let green: UIColor = UIColor(hue: 0.3389, saturation: 0.56, brightness: 0.68, alpha: 1.0)
+    let red: UIColor = UIColor(hue: 0.0111, saturation: 0.77, brightness: 0.95, alpha: 1.0)
     
     struct ContributionData {
         var category: String
         var timestamp: String
         var contributionType: String
-        var latitude: Float
-        var longitude: Float
+        var latitude: Double
+        var longitude: Double
+        var hotspotId: String
     }
     var tableData: [ContributionData] = []
     
@@ -113,12 +116,21 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         }
     }
     
-    func drawNewAnnotations(_ locations: [String : AnyObject]) {
+    func drawNewAnnotations(_ locations: [ContributionData]) {
         // clear all existing annotations
         contributionMap.removeAnnotations(contributionMap.annotations)
         
         // draw new annotations
-        
+        for object in locations {
+            let newLocation = MarkedLocation(title: object.category,
+                                             locationName: object.timestamp,
+                                             discipline: object.contributionType,
+                                             coordinate:  CLLocationCoordinate2D(latitude: object.latitude,
+                                                                                 longitude: object.longitude),
+                                             hotspotId: object.hotspotId)
+            
+            contributionMap.addAnnotation(newLocation)
+        }
     }
     
     func retrieveAndDrawData() {
@@ -145,8 +157,9 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                                                 // convert objects
                                                 let category = self.createTitleFromTag(object["category"] as! String)
                                                 let contributionType = object["contributionType"] as! String
-                                                let latitude = object["latitude"] as! Float
-                                                let longitude = object["longitude"] as! Float
+                                                let latitude = object["latitude"] as! Double
+                                                let longitude = object["longitude"] as! Double
+                                                let hotspotId = object["hotspotId"] as! String
                                                 
                                                 let date = Date(timeIntervalSince1970: TimeInterval(object["timestamp"] as! Int))
                                                 let dateFormatter = DateFormatter()
@@ -154,7 +167,7 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                                                 let dateString = dateFormatter.string(from: date as Date)
                                                 
                                                 // create ContributionData object and add to data
-                                                let currentRow = ContributionData(category: category, timestamp: dateString, contributionType: contributionType, latitude: latitude, longitude: longitude)
+                                                let currentRow = ContributionData(category: category, timestamp: dateString, contributionType: contributionType, latitude: latitude, longitude: longitude, hotspotId: hotspotId)
                                                 self.tableData.append(currentRow)
                                             }
                                         }
@@ -165,6 +178,7 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                                         }
                                         
                                         // setup map view
+                                        self.drawNewAnnotations(self.tableData)
                                     }
                                 } else {
                                     print("Error in retrieving leaderboard from Parse: \(error). Trying again.")
@@ -185,7 +199,14 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                 view = MKPinAnnotationView(annotation: annotation, reuseIdentifier: identifier)
                 view.canShowCallout = true
                 view.calloutOffset = CGPoint(x: -5, y: 5)
-                view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure) as UIView
+//                view.rightCalloutAccessoryView = UIButton(type: .detailDisclosure) as UIView
+            }
+            
+            // set color
+            if (annotation.discipline == "marked") {
+                view.pinTintColor = red
+            } else {
+                view.pinTintColor = green
             }
             return view
         }
@@ -207,8 +228,12 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         
         if (tableData[(indexPath as NSIndexPath).row].contributionType == "marked") {
             cell.contributionImage.image = UIImage(named: "AddLocation")
+            cell.contributionImage.image = cell.contributionImage.image!.withRenderingMode(.alwaysTemplate)
+            cell.contributionImage.tintColor = self.red
         } else {
             cell.contributionImage.image = UIImage(named: "RespondNotification")
+            cell.contributionImage.image = cell.contributionImage.image!.withRenderingMode(.alwaysTemplate)
+            cell.contributionImage.tintColor = self.green
         }
         cell.isUserInteractionEnabled = false
         
