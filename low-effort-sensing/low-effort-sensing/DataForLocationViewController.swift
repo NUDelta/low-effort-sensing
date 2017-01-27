@@ -103,12 +103,14 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         initialLabel.textAlignment = NSTextAlignment.center
         initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
         initialLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
+        initialLabel.frame = initialLabel.frame.integral
         
         UIGraphicsBeginImageContext(initialLabel.frame.size)
         initialLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
         cell.userImageLabel.image = UIGraphicsGetImageFromCurrentImageContext()
         cell.userImageLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
         cell.userImageLabel.clipsToBounds = true;
+        cell.userImageLabel.frame = initialLabel.frame.integral
         UIGraphicsEndImageContext()
         
         

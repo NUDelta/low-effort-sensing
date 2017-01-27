@@ -56,7 +56,6 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -72,21 +71,24 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
     }
     
     func setUserImage(_ initials: String) {
+        print(initials)
         let initialLabel = UILabel()
-        initialLabel.frame.size = CGSize(width: userProfileImage.frame.size.width / 2,
-                                         height: userProfileImage.frame.size.height / 2)
+        initialLabel.frame.size = CGSize(width: userProfileImage.frame.size.width,
+                                         height: userProfileImage.frame.size.height)
         initialLabel.textColor = UIColor.white
         initialLabel.text = initials
-        initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 36)
+        initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 42)
         initialLabel.textAlignment = NSTextAlignment.center
         initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
         initialLabel.layer.cornerRadius = userProfileImage.frame.size.width / 2
+        initialLabel.frame = initialLabel.frame.integral
         
         UIGraphicsBeginImageContext(initialLabel.frame.size)
         initialLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
         userProfileImage.image = UIGraphicsGetImageFromCurrentImageContext()
         userProfileImage.layer.cornerRadius = userProfileImage.frame.size.width / 2
-        userProfileImage.clipsToBounds = true;
+        userProfileImage.clipsToBounds = true
+        userProfileImage.frame = initialLabel.frame.integral
         UIGraphicsEndImageContext()
     }
     
@@ -246,6 +248,10 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         cell.dateLabel.minimumScaleFactor = 0.5
 
         return cell
+    }
+    
+    @IBAction func backToMap(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
     }
 }
 

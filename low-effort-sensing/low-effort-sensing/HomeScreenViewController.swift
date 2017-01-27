@@ -269,8 +269,12 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     @IBAction func presentLeaderBoard(_ sender: Any) {
         // show Leaderboard view
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let leaderboard : LeaderboardViewController = mainStoryboard.instantiateViewController(withIdentifier: "LeaderboardView") as! LeaderboardViewController
+        let profile : UserProfileViewController = mainStoryboard.instantiateViewController(withIdentifier: "ProfileViewController") as! UserProfileViewController
         
-        self.show(leaderboard, sender: leaderboard)
+        self.show(profile, sender: profile)
+        
+//        let leaderboard : LeaderboardViewController = mainStoryboard.instantiateViewController(withIdentifier: "LeaderboardView") as! LeaderboardViewController
+//        
+//        self.show(leaderboard, sender: leaderboard)
     }
 }
