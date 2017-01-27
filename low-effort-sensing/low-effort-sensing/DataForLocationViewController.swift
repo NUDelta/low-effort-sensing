@@ -11,6 +11,9 @@ import Parse
 
 class DataForLocationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var locationCategory: UILabel!
+    @IBOutlet weak var distanceToLocationLabel: UILabel!
+    @IBOutlet weak var locationInformationMessage: UILabel!
     
     struct LocationData {
         var firstRowLabel: String
@@ -35,6 +38,31 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         // setup table view
         tableView.dataSource = self
         tableView.delegate = self
+        
+        // set preliminary text
+        let tag = self.currentHotspot["tag"] as! String
+        let locationCommonName = self.currentHotspot["locationCommonName"] as! String
+        
+        if locationCommonName == "" {
+            locationCategory.text = createTitleFromTag(tag)
+        } else {
+            if tag == "queue" {
+                locationCategory.text = locationCommonName + " (line tracking)"
+            } else if tag == "space" {
+                locationCategory.text = locationCommonName + " (space tracking)"
+            }
+        }
+        
+        distanceToLocationLabel.text = self.distanceToHotspot + " from current location"
+        locationInformationMessage.text = "Scaffolded information coming soon..."
+        locationInformationMessage.sizeToFit()
+        
+        locationCategory.adjustsFontSizeToFitWidth = true
+        locationCategory.minimumScaleFactor = 0.5
+        distanceToLocationLabel.adjustsFontSizeToFitWidth = true
+        distanceToLocationLabel.minimumScaleFactor = 0.5
+        locationInformationMessage.adjustsFontSizeToFitWidth = true
+        locationInformationMessage.minimumScaleFactor = 0.5
     }
     
     override func didReceiveMemoryWarning() {
