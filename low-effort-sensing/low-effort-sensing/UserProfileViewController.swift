@@ -184,7 +184,7 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                                         self.drawNewAnnotations(self.tableData)
                                     }
                                 } else {
-                                    print("Error in retrieving leaderboard from Parse: \(error). Trying again.")
+                                    print("Error in retrieving user profile from Parse: \(error). Trying again.")
                                     self.retrieveAndDrawData()
                                 }
                              }))

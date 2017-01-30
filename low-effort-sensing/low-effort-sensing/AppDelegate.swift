@@ -204,8 +204,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         
         // Initialize Parse.
         Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup)
-        Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
-            clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
+        Parse.initialize(with: ParseClientConfiguration(block: { (configuration: ParseMutableClientConfiguration) -> Void in
+            configuration.server = "https://dtr-les.herokuapp.com/parse/"
+            configuration.applicationId = "PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr"
+            configuration.clientKey = "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7"
+        }))
         
         // location manager and setting up monitored locations
         MyPretracker.sharedManager.setupParameters(distanceFromTarget,

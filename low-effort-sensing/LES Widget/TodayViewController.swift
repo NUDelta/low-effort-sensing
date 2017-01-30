@@ -69,8 +69,11 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             Parse.enableLocalDatastore()
             Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup,
                                                                   containingApplication: containingApplication)
-            Parse.setApplicationId("PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr",
-                                   clientKey: "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7")
+            Parse.initialize(with: ParseClientConfiguration(block: { (configuration: ParseMutableClientConfiguration) -> Void in
+                configuration.server = "https://dtr-les.herokuapp.com/parse/"
+                configuration.applicationId = "PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr"
+                configuration.clientKey = "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7"
+            }))
         }
         
         // Capture device's unique vendor id
@@ -346,7 +349,12 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 }
                 
                 // push to parse
-                newMonitoredLocation.saveInBackground()
+                newMonitoredLocation.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
+                    if (!success) {
+                        print("Error in saving new location to Parse: \(error). Trying Again.")
+                        self.pushDataToParse(tag)
+                    }
+                }))
             }
         }))
     }

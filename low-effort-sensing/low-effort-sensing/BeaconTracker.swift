@@ -79,7 +79,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                     }
                 }
             } else {
-                print("Error in querying regions from Parse: \(error). Trying again.")
+                print("Error in querying beacon regions from Parse: \(error). Trying again.")
                 self.beginMonitoringParseRegions()
             }
         }))
