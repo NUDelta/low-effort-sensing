@@ -249,9 +249,5 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
 
         return cell
     }
-    
-    @IBAction func backToMap(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
 }
 

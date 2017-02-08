@@ -52,7 +52,7 @@ class CompletionViewController: UIViewController {
         
         // add view to hierarchy
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! HomeScreenViewController
+        let homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController")
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window = UIWindow(frame: UIScreen.main.bounds)
         
