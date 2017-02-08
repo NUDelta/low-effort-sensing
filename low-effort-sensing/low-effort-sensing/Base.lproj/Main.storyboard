@@ -411,6 +411,55 @@
             </objects>
             <point key="canvasLocation" x="-287" y="1131"/>
         </scene>
+        <!--Help-->
+        <scene sceneID="rYt-ET-rfM">
+            <objects>
+                <navigationController id="Tfl-OJ-fe4" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Help" image="HelpTab" id="gt3-U5-Mfk"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Hu2-cz-YcZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="BMK-VW-WsP" kind="relationship" relationship="rootViewController" id="Bo3-Rv-FJO"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Qa0-4m-ZnO" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-287" y="1896"/>
+        </scene>
+        <!--Low-Effort Sensing-->
+        <scene sceneID="qje-dE-qCL">
+            <objects>
+                <viewController id="BMK-VW-WsP" customClass="HelpPageViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="F5a-L4-F7S"/>
+                        <viewControllerLayoutGuide type="bottom" id="Tu9-v4-qxh"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ycq-m5-XPw">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Coming Soon" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dtl-Yw-yhj">
+                                <rect key="frame" x="136" y="299" width="103" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="dtl-Yw-yhj" firstAttribute="centerX" secondItem="Ycq-m5-XPw" secondAttribute="centerX" id="Ula-FD-UKc"/>
+                            <constraint firstItem="dtl-Yw-yhj" firstAttribute="centerY" secondItem="Ycq-m5-XPw" secondAttribute="centerY" id="oBv-Co-Zs7"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Low-Effort Sensing" id="nnI-qp-oZw"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="x8P-fO-wNd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="513" y="1896"/>
+        </scene>
         <!--Name View Controller-->
         <scene sceneID="zb8-sp-OYe">
             <objects>
@@ -692,6 +741,7 @@
                     <connections>
                         <segue destination="yV0-X2-OtX" kind="relationship" relationship="viewControllers" id="W3J-jv-vQo"/>
                         <segue destination="oZg-zc-TNk" kind="relationship" relationship="viewControllers" id="qyH-K8-buD"/>
+                        <segue destination="Tfl-OJ-fe4" kind="relationship" relationship="viewControllers" id="HME-se-cr9"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nbc-6z-uau" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -907,6 +957,7 @@
     </scenes>
     <resources>
         <image name="AuthorizationScreen" width="300" height="109"/>
+        <image name="HelpTab" width="25" height="25"/>
         <image name="MapTab" width="25" height="25"/>
         <image name="ProfileTab" width="25" height="25"/>
         <image name="WelcomeScreen" width="200" height="200"/>
