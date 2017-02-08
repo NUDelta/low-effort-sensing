@@ -55,13 +55,17 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         retrieveAndDrawData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 18, weight: UIFontWeightLight),
+                                                                        NSForegroundColorAttributeName: UIColor.white]
+        self.navigationController?.navigationBar.tintColor = UIColor.white
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     
     func setTextElements(_ username: String, contributions: String, markedLocations: String, peopleHelped: String) {
         usernameLabel.text = username

@@ -78,7 +78,7 @@
             </objects>
             <point key="canvasLocation" x="-1072.5" y="-459.5"/>
         </scene>
-        <!--Nearby Locations-->
+        <!--Low-Effort Sensing-->
         <scene sceneID="faA-g9-e5a">
             <objects>
                 <viewController id="waM-V0-2Ds" customClass="HomeScreenViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
@@ -103,7 +103,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Nearby Locations" image="MapTab" selectedImage="MapTab" id="nbb-r5-3BH"/>
-                    <navigationItem key="navigationItem" id="a7O-t8-ztu">
+                    <navigationItem key="navigationItem" title="Low-Effort Sensing" id="a7O-t8-ztu">
                         <barButtonItem key="backBarButtonItem" title="Back to Map" id="uLI-Zj-GVw"/>
                     </navigationItem>
                     <connections>
@@ -113,7 +113,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uLa-26-FF8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="570" y="368"/>
+            <point key="canvasLocation" x="514" y="367"/>
         </scene>
         <!--Leaderboard View Controller-->
         <scene sceneID="ikM-hY-ocP">
@@ -192,7 +192,7 @@
             </objects>
             <point key="canvasLocation" x="1960" y="368"/>
         </scene>
-        <!--My Profile-->
+        <!--Low-Effort Sensing-->
         <scene sceneID="a1M-Qj-AXp">
             <objects>
                 <viewController storyboardIdentifier="ProfileViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nfe-9v-FjZ" customClass="UserProfileViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
@@ -211,7 +211,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uHf-8I-r41">
-                                <rect key="frame" x="0.0" y="169" width="375" height="236"/>
+                                <rect key="frame" x="0.0" y="213" width="375" height="192"/>
                             </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="l8Z-eX-IkU">
                                 <rect key="frame" x="0.0" y="451" width="375" height="167"/>
@@ -290,46 +290,46 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZdS-7Y-2DB">
-                                <rect key="frame" x="54" y="140" width="79" height="21"/>
+                                <rect key="frame" x="54" y="184" width="79" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NXh-rv-2CM">
-                                <rect key="frame" x="43" y="36" width="100" height="100"/>
+                                <rect key="frame" x="43" y="80" width="100" height="100"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Contributions" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Lux-pR-BZb">
-                                <rect key="frame" x="223" y="36" width="104" height="21"/>
+                                <rect key="frame" x="223" y="80" width="104" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Marked Locations" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fLd-kL-iYo">
-                                <rect key="frame" x="223" y="76" width="136" height="21"/>
+                                <rect key="frame" x="223" y="120" width="136" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nS9-xp-hSx">
-                                <rect key="frame" x="176" y="76" width="42" height="21"/>
+                                <rect key="frame" x="176" y="120" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vK3-3E-DNz">
-                                <rect key="frame" x="176" y="115" width="42" height="21"/>
+                                <rect key="frame" x="176" y="159" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="People Helped" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IKl-OI-YrM">
-                                <rect key="frame" x="222" y="115" width="112" height="21"/>
+                                <rect key="frame" x="222" y="159" width="112" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j0D-Bt-Vco">
-                                <rect key="frame" x="176" y="36" width="42" height="21"/>
+                                <rect key="frame" x="176" y="80" width="42" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="42" id="S4Y-yU-fDO"/>
                                 </constraints>
@@ -378,6 +378,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="My Profile" image="ProfileTab" id="jv7-DU-6fs"/>
+                    <navigationItem key="navigationItem" title="Low-Effort Sensing" id="lg3-7L-oL5"/>
                     <connections>
                         <outlet property="contributionLabel" destination="j0D-Bt-Vco" id="6fH-5w-bsU"/>
                         <outlet property="contributionMap" destination="uHf-8I-r41" id="apl-te-LSV"/>
@@ -390,7 +391,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ezY-mL-kev" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-287" y="1130"/>
+            <point key="canvasLocation" x="513" y="1130"/>
+        </scene>
+        <!--My Profile-->
+        <scene sceneID="lWB-85-Fmf">
+            <objects>
+                <navigationController id="oZg-zc-TNk" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="My Profile" image="ProfileTab" id="qBp-Ik-OiK"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="6s9-NP-qJX">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.1176470588" green="0.1176470588" blue="0.1176470588" alpha="1" colorSpace="calibratedRGB"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="Nfe-9v-FjZ" kind="relationship" relationship="rootViewController" id="S85-5n-hl6"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MJh-8O-hiV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-287" y="1131"/>
         </scene>
         <!--Name View Controller-->
         <scene sceneID="zb8-sp-OYe">
@@ -643,10 +662,10 @@
             <objects>
                 <navigationController id="yV0-X2-OtX" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Nearby Locations" image="MapTab" id="aHZ-uS-m9V"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gtf-CR-1Cj">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="gtf-CR-1Cj">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
@@ -667,12 +686,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" red="0.11764705882352941" green="0.11764705882352941" blue="0.11764705882352941" alpha="1" colorSpace="calibratedRGB"/>
                         <color key="selectedImageTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
                         <segue destination="yV0-X2-OtX" kind="relationship" relationship="viewControllers" id="W3J-jv-vQo"/>
-                        <segue destination="Nfe-9v-FjZ" kind="relationship" relationship="viewControllers" id="1a2-IF-IOh"/>
+                        <segue destination="oZg-zc-TNk" kind="relationship" relationship="viewControllers" id="qyH-K8-buD"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nbc-6z-uau" userLabel="First Responder" sceneMemberID="firstResponder"/>
