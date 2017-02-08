@@ -265,8 +265,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             self.appUserDefaults?.synchronize()
         }
         
-        // hide status bar on all pages
-        application.isStatusBarHidden = true
+        // show light-colored status bar on each page
+        UIApplication.shared.isStatusBarHidden = false
+        UIApplication.shared.statusBarStyle = .lightContent
   
         return performShortcutDelegate
     }
