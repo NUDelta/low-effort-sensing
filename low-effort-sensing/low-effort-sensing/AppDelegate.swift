@@ -38,6 +38,13 @@ extension UIViewController {
     }
 }
 
+// converts string into ASCII integer array
+extension String {
+    var asciiArray: [UInt32] {
+        return unicodeScalars.filter{$0.isASCII}.map{$0.value}
+    }
+}
+
 // question ordering
 let foodQuestionOrdering = ["isfood", "foodtype", "howmuchfood",
                             "freeorsold", "forstudentgroup", "cost", "sellingreason"]

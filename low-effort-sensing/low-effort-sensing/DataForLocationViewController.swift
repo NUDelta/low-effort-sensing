@@ -101,7 +101,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         initialLabel.text = tableData[(indexPath as NSIndexPath).row].initials
         initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 36)
         initialLabel.textAlignment = NSTextAlignment.center
-        initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
+        initialLabel.backgroundColor = self.computeColor(tableData[(indexPath as NSIndexPath).row].initials)
         initialLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
         initialLabel.frame = initialLabel.frame.integral
         
@@ -125,6 +125,12 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         cell.timestampLabel.minimumScaleFactor = 0.5
         
         return cell
+    }
+    
+    func computeColor(_ initials: String) -> UIColor {
+        let initialCode = initials.asciiArray.reduce(0, +)
+        let colorCode = Int(initialCode) % self.colors.count
+        return self.colors[colorCode]
     }
     
     func retrieveAndDrawData(_ hotspotId: String) {

@@ -66,7 +66,6 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         // Dispose of any resources that can be recreated.
     }
     
-    
     func setTextElements(_ username: String, contributions: String, markedLocations: String, peopleHelped: String) {
         usernameLabel.text = username
         contributionLabel.text = contributions
@@ -83,7 +82,7 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         initialLabel.text = initials
         initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 42)
         initialLabel.textAlignment = NSTextAlignment.center
-        initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
+        initialLabel.backgroundColor = self.computeColor(initials)
         initialLabel.layer.cornerRadius = userProfileImage.frame.size.width / 2
         initialLabel.frame = initialLabel.frame.integral
         
@@ -94,6 +93,12 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         userProfileImage.clipsToBounds = true
         userProfileImage.frame = initialLabel.frame.integral
         UIGraphicsEndImageContext()
+    }
+    
+    func computeColor(_ initials: String) -> UIColor {
+        let initialCode = initials.asciiArray.reduce(0, +)
+        let colorCode = Int(initialCode) % self.colors.count
+        return self.colors[colorCode]
     }
     
     func centerMapOnLocation(_ location: CLLocation) {
