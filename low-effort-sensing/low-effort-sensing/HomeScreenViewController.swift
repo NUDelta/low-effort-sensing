@@ -16,11 +16,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     let regionRadius: CLLocationDistance = 1000
     
-    @IBOutlet weak var nearbyButton: UIButton!
-    @IBOutlet weak var myLocationsButton: UIButton!
-    var showingNearby: Bool = Bool()
-    let charcoalGreyColor: UIColor = UIColor.init(red: 116.0 / 255.0, green: 125.0 / 255.0, blue: 125.0 / 255.0, alpha: 1.0)
-    
     let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     
     // MARK: Class Functions
@@ -31,17 +26,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         mapView.showsUserLocation = true
         mapView.userTrackingMode = MKUserTrackingMode.follow
         
-        // make buttons resize 
-        nearbyButton.titleLabel!.numberOfLines = 0
-        nearbyButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        nearbyButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
-        nearbyButton.titleLabel!.minimumScaleFactor = 0.5
-        
-        myLocationsButton.titleLabel!.numberOfLines = 0
-        myLocationsButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        myLocationsButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
-        myLocationsButton.titleLabel!.minimumScaleFactor = 0.5
-        
         // check for changes in NSUserDefaults
         NotificationCenter.default.addObserver(self, selector: #selector(HomeScreenViewController.defaultsChanged), name: UserDefaults.didChangeNotification, object: nil)
     }
@@ -50,14 +34,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         // add pins for marked locations
         let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
         drawNewAnnotations(monitoredHotspotDictionary as [String : AnyObject])
-        
-        // set nearby shown
-        showingNearby = true
-        nearbyButton.backgroundColor = charcoalGreyColor
-        nearbyButton.setTitleColor(UIColor.white, for: UIControlState())
-        
-        myLocationsButton.backgroundColor = UIColor.white
-        myLocationsButton.setTitleColor(UIColor.black, for: UIControlState())
     }
     
     override func didReceiveMemoryWarning() {
@@ -214,12 +190,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         // get data for hotspot
-        var monitoredHotspotDictionary: [String : AnyObject]
-        if showingNearby {
-            monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
-        } else {
-            monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: myHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
-        }
+        var monitoredHotspotDictionary: [String : AnyObject] = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
         
         let annotationMarkedLocation = view.annotation as! MarkedLocation
         let annotationDistance = view.annotation?.subtitle
@@ -233,48 +204,5 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
                                              distance: annotationDistance!!)
         dataForLocation.retrieveAndDrawData(annotationMarkedLocation.hotspotId)
         self.show(dataForLocation, sender: dataForLocation)
-    }
-    
-    @IBAction func toggleNearbyPlaces(_ sender: AnyObject) {
-        if !showingNearby {
-            // draw new annotations
-            let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-            drawNewAnnotations(monitoredHotspotDictionary as [String : AnyObject])
-            
-            // update buttons
-            showingNearby = true
-            nearbyButton.backgroundColor = charcoalGreyColor
-            nearbyButton.setTitleColor(UIColor.white, for: UIControlState())
-            
-            myLocationsButton.backgroundColor = UIColor.white
-            myLocationsButton.setTitleColor(UIColor.black, for: UIControlState())
-        }
-    }
-    
-    @IBAction func toggleLocationsMarked(_ sender: AnyObject) {
-        if showingNearby {
-            // draw new annotations
-            getAndDrawMyMarkedLocations()
-            
-            // update buttons
-            showingNearby = false
-            myLocationsButton.backgroundColor = charcoalGreyColor
-            myLocationsButton.setTitleColor(UIColor.white, for: UIControlState())
-            
-            nearbyButton.backgroundColor = UIColor.white
-            nearbyButton.setTitleColor(UIColor.black, for: UIControlState())
-        }
-    }
-    
-    @IBAction func presentLeaderBoard(_ sender: Any) {
-        // show Leaderboard view
-        let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let profile : UserProfileViewController = mainStoryboard.instantiateViewController(withIdentifier: "ProfileViewController") as! UserProfileViewController
-        
-        self.show(profile, sender: profile)
-        
-//        let leaderboard : LeaderboardViewController = mainStoryboard.instantiateViewController(withIdentifier: "LeaderboardView") as! LeaderboardViewController
-//        
-//        self.show(leaderboard, sender: leaderboard)
     }
 }
