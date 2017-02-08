@@ -266,7 +266,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         }
         
         // hide status bar on all pages
-        application.isStatusBarHidden = false
+        application.isStatusBarHidden = true
   
         return performShortcutDelegate
     }
