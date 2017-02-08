@@ -84,10 +84,10 @@
             </objects>
             <point key="canvasLocation" x="-1070" y="-288"/>
         </scene>
-        <!--Home Screen View Controller-->
+        <!--Map-->
         <scene sceneID="faA-g9-e5a">
             <objects>
-                <viewController storyboardIdentifier="HomeScreenViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="waM-V0-2Ds" customClass="HomeScreenViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="waM-V0-2Ds" customClass="HomeScreenViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="m4R-Ps-WdE"/>
                         <viewControllerLayoutGuide type="bottom" id="hQp-Mn-bm5"/>
@@ -97,10 +97,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="yK4-6z-T1k">
-                                <rect key="frame" x="0.0" y="28" width="375" height="581"/>
+                                <rect key="frame" x="0.0" y="28" width="375" height="532"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="16z-iO-kCh">
-                                <rect key="frame" x="190" y="610" width="185" height="57"/>
+                                <rect key="frame" x="190" y="561" width="185" height="57"/>
                                 <state key="normal" title="Locations I've Marked"/>
                                 <connections>
                                     <action selector="toggleLocationsMarked:" destination="waM-V0-2Ds" eventType="touchUpInside" id="gqs-Rd-Pvu"/>
@@ -120,7 +120,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="wordWrap" translatesAutoresizingMaskIntoConstraints="NO" id="RHM-V0-s2i">
-                                <rect key="frame" x="0.0" y="610" width="185" height="57"/>
+                                <rect key="frame" x="0.0" y="561" width="185" height="57"/>
                                 <state key="normal" title="Nearby Places of Interest"/>
                                 <connections>
                                     <action selector="toggleNearbyPlaces:" destination="waM-V0-2Ds" eventType="touchUpInside" id="toG-gx-M20"/>
@@ -147,6 +147,7 @@
                             <constraint firstItem="16z-iO-kCh" firstAttribute="baseline" secondItem="RHM-V0-s2i" secondAttribute="firstBaseline" id="b1N-Aa-OcO"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Map" image="MapTab" selectedImage="MapTab" id="nbb-r5-3BH"/>
                     <connections>
                         <outlet property="mapView" destination="yK4-6z-T1k" id="cjB-ab-e3d"/>
                         <outlet property="myLocationsButton" destination="16z-iO-kCh" id="zOy-Gc-PbF"/>
@@ -155,7 +156,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uLa-26-FF8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1884" y="469.1154422788606"/>
+            <point key="canvasLocation" x="-212" y="358"/>
         </scene>
         <!--Leaderboard View Controller-->
         <scene sceneID="ikM-hY-ocP">
@@ -189,7 +190,7 @@
                                         <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="bpr-YN-MMU" id="D4a-hD-fQj">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Ranking" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hMI-Pa-82s">
@@ -234,7 +235,7 @@
             </objects>
             <point key="canvasLocation" x="2582" y="469"/>
         </scene>
-        <!--User Profile View Controller-->
+        <!--My Profile-->
         <scene sceneID="a1M-Qj-AXp">
             <objects>
                 <viewController storyboardIdentifier="ProfileViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Nfe-9v-FjZ" customClass="UserProfileViewController" customModule="low_effort_sensing" customModuleProvider="target" sceneMemberID="viewController">
@@ -259,10 +260,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="uHf-8I-r41">
-                                <rect key="frame" x="0.0" y="182" width="375" height="272"/>
+                                <rect key="frame" x="0.0" y="182" width="375" height="223"/>
                             </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="60" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="l8Z-eX-IkU">
-                                <rect key="frame" x="0.0" y="500" width="375" height="167"/>
+                                <rect key="frame" x="0.0" y="451" width="375" height="167"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="167" id="VKe-r9-pkz"/>
@@ -332,7 +333,7 @@
                                 </prototypes>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Recent Contributions" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2pR-f7-tWp">
-                                <rect key="frame" x="0.0" y="463" width="375" height="21"/>
+                                <rect key="frame" x="0.0" y="414" width="375" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -432,6 +433,7 @@
                             <constraint firstItem="j0D-Bt-Vco" firstAttribute="top" secondItem="Lux-pR-BZb" secondAttribute="top" id="zU5-vg-Wcm"/>
                         </constraints>
                     </view>
+                    <tabBarItem key="tabBarItem" title="My Profile" image="ProfileTab" id="jv7-DU-6fs"/>
                     <connections>
                         <outlet property="contributionLabel" destination="j0D-Bt-Vco" id="6fH-5w-bsU"/>
                         <outlet property="contributionMap" destination="uHf-8I-r41" id="apl-te-LSV"/>
@@ -444,7 +446,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ezY-mL-kev" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3285.5999999999999" y="469.1154422788606"/>
+            <point key="canvasLocation" x="-212" y="1008"/>
         </scene>
         <!--Name View Controller-->
         <scene sceneID="zb8-sp-OYe">
@@ -702,6 +704,25 @@
             </objects>
             <point key="canvasLocation" x="1884" y="-288"/>
         </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="pLw-bk-qTY">
+            <objects>
+                <tabBarController storyboardIdentifier="HomeScreenViewController" id="Dv6-iN-vDG" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="0RS-Kr-9fe">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="waM-V0-2Ds" kind="relationship" relationship="viewControllers" id="sGQ-49-pyh"/>
+                        <segue destination="Nfe-9v-FjZ" kind="relationship" relationship="viewControllers" id="1a2-IF-IOh"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nbc-6z-uau" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1138" y="573"/>
+        </scene>
         <!--Data For Location View Controller-->
         <scene sceneID="z2b-aM-1CP">
             <objects>
@@ -845,7 +866,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CIw-jH-vKM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="352.80000000000001" y="469.1154422788606"/>
+            <point key="canvasLocation" x="983" y="453"/>
         </scene>
         <!--Respond To Other View Controller-->
         <scene sceneID="QA2-VM-7uk">
@@ -920,11 +941,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zcm-gK-jXl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1138" y="470"/>
+            <point key="canvasLocation" x="1938" y="453"/>
         </scene>
     </scenes>
     <resources>
         <image name="AuthorizationScreen" width="300" height="109"/>
+        <image name="MapTab" width="25" height="25"/>
+        <image name="ProfileTab" width="25" height="25"/>
         <image name="WelcomeScreen" width="200" height="200"/>
     </resources>
 </document>

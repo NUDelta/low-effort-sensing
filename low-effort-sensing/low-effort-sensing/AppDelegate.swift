@@ -23,8 +23,8 @@ let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user 
 var vendorId: String = ""
 
 // App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
-//let appGroup = "group.com.delta.les-debug" // for debug builds
-let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+let appGroup = "group.com.delta.les-debug" // for debug builds
+//let appGroup = "group.com.delta.les"       // for enterprise distribution builds
 
 // extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
 extension UIViewController {
@@ -243,7 +243,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             // open map view
             self.window = UIWindow(frame: UIScreen.main.bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-            let homeViewController: HomeScreenViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! HomeScreenViewController
+            let homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController")
             
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
