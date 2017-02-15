@@ -53,6 +53,7 @@
 		008AAB811E3B29C50068B986 /* ContributionDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008AAB801E3B29C50068B986 /* ContributionDataCell.swift */; };
 		0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */; };
 		0092F78E1CFA08F7006A9C2C /* LocationDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */; };
+		009B99AA1E4BA2C70076FBF0 /* HelpPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009B99A91E4BA2C70076FBF0 /* HelpPageViewController.swift */; };
 		00AFE2271CF6547D00753DC7 /* LES Widget Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */; };
 		00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */; };
 		00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */; };
@@ -208,6 +209,7 @@
 		008AAB801E3B29C50068B986 /* ContributionDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContributionDataCell.swift; sourceTree = "<group>"; };
 		0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForLocationViewController.swift; sourceTree = "<group>"; };
 		0092F78D1CFA08F7006A9C2C /* LocationDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocationDataCell.swift; sourceTree = "<group>"; };
+		009B99A91E4BA2C70076FBF0 /* HelpPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelpPageViewController.swift; sourceTree = "<group>"; };
 		00AFE2261CF6547D00753DC7 /* LES Widget Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "LES Widget Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App Debug.entitlements"; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				009B99AB1E4BA2CC0076FBF0 /* Help */,
 				00D93F611DDCB5E3006DFB8B /* Leaderboard */,
 				001627CE1CF297430049107E /* WelcomeScreens */,
 				0092F78F1CFA7AFC006A9C2C /* MapView */,
@@ -482,6 +485,14 @@
 				006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */,
 			);
 			name = LocationAndNotification;
+			sourceTree = "<group>";
+		};
+		009B99AB1E4BA2CC0076FBF0 /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				009B99A91E4BA2C70076FBF0 /* HelpPageViewController.swift */,
+			);
+			name = Help;
 			sourceTree = "<group>";
 		};
 		00D06D731CE1A92A002E8CCA /* LES Widget */ = {
@@ -958,6 +969,7 @@
 				0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */,
 				0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */,
 				006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */,
+				009B99AA1E4BA2C70076FBF0 /* HelpPageViewController.swift in Sources */,
 				000447461CD3AB830033DCD3 /* MyPretracker.swift in Sources */,
 				008AAB811E3B29C50068B986 /* ContributionDataCell.swift in Sources */,
 				008AAB7F1E3B287E0068B986 /* UserProfileViewController.swift in Sources */,

@@ -55,7 +55,10 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         retrieveAndDrawData()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 18, weight: UIFontWeightLight),
+                                                                        NSForegroundColorAttributeName: UIColor.white]
+        self.navigationController?.navigationBar.tintColor = UIColor.white
     }
     
     override func didReceiveMemoryWarning() {
@@ -79,7 +82,7 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         initialLabel.text = initials
         initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 42)
         initialLabel.textAlignment = NSTextAlignment.center
-        initialLabel.backgroundColor = self.colors[Int(arc4random_uniform(UInt32(self.colors.count)))]
+        initialLabel.backgroundColor = self.computeColor(initials)
         initialLabel.layer.cornerRadius = userProfileImage.frame.size.width / 2
         initialLabel.frame = initialLabel.frame.integral
         
@@ -90,6 +93,12 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
         userProfileImage.clipsToBounds = true
         userProfileImage.frame = initialLabel.frame.integral
         UIGraphicsEndImageContext()
+    }
+    
+    func computeColor(_ initials: String) -> UIColor {
+        let initialCode = initials.asciiArray.reduce(0, +)
+        let colorCode = Int(initialCode) % self.colors.count
+        return self.colors[colorCode]
     }
     
     func centerMapOnLocation(_ location: CLLocation) {

@@ -38,6 +38,13 @@ extension UIViewController {
     }
 }
 
+// converts string into ASCII integer array
+extension String {
+    var asciiArray: [UInt32] {
+        return unicodeScalars.filter{$0.isASCII}.map{$0.value}
+    }
+}
+
 // question ordering
 let foodQuestionOrdering = ["isfood", "foodtype", "howmuchfood",
                             "freeorsold", "forstudentgroup", "cost", "sellingreason"]
@@ -265,8 +272,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             self.appUserDefaults?.synchronize()
         }
         
-        // hide status bar on all pages
-        application.isStatusBarHidden = true
+        // show light-colored status bar on each page
+        UIApplication.shared.isStatusBarHidden = false
+        UIApplication.shared.statusBarStyle = .lightContent
   
         return performShortcutDelegate
     }
