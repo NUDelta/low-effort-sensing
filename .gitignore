@@ -213,3 +213,8 @@ fastlane/screenshots
 
 ### Objective-C Patch ###
 *.xcscmblueprint
+
+### User Added ###
+*.pem
+*.p12
+*.cer
