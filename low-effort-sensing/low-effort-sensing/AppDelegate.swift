@@ -22,9 +22,12 @@ let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently mo
 let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
 var vendorId: String = ""
 
-// App Group for Sharing Data (MUST BE CHANGED DEPENDING ON BUILD)
-let appGroup = "group.com.delta.les-debug" // for debug builds
-//let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+// App Group for Sharing Data (dependent on build type)
+#if DEBUG
+    let appGroup = "group.com.delta.les-debug" // for debug builds
+#else
+    let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+#endif
 
 // extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
 extension UIViewController {
@@ -199,6 +202,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             
             performShortcutDelegate = false
         }
+        
+        // reset badge, if applicable
+        UIApplication.shared.applicationIconBadgeNumber = 0;
         
         // Capture device's unique vendor id
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
