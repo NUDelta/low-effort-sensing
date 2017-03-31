@@ -247,6 +247,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             // register categories for notifications
             registerForNotifications()
             
+            // setup push notifications
+            let options: UNAuthorizationOptions = [.alert, .sound]
+            UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, error) in
+                let generalCategory = UNNotificationCategory(identifier: "general", actions: [], intentIdentifiers: [], options: .customDismissAction)
+                UNUserNotificationCenter.current().setNotificationCategories([generalCategory])
+            }
+            
+            if #available(iOS 10, *) {
+                UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
+                application.registerForRemoteNotifications()
+            }
+                // iOS 9 support
+            else if #available(iOS 9, *) {
+                UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+                // iOS 8 support
+            else if #available(iOS 8, *) {
+                UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
+                UIApplication.shared.registerForRemoteNotifications()
+            }
+                // iOS 7 support
+            else {
+                application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
+            }
+            
             // open map view
             self.window = UIWindow(frame: UIScreen.main.bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -278,6 +304,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
   
         return performShortcutDelegate
     }
+    
+    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+        if notificationSettings.types != .none {
+            application.registerForRemoteNotifications()
+        }
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        print(deviceTokenString)
+        //defaults.set(deviceTokenString, forKey: "tokenId")
+        //        sendUserToken(deviceTokenString)
+    }
+    //
+    //    func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
+    //        print("Push notification received: \(data)")
+    //        Pretracker.sharedManager.locationManager!.startUpdatingLocation()
+    //        if let currentLocation = Pretracker.sharedManager.currentLocation {
+    //            let lat = currentLocation.coordinate.latitude
+    //            let lon = currentLocation.coordinate.longitude
+    //            sendCurrentLocation(lat: Float(lat),lon: Float(lon))
+    //        }
+    //    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        // Print the error to console (you should alert the user that registration failed)
+        print("APNs registration failed: \(error)")
+    }
+
     
 //    // USED FOR DEBUGGING
 //    func sendNotification() {
