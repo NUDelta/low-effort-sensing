@@ -357,7 +357,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 // push to parse
                 newMonitoredLocation.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
                     if (!success) {
-                        print("Error in saving new location to Parse: \(error). Trying Again.")
+                        print("Error in saving new location to Parse: \(String(describing: error)). Trying Again.")
                         self.pushDataToParse(tag)
                     }
                 }))

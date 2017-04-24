@@ -110,7 +110,7 @@ class LeaderboardViewController: UIViewController, UITableViewDelegate, UITableV
                                         }
                                     }
                                 } else {
-                                    print("Error in retrieving leaderboard from Parse: \(error). Trying again.")
+                                    print("Error in retrieving leaderboard from Parse: \(String(describing: error)). Trying again.")
                                     self.loadDataIntoArray()
                                 }
                              }))

@@ -174,7 +174,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
                                         self.refreshTableView()
                                     }
                                 } else {
-                                    print("Error in retrieving location data from Parse: \(error). Trying again.")
+                                    print("Error in retrieving location data from Parse: \(String(describing: error)). Trying again.")
                                     self.retrieveAndDrawData(hotspotId)
                                 }
                              }))

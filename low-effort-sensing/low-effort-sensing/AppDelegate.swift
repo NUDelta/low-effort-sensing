@@ -264,20 +264,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
                 application.registerForRemoteNotifications()
             }
-                // iOS 9 support
-            else if #available(iOS 9, *) {
-                UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-                // iOS 8 support
-            else if #available(iOS 8, *) {
-                UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert], categories: nil))
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-                // iOS 7 support
-            else {
-                application.registerForRemoteNotifications(matching: [.badge, .sound, .alert])
-            }
             
             // open map view
             self.window = UIWindow(frame: UIScreen.main.bounds)
@@ -457,7 +443,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                 print("Notification setup complete")
             } else {
-                print("Error when registering for notifications: \(error)")
+                print("Error when registering for notifications: \(String(describing: error))")
             }
         })
     }
@@ -746,7 +732,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 query.getObjectInBackground(withId: currentHotspotId, block: ({
                     (hotspot: PFObject?, error: Error?) -> Void in
                     if error != nil {
-                        print("Error in pushing data to Parse: \(error)")
+                        print("Error in pushing data to Parse: \(String(describing: error))")
                         
                         // return information to apple watch
                         replyHandler(["response": false as AnyObject])

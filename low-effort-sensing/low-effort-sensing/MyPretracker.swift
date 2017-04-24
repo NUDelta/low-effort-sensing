@@ -189,7 +189,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                 self.locationManager!.distanceFilter = self.distanceFilter
                                             }
                                         } else {
-                                            print("Error in querying regions from Parse: \(error). Trying again.")
+                                            print("Error in querying regions from Parse: \(String(describing: error)). Trying again.")
                                             self.beginMonitoringParseRegions()
                                         }
                                      }))
