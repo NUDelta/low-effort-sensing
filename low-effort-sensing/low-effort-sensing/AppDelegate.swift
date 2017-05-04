@@ -428,16 +428,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         print(deviceTokenString)
     }
     
-    //
-    //    func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
-    //        print("Push notification received: \(data)")
-    //        Pretracker.sharedManager.locationManager!.startUpdatingLocation()
-    //        if let currentLocation = Pretracker.sharedManager.currentLocation {
-    //            let lat = currentLocation.coordinate.latitude
-    //            let lon = currentLocation.coordinate.longitude
-    //            sendCurrentLocation(lat: Float(lat),lon: Float(lon))
-    //        }
-    //    }
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // refresh data when notification is received
+        MyPretracker.sharedManager.beginMonitoringParseRegions()
+    }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         // Print the error to console (you should alert the user that registration failed)
