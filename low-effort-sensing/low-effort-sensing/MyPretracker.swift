@@ -21,6 +21,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     var locationDic: [String: [String: Any]] = [:]
     var locationManager: CLLocationManager?
     
+    // logging location data
+    var previousLocation: CLLocation?
+    let distanceUpdate = 30.0
+    
     var parseRefreshTimer: Timer? = Timer() // refreshing locations being tracked
     
     let appUserDefaults = UserDefaults(suiteName: appGroup)
@@ -377,6 +381,28 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         let lastLocation = locations.last!
         notifyIfWithinDistance(lastLocation)
         
+        // store location updates if greater than threshold
+        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 35.0) {
+            let distance = calculateDistance(currentLocation: lastLocation)
+            
+            if (distance >= distanceUpdate) {
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+                
+                let newLocationUpdate = PFObject(className: "locationUpdates")
+                newLocationUpdate["latitude"] = lastLocation.coordinate.latitude
+                newLocationUpdate["longitude"] = lastLocation.coordinate.longitude
+                newLocationUpdate["heading"] = lastLocation.course
+                newLocationUpdate["speed"] = lastLocation.speed
+                newLocationUpdate["horizontalAccuracy"] = lastLocation.horizontalAccuracy
+                newLocationUpdate["vendorId"] = vendorId
+                newLocationUpdate["timestamp"] = epochTimestamp
+                newLocationUpdate["gmtOffset"] = gmtOffset
+                
+                newLocationUpdate.saveInBackground()
+            }
+        }
+        
         // reset timer
         if (timer != nil) {
             return
@@ -397,6 +423,16 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             delay10Seconds = nil
         }
         delay10Seconds = Timer.scheduledTimer(timeInterval: delayLength, target: self, selector: #selector(MyPretracker.stopLocationWithDelay), userInfo: nil, repeats: false)
+    }
+    
+    func calculateDistance(currentLocation: CLLocation) -> Double{
+        if previousLocation == nil {
+            previousLocation = currentLocation
+        }
+        
+        let locationDistance = currentLocation.distance(from: previousLocation!)
+        previousLocation = currentLocation
+        return locationDistance
     }
     
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
