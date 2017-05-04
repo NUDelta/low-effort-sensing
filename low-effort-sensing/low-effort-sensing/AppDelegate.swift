@@ -295,7 +295,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 //        
 //        // Get first region in mo nitored regions to use
 //        if  monitoredHotspotDictionary.keys.count > 0 {
-//            let currentRegion = monitoredHotspotDictionary["ob333ez7Ij"] as! [String : AnyObject]
+//            let currentRegion = monitoredHotspotDictionary["8C9gvBLjIR"] as! [String : AnyObject]
 //            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
 //            let notificationContent = newNotification.createNotificationForTag()
 //            
@@ -429,8 +429,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("\(userInfo)")
+        
         // refresh data when notification is received
-        MyPretracker.sharedManager.beginMonitoringParseRegions()
+        if (userInfo.index(forKey: "updateType") != nil) {
+            if let updateType = userInfo["updateType"] as? String {
+                if (updateType == "beacon") {
+                    BeaconTracker.sharedBeaconManager.clearAllMonitoredRegions()
+                    BeaconTracker.sharedBeaconManager.beginMonitoringParseRegions()
+                } else if (updateType == "hotspot") {
+                    MyPretracker.sharedManager.beginMonitoringParseRegions()
+                }
+            }
+        }
+        
+        // need to add this for handling background fetch.
+        completionHandler(UIBackgroundFetchResult.newData)
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
