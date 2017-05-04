@@ -253,18 +253,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             // register categories for notifications
             registerForNotifications()
             
-            // setup push notifications
-            let options: UNAuthorizationOptions = [.alert, .sound]
-            UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, error) in
-                let generalCategory = UNNotificationCategory(identifier: "general", actions: [], intentIdentifiers: [], options: .customDismissAction)
-                UNUserNotificationCenter.current().setNotificationCategories([generalCategory])
-            }
-            
-            if #available(iOS 10, *) {
-                UNUserNotificationCenter.current().requestAuthorization(options:[.badge, .alert, .sound]){ (granted, error) in }
-                application.registerForRemoteNotifications()
-            }
-            
             // open map view
             self.window = UIWindow(frame: UIScreen.main.bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -295,34 +283,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         UIApplication.shared.statusBarStyle = .lightContent
   
         return performShortcutDelegate
-    }
-    
-    func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
-        if notificationSettings.types != .none {
-            application.registerForRemoteNotifications()
-        }
-    }
-    
-    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-        print(deviceTokenString)
-        //defaults.set(deviceTokenString, forKey: "tokenId")
-        //        sendUserToken(deviceTokenString)
-    }
-    //
-    //    func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
-    //        print("Push notification received: \(data)")
-    //        Pretracker.sharedManager.locationManager!.startUpdatingLocation()
-    //        if let currentLocation = Pretracker.sharedManager.currentLocation {
-    //            let lat = currentLocation.coordinate.latitude
-    //            let lon = currentLocation.coordinate.longitude
-    //            sendCurrentLocation(lat: Float(lat),lon: Float(lon))
-    //        }
-    //    }
-    
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        // Print the error to console (you should alert the user that registration failed)
-        print("APNs registration failed: \(error)")
     }
 
     
@@ -439,13 +399,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         print("Registering categories for local notifications")
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
             if (granted) {
+                // setup notification categories
                 UNUserNotificationCenter.current().setNotificationCategories(self.notificationCategories)
                 UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+                
+                // setup remote notifications
+                UIApplication.shared.registerForRemoteNotifications()
+                
                 print("Notification setup complete")
             } else {
                 print("Error when registering for notifications: \(String(describing: error))")
             }
         })
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        // create hashed remote notification token
+        let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
+        
+        // save in userInfo for pushing to DB later
+        var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
+        userInfo!["pushToken"] = deviceTokenString
+
+        self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
+        self.appUserDefaults?.synchronize()
+        
+        // print token for debugging
+        print(deviceTokenString)
+    }
+    
+    //
+    //    func application(_ application: UIApplication, didReceiveRemoteNotification data: [AnyHashable : Any]) {
+    //        print("Push notification received: \(data)")
+    //        Pretracker.sharedManager.locationManager!.startUpdatingLocation()
+    //        if let currentLocation = Pretracker.sharedManager.currentLocation {
+    //            let lat = currentLocation.coordinate.latitude
+    //            let lon = currentLocation.coordinate.longitude
+    //            sendCurrentLocation(lat: Float(lat),lon: Float(lon))
+    //        }
+    //    }
+    
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        // Print the error to console (you should alert the user that registration failed)
+        print("APNs registration failed: \(error)")
     }
     
     // MARK: - Create Custom Notifications for each question
