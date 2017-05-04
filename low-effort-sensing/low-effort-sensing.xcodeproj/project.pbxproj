@@ -40,6 +40,7 @@
 		001F5CF41C80387900CD0045 /* GetInformationInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */; };
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
 		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
+		004213341EBB1171006B31EE /* les-simulation.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 004213331EBB1171006B31EE /* les-simulation.gpx */; };
 		0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		005DD76A1DEF699200D89088 /* NotificationCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */; };
@@ -197,6 +198,7 @@
 		0026F54A1CEA9B75004C20F2 /* low-effort-sensing-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "low-effort-sensing-Bridging-Header.h"; sourceTree = "<group>"; };
 		0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
 		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
+		004213331EBB1171006B31EE /* les-simulation.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "les-simulation.gpx"; sourceTree = "<group>"; };
 		0044402B1DED685300B64AD1 /* BeaconTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconTracker.swift; sourceTree = "<group>"; };
 		006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RespondToOtherViewController.swift; sourceTree = "<group>"; };
 		006709C61D89AB5F001E4528 /* CustomNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CustomNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -358,6 +360,7 @@
 		001A8FCB1C55CE6E009F964C /* low-effort-sensing */ = {
 			isa = PBXGroup;
 			children = (
+				004213331EBB1171006B31EE /* les-simulation.gpx */,
 				009B99AB1E4BA2CC0076FBF0 /* Help */,
 				00D93F611DDCB5E3006DFB8B /* Leaderboard */,
 				001627CE1CF297430049107E /* WelcomeScreens */,
@@ -735,6 +738,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				004213341EBB1171006B31EE /* les-simulation.gpx in Resources */,
 				001A8FD71C55CE6E009F964C /* LaunchScreen.storyboard in Resources */,
 				001A8FD41C55CE6E009F964C /* Assets.xcassets in Resources */,
 				001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */,
