@@ -27,7 +27,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone&apos;s location and Bluetooth to notify you when you enter or leave a monitored region. </string>
+	<string>Low-Effort Sensing requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
@@ -96,6 +96,7 @@
 		<string>audio</string>
 		<string>fetch</string>
 		<string>location</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
