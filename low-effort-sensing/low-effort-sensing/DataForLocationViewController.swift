@@ -46,11 +46,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         if locationCommonName == "" {
             locationCategory.text = createTitleFromTag(tag)
         } else {
-            if tag == "queue" {
-                locationCategory.text = locationCommonName + " (line tracking)"
-            } else if tag == "space" {
-                locationCategory.text = locationCommonName + " (space tracking)"
-            }
+            locationCategory.text = locationCommonName
         }
         
         distanceToLocationLabel.text = self.distanceToHotspot + " from current location"
