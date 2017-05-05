@@ -415,7 +415,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         notifyIfWithinDistance(lastLocation)
         
         // store location updates if greater than threshold
-        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 35.0) {
+        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 65.0) {
             let distance = calculateDistance(currentLocation: lastLocation)
             
             if (distance >= distanceUpdate) {
