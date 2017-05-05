@@ -101,15 +101,20 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             newResponse["notificationString"] = "Notified for beacon region \(regionId)"
             newResponse.saveInBackground()
             
-            // Create context for notification
-            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
-            let notificationContent = newNotification.createNotificationForTag()
+            // create contextual responses
+            var currNotificationSet = Set<UNNotificationCategory>()
+            let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
+                                                      actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String]),
+                                                      intentIdentifiers: [],
+                                                      options: [.customDismissAction])
+            currNotificationSet.insert(currCategory)
+            UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
             
             // Display notification with context
             let content = UNMutableNotificationContent()
-            content.body = notificationContent["message"]!
+            content.body = currentRegion["message"] as! String
             content.sound = UNNotificationSound.default()
-            content.categoryIdentifier = notificationContent["notificationCategory"]!
+            content.categoryIdentifier = currentRegion["notificationCategory"] as! String
             content.userInfo = currentRegion
             
             let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
@@ -124,6 +129,16 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             // add regionId to set so further notifications for region do not happen 
             prevNotifiedSet.insert(regionId)
         }
+    }
+    
+    func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
+        var actionsForAnswers = [UNNotificationAction]()
+        for answer in answers {
+            let currentAction = UNNotificationAction(identifier: answer, title: answer, options: [])
+            actionsForAnswers.append(currentAction)
+        }
+        
+        return actionsForAnswers
     }
     
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {

@@ -140,7 +140,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                      withParameters: ["latitude": (geoPoint?.latitude)!,
                                                       "longitude": (geoPoint?.longitude)!,
                                                       "vendorId": vendorId,
-                                                      "count": 10],
+                                                      "count": 20],
                                      block: ({ (foundObjs: Any?, error: Error?) -> Void in
                                         if error == nil {
                                             // parse response
@@ -149,30 +149,45 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                 var monitoredHotspotDictionary: [String : AnyObject] = [String : AnyObject]()
                                                 
                                                 for object in foundObjsArray {
-                                                    if let object = object as? PFObject {
+                                                    if let object = object as? [String : Any?] {
+                                                        let id = object["objectId"] as! String
+                                                        let vendorId = object["vendorId"] as! String
+                                                        let tag = object["tag"] as! String
+                                                        let info: [String : AnyObject]? = object["info"] as? [String : AnyObject]
+                                                        
                                                         let currGeopoint = object["location"] as! PFGeoPoint
                                                         let currLat = currGeopoint.latitude
                                                         let currLong = currGeopoint.longitude
-                                                        let id = object.objectId!
-                                                        self.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
+                                                        let beaconId = object["beaconId"] as? String
                                                         
-                                                        let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
+                                                        let locationCommonName = object["locationCommonName"] as? String
+                                                        let archived = object["archived"] as? Bool
+                                                        let notificationCategory = object["notificationCategory"] as? String
+                                                        let message = object["message"] as? String
+                                                        let contextualResponses = object["contextualResponses"] as? [String]
+
+                                                        self.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
                                                         
                                                         // Add data to user defaults
                                                         var unwrappedEntry = [String : AnyObject]()
                                                         unwrappedEntry["id"] = id as AnyObject
-                                                        unwrappedEntry["vendorId"] = (object["vendorId"] as! String) as AnyObject
-                                                        unwrappedEntry["tag"] = (object["tag"] as! String) as AnyObject
+                                                        unwrappedEntry["vendorId"] = vendorId as AnyObject
+                                                        unwrappedEntry["tag"] = tag as AnyObject
                                                         unwrappedEntry["info"] = info as AnyObject
+                                                        
                                                         unwrappedEntry["latitude"] = currLat as AnyObject
                                                         unwrappedEntry["longitude"] = currLong as AnyObject
-                                                        unwrappedEntry["archived"] = (object["archived"] as? Bool) as AnyObject
-                                                        unwrappedEntry["timestampCreated"] = (object["timestampCreated"] as? Int) as AnyObject
-                                                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
-                                                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
-                                                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
-                                                        unwrappedEntry["locationCommonName"] = (object["locationCommonName"] as? String) as AnyObject
-                                                        unwrappedEntry["beaconId"] = (object["beaconId"] as? String) as AnyObject
+                                                        
+                                                        unwrappedEntry["archived"] = archived as AnyObject
+//                                                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
+//                                                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
+//                                                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
+                                                        unwrappedEntry["locationCommonName"] = locationCommonName as AnyObject
+                                                        unwrappedEntry["beaconId"] = beaconId as AnyObject
+                                                        
+                                                        unwrappedEntry["notificationCategory"] = notificationCategory as AnyObject
+                                                        unwrappedEntry["message"] = message as AnyObject
+                                                        unwrappedEntry["contextualResponses"] = contextualResponses as AnyObject
                                                         
                                                         monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
                                                     }
@@ -330,15 +345,20 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     viewController.present(alert, animated: true, completion: nil)
                 }
             } else {
-                // Create context for notification
-                let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
-                let notificationContent = newNotification.createNotificationForTag()
+                // create contextual responses
+                var currNotificationSet = Set<UNNotificationCategory>()
+                let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
+                                                         actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String]),
+                                                         intentIdentifiers: [],
+                                                         options: [.customDismissAction])
+                currNotificationSet.insert(currCategory)
+                UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
                 
                 // Display notification with context
                 let content = UNMutableNotificationContent()
-                content.body = notificationContent["message"]!
+                content.body = currentRegion["message"] as! String
                 content.sound = UNNotificationSound.default()
-                content.categoryIdentifier = notificationContent["notificationCategory"]!
+                content.categoryIdentifier = currentRegion["notificationCategory"] as! String
                 content.userInfo = currentRegion
                 
                 let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
@@ -351,6 +371,16 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 })
             }
         }
+    }
+    
+    func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
+        var actionsForAnswers = [UNNotificationAction]()
+        for answer in answers {
+            let currentAction = UNNotificationAction(identifier: answer, title: answer, options: [])
+            actionsForAnswers.append(currentAction)
+        }
+        
+        return actionsForAnswers
     }
     
     //MARK: Background Task Functions
