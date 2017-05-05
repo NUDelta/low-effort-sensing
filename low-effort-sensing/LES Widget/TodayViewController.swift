@@ -11,22 +11,10 @@ import NotificationCenter
 import Parse
 
 // App Group for Sharing Data (dependent on build type)
-//#if DEBUG
-//let appGroup = "group.com.delta.les-debug" // for debug builds
-//#else
-//let appGroup = "group.com.delta.les"       // for enterprise distribution builds
-//#endif
-
 let appGroup = "group.com.delta.les-debug" // for debug builds
 //let appGroup = "group.com.delta.les"       // for enterprise distribution builds
 
 // Containing Application for Parse (dependent on build type)
-//#if DEBUG
-//let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
-//#else
-//let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
-//#endif
-
 let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
 //let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 
