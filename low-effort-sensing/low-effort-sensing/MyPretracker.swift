@@ -253,31 +253,34 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             if !(region is CLBeaconRegion) {
                 // Get NSUserDefaults
                 var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
-                let currentRegion = monitoredHotspotDictionary[region.identifier] as! [String : AnyObject]
-                let beaconId = currentRegion["beaconId"] as! String
                 
-                if beaconId == "" {
-                    print("Pretracker found a Geofence Region w/o beacon (\(region.identifier))...beginning pretracking.")
-                    if let monitorRegion = region as? CLCircularRegion {
-                        let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-                        let distanceToLocation = lastLocation.distance(from: monitorLocation)
-                        
-                        distanceToRegions[monitorRegion.identifier] = String(distanceToLocation)
-                        
-                        if let currentLocationInfo = self.locationDic[monitorRegion.identifier] {
-                            let distance = currentLocationInfo["distance"] as! Double
-                            let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
+                // check if monitoredHotspotDictionary is currently being refreshed, if so quit
+                if let currentRegion = monitoredHotspotDictionary[region.identifier] as? [String : AnyObject], let beaconId = currentRegion["beaconId"] as? String {
+                    if beaconId == "" {
+                        print("Pretracker found a Geofence Region w/o beacon (\(region.identifier))...beginning pretracking.")
+                        if let monitorRegion = region as? CLCircularRegion {
+                            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                            let distanceToLocation = lastLocation.distance(from: monitorLocation)
                             
-                            if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
-                                self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
-                                self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
+                            distanceToRegions[monitorRegion.identifier] = String(distanceToLocation)
+                            
+                            if let currentLocationInfo = self.locationDic[monitorRegion.identifier] {
+                                let distance = currentLocationInfo["distance"] as! Double
+                                let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
                                 
-                                notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                                if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
+                                    self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
+                                    self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
+                                    
+                                    notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                                }
                             }
                         }
+                    } else {
+                        print("Pretracker found a Geofence Region w/CLBeacon (\(region.identifier))...will not pretrack.")
                     }
                 } else {
-                    print("Pretracker found a Geofence Region w/CLBeacon (\(region.identifier))...will not pretrack.")
+                    print("Data currently being refreshed...waiting until finished.")
                 }
             } else {
                 print("Pretracker found a CLBeacon Region (\(region.identifier))...will not pretrack.")
