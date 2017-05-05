@@ -441,11 +441,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 } else if (updateType == "hotspot") {
                     MyPretracker.sharedManager.beginMonitoringParseRegions()
                 }
+                
+                completionHandler(UIBackgroundFetchResult.newData)
             }
+        } else {
+            completionHandler(UIBackgroundFetchResult.noData)
         }
-        
-        // need to add this for handling background fetch.
-        completionHandler(UIBackgroundFetchResult.newData)
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
@@ -528,34 +529,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     }
     
     //MARK: - Contextual Notification Handler
+    let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        // get UTC timestamp and timezone of notification
-        let epochTimestamp = Int(Date().timeIntervalSince1970)
-        let gmtOffset = NSTimeZone.local.secondsFromGMT()
-        
-        // get scenario and question as separate components
-        let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
-        
-        // setup response object to push to parse
-        var notificationId = ""
-        if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
-            notificationId = unwrappedNotificationId as! String
+        if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+            // get UTC timestamp and timezone of notification
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+            print("\(response)")
+            
+            // get scenario and question as separate components
+            let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
+            
+            // setup response object to push to parse
+            var notificationId = ""
+            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                notificationId = unwrappedNotificationId as! String
+            }
+            
+            let newResponse = PFObject(className: "pingResponse")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = notificationId
+            newResponse["question"] = notificationCategoryArr[1]
+            newResponse["response"] = ""
+            newResponse["tag"] = notificationCategoryArr[0]
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["response"] = response.actionIdentifier
+            
+            // if response field is not blank, save to parse
+            if newResponse["response"] as! String != "" {
+                newResponse.saveInBackground()
+            }
         }
         
-        let newResponse = PFObject(className: "pingResponse")
-        newResponse["vendorId"] = vendorId
-        newResponse["hotspotId"] = notificationId
-        newResponse["question"] = notificationCategoryArr[1]
-        newResponse["response"] = ""
-        newResponse["tag"] = notificationCategoryArr[0]
-        newResponse["timestamp"] = epochTimestamp
-        newResponse["gmtOffset"] = gmtOffset
-        newResponse["response"] = response.actionIdentifier
-
-        // if response field is not blank, save to parse
-        if newResponse["response"] as! String != "" {
-            newResponse.saveInBackground()
-        }
         completionHandler()
     }
     
