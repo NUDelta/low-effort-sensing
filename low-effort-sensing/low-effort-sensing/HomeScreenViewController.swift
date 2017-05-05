@@ -69,8 +69,14 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         let currentLocation = MyPretracker.sharedManager.locationManager?.location?.coordinate
         var lastLocation: CLLocation = CLLocation()
         
-        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double),
-                                                 altitude: 0.0, horizontalAccuracy: 0.0, verticalAccuracy: 0.0, course: 0.0, speed: 0.0, timestamp: Date.init())
+        let annotationLocation = CLLocation.init(coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double,
+                                                                                    longitude: location["longitude"] as! Double),
+                                                                                    altitude: 0.0,
+                                                                                    horizontalAccuracy: 0.0,
+                                                                                    verticalAccuracy: 0.0,
+                                                                                    course: 0.0,
+                                                                                    speed: 0.0,
+                                                                                    timestamp: Date.init())
         let tag = location["tag"] as! String
         
         var distanceToLocation: Double
@@ -93,17 +99,14 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         if locationCommonName == "" {
             annotationTitle = createTitleFromTag(tag)
         } else {
-            if tag == "queue" {
-                annotationTitle = locationCommonName + " (line tracking)"
-            } else if tag == "space" {
-                annotationTitle = locationCommonName + " (space tracking)"
-            }
+            annotationTitle = locationCommonName
         }
         
         let newLocation = MarkedLocation(title: annotationTitle,
                                          locationName: distanceString,
                                          discipline: tag,
-                                         coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double, longitude: location["longitude"] as! Double),
+                                         coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double,
+                                                                            longitude: location["longitude"] as! Double),
                                          hotspotId: location["id"] as! String)
         mapView.addAnnotation(newLocation)
     }
@@ -131,53 +134,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         for (_, info) in locations {
             addAnnotationsForDictionary(info as! [String : AnyObject])
         }
-    }
-    
-    func getAndDrawMyMarkedLocations() {
-        let query = PFQuery(className: "hotspot")
-        query.whereKey("vendorId", equalTo: vendorId)
-        query.findObjectsInBackground(block: {(objects: [PFObject]?, error: Error?) -> Void in
-            if error == nil {
-                if let objects = objects {
-                    var monitoredHotspotDictionary = [String : AnyObject]()
-                    
-                    for object in objects {
-                        let currGeopoint = object["location"] as! PFGeoPoint
-                        let currLat = currGeopoint.latitude
-                        let currLong = currGeopoint.longitude
-                        let id = object.objectId!
-                        
-                        let info : [String : AnyObject]? = object["info"] as? [String : AnyObject]
-                        
-                        // Add data to user defaults
-                        var unwrappedEntry = [String : AnyObject]()
-                        unwrappedEntry["id"] = id as AnyObject
-                        unwrappedEntry["vendorId"] = (object["vendorId"] as! String) as AnyObject
-                        unwrappedEntry["tag"] = (object["tag"] as! String) as AnyObject
-                        unwrappedEntry["info"] = info as AnyObject
-                        unwrappedEntry["latitude"] = currLat as AnyObject
-                        unwrappedEntry["longitude"] = currLong as AnyObject
-                        unwrappedEntry["archived"] = (object["archived"] as? Bool) as AnyObject
-                        unwrappedEntry["timestampCreated"] = (object["timestampCreated"] as? Int) as AnyObject
-                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
-                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
-                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
-                        unwrappedEntry["locationCommonName"] = (object["locationCommonName"] as? String) as AnyObject
-                        
-                        monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
-                    }
-                    
-                    self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: myHotspotsRegionKey)
-                    self.appUserDefaults?.synchronize()
-                    
-                    // add annotations onto map view
-                    self.drawNewAnnotations(monitoredHotspotDictionary)
-                }
-            } else {
-                // Log details of the failure
-                print("Error: \(error!) \(error.debugDescription)")
-            }
-        })
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {

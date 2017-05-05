@@ -50,6 +50,7 @@
 		006709CD1D89AB5F001E4528 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006709CC1D89AB5F001E4528 /* NotificationViewController.swift */; };
 		006709D01D89AB5F001E4528 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 006709CE1D89AB5F001E4528 /* MainInterface.storyboard */; };
 		006709D41D89AB5F001E4528 /* CustomNotification.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 006709C61D89AB5F001E4528 /* CustomNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		007B2D3A1EBCB292004C3397 /* coffee-lab.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 007B2D391EBCB292004C3397 /* coffee-lab.gpx */; };
 		008AAB7F1E3B287E0068B986 /* UserProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008AAB7E1E3B287E0068B986 /* UserProfileViewController.swift */; };
 		008AAB811E3B29C50068B986 /* ContributionDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008AAB801E3B29C50068B986 /* ContributionDataCell.swift */; };
 		0092F78C1CFA0508006A9C2C /* DataForLocationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */; };
@@ -207,6 +208,7 @@
 		006709CC1D89AB5F001E4528 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		006709CF1D89AB5F001E4528 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		006709D11D89AB5F001E4528 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		007B2D391EBCB292004C3397 /* coffee-lab.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "coffee-lab.gpx"; sourceTree = "<group>"; };
 		008AAB7E1E3B287E0068B986 /* UserProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfileViewController.swift; sourceTree = "<group>"; };
 		008AAB801E3B29C50068B986 /* ContributionDataCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContributionDataCell.swift; sourceTree = "<group>"; };
 		0092F78B1CFA0508006A9C2C /* DataForLocationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataForLocationViewController.swift; sourceTree = "<group>"; };
@@ -361,6 +363,7 @@
 			isa = PBXGroup;
 			children = (
 				004213331EBB1171006B31EE /* les-simulation.gpx */,
+				007B2D391EBCB292004C3397 /* coffee-lab.gpx */,
 				009B99AB1E4BA2CC0076FBF0 /* Help */,
 				00D93F611DDCB5E3006DFB8B /* Leaderboard */,
 				001627CE1CF297430049107E /* WelcomeScreens */,
@@ -743,6 +746,7 @@
 				001A8FD41C55CE6E009F964C /* Assets.xcassets in Resources */,
 				001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */,
 				00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */,
+				007B2D3A1EBCB292004C3397 /* coffee-lab.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
