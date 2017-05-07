@@ -131,49 +131,49 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
     
     func retrieveAndDrawData(_ hotspotId: String) {
         // fetch data
-        PFCloud.callFunction(inBackground: "fetchMapDataView",
-                             withParameters: ["hotspotId": hotspotId],
-                             block: ({ (foundObjs: Any?, error: Error?) -> Void in
-                                if error == nil {
-                                    // parse response
-                                    if let foundObjs = foundObjs as? [AnyObject] {
-                                        
-                                        // update table data
-                                        let answers = foundObjs
-                                        self.tableData = []
-                                        
-                                        for object in answers {
-                                            if let object = object as? [String : Any?] {
-                                                // convert objects
-                                                let question = self.getQuestionForKey(object["question"] as! String,
-                                                                                 tag: self.currentHotspot["tag"] as! String)
-                                                let answer = self.getAnswerForKey(object["question"] as! String)
-                                                let initials = object["initials"] as! String
-                                                let vendorId = object["vendorId"] as! String
-                                                
-                                                let date = Date(timeIntervalSince1970: TimeInterval(object["timestamp"] as! Int))
-                                                let dateFormatter = DateFormatter()
-                                                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                                                let dateString = dateFormatter.string(from: date as Date)
-                                                
-                                                // create LocationData object and add to data
-                                                let currentRow = LocationData(firstRowLabel: question,
-                                                                              secondRowLabel: answer,
-                                                                              initials: initials,
-                                                                              timestamp: dateString,
-                                                                              vendorId: vendorId)
-                                                self.tableData.append(currentRow)
-                                            }
-                                        }
-                                        
-                                        // setup table view
-                                        self.refreshTableView()
-                                    }
-                                } else {
-                                    print("Error in retrieving location data from Parse: \(String(describing: error)). Trying again.")
-                                    self.retrieveAndDrawData(hotspotId)
-                                }
-                             }))
+//        PFCloud.callFunction(inBackground: "fetchMapDataView",
+//                             withParameters: ["hotspotId": hotspotId],
+//                             block: ({ (foundObjs: Any?, error: Error?) -> Void in
+//                                if error == nil {
+//                                    // parse response
+//                                    if let foundObjs = foundObjs as? [AnyObject] {
+//                                        
+//                                        // update table data
+//                                        let answers = foundObjs
+//                                        self.tableData = []
+//                                        
+//                                        for object in answers {
+//                                            if let object = object as? [String : Any?] {
+//                                                // convert objects
+//                                                let question = self.getQuestionForKey(object["question"] as! String,
+//                                                                                 tag: self.currentHotspot["tag"] as! String)
+//                                                let answer = self.getAnswerForKey(object["question"] as! String)
+//                                                let initials = object["initials"] as! String
+//                                                let vendorId = object["vendorId"] as! String
+//                                                
+//                                                let date = Date(timeIntervalSince1970: TimeInterval(object["timestamp"] as! Int))
+//                                                let dateFormatter = DateFormatter()
+//                                                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//                                                let dateString = dateFormatter.string(from: date as Date)
+//                                                
+//                                                // create LocationData object and add to data
+//                                                let currentRow = LocationData(firstRowLabel: question,
+//                                                                              secondRowLabel: answer,
+//                                                                              initials: initials,
+//                                                                              timestamp: dateString,
+//                                                                              vendorId: vendorId)
+//                                                self.tableData.append(currentRow)
+//                                            }
+//                                        }
+//                                        
+//                                        // setup table view
+//                                        self.refreshTableView()
+//                                    }
+//                                } else {
+//                                    print("Error in retrieving location data from Parse: \(String(describing: error)). Trying again.")
+//                                    self.retrieveAndDrawData(hotspotId)
+//                                }
+//                             }))
     }
     
     func getQuestionForKey(_ questionKey: String, tag: String) -> String {
@@ -217,18 +217,18 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         switch tag {
         case "food":
             return "Free/Sold Food"
-        case "queue":
-            return "How Long is the Line?"
-        case "space":
-            return "How Busy is the Space?"
-        case "surprising":
-            return "Something Surprising is Happening!"
-        case "guestevent":
-            return "Guest Event Happening"
-        case "dtrdonut":
-            return "Donuts for DTR!"
-        case "windowdrawing":
-            return "What's on the windows?"
+//        case "queue":
+//            return "How Long is the Line?"
+//        case "space":
+//            return "How Busy is the Space?"
+//        case "surprising":
+//            return "Something Surprising is Happening!"
+//        case "guestevent":
+//            return "Guest Event Happening"
+//        case "dtrdonut":
+//            return "Donuts for DTR!"
+//        case "windowdrawing":
+//            return "What's on the windows?"
         default:
             return ""
         }

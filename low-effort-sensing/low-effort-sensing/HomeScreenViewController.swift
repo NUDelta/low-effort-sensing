@@ -115,12 +115,6 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         switch tag {
         case "food":
             return "Free/Sold Food Here"
-        case "queue":
-            return "How Long is the Line Here?"
-        case "space":
-            return "How Busy is the Space Here?"
-        case "surprising":
-            return "Something Surprising is Happening Here!"
         default:
             return ""
         }
