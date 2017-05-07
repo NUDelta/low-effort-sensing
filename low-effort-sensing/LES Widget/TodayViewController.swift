@@ -11,12 +11,18 @@ import NotificationCenter
 import Parse
 
 // App Group for Sharing Data (dependent on build type)
-let appGroup = "group.com.delta.les-debug" // for debug builds
-//let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+#if DEBUG
+    let appGroup = "group.com.delta.les-debug" // for debug builds
+#else
+    let appGroup = "group.com.delta.les"       // for enterprise distribution builds
+#endif
 
 // Containing Application for Parse (dependent on build type)
-let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
-//let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
+#if DEBUG
+    let containingApplication = "edu.northwestern.delta.les-debug.widget" // for debug builds
+#else
+    let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
+#endif
 
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
 let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
