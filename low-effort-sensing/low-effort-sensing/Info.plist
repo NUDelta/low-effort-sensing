@@ -27,61 +27,16 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
+	<string>Low-Effort Sensing requires access to your phone&apos;s location and Bluetooth to notify you when you enter or leave a monitored region. </string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>
 			<key>UIApplicationShortcutItemIconType</key>
 			<string>UIApplicationShortcutIconTypeAdd</string>
 			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>See something odd?</string>
+			<string>Free or sold food here!</string>
 			<key>UIApplicationShortcutItemTitle</key>
-			<string>Surprising Thing</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.delta.low-effort-sensing.mark-surprising-thing-location</string>
-			<key>UIApplicationShortcutItemUserInfo</key>
-			<dict>
-				<key>key</key>
-				<string>value</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeAdd</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>How busy is this place?</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Space Availability</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.delta.low-effort-sensing.mark-space-location</string>
-			<key>UIApplicationShortcutItemUserInfo</key>
-			<dict>
-				<key>key</key>
-				<string>value</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeAdd</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>How long is the line?</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Queue Status</string>
-			<key>UIApplicationShortcutItemType</key>
-			<string>com.delta.low-effort-sensing.mark-queue-location</string>
-			<key>UIApplicationShortcutItemUserInfo</key>
-			<dict>
-				<key>key</key>
-				<string>value</string>
-			</dict>
-		</dict>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeAdd</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string>What is the food here?</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Food</string>
+			<string>Free/Sold Food</string>
 			<key>UIApplicationShortcutItemType</key>
 			<string>com.delta.low-effort-sensing.mark-food-location</string>
 			<key>UIApplicationShortcutItemUserInfo</key>

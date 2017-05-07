@@ -22,37 +22,36 @@ let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently mo
 let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
 
 // blank location info
-let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
-                "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
+let foodInfo = ["type": "", "quantity": "", "freesold": "", "cost": "", "sellingreason": ""]
 
-let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
-
-let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
-                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
-
-let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
-
-let guestEventInfo = ["eventkind": "", "host": "", "isfood": "", "foodkind": "", "foodleft": "", "eventlength": ""]
-
-let windowDrawingInfo = ["objectright": "", "colorright": "", "valueright": "", "objectleft": "", "colorleft": "", "valueleft": ""]
-
-let dtrDonutInfo = ["room": "", "boxdrawing": "", "boxcontent": "", "markercolor": "", "plain": "", "frosted": ""]
+//let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
+//
+//let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
+//                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
+//
+//let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
+//
+//let guestEventInfo = ["eventkind": "", "host": "", "isfood": "", "foodkind": "", "foodleft": "", "eventlength": ""]
+//
+//let windowDrawingInfo = ["objectright": "", "colorright": "", "valueright": "", "objectleft": "", "colorleft": "", "valueleft": ""]
+//
+//let dtrDonutInfo = ["room": "", "boxdrawing": "", "boxcontent": "", "markercolor": "", "plain": "", "frosted": ""]
 
 let appUserDefaults = UserDefaults(suiteName: appGroup)
 
 class TodayViewController: UIViewController, NCWidgetProviding {
         
     @IBOutlet weak var foodButton: UIButton!
-    @IBOutlet weak var queueButton: UIButton!
-    @IBOutlet weak var spaceButton: UIButton!
+//    @IBOutlet weak var queueButton: UIButton!
+//    @IBOutlet weak var spaceButton: UIButton!
 //    @IBOutlet weak var surprisingButton: UIButton!
     
     @IBOutlet weak var submittedLabel: UILabel!
     @IBOutlet weak var infoLabel: UILabel!
     
-    var guestEventSelected: Bool = false
-    var windowDrawingSelected: Bool = false
-    var dtrDonutSelected: Bool = false
+    var foodSelected: Bool = false
+//    var windowDrawingSelected: Bool = false
+//    var dtrDonutSelected: Bool = false
 //    var surprisingSelected: Bool = false
     
     let brightGreenColor: UIColor = UIColor.init(red: 83.0 / 255.0, green: 215.0 / 255.0, blue: 105.0 / 255.0, alpha: 1.0)
@@ -94,15 +93,15 @@ class TodayViewController: UIViewController, NCWidgetProviding {
         foodButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
         foodButton.titleLabel!.minimumScaleFactor = 0.5
         
-        queueButton.titleLabel!.numberOfLines = 0
-        queueButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        queueButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
-        queueButton.titleLabel!.minimumScaleFactor = 0.5
-        
-        spaceButton.titleLabel!.numberOfLines = 0
-        spaceButton.titleLabel!.adjustsFontSizeToFitWidth = true
-        spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
-        spaceButton.titleLabel!.minimumScaleFactor = 0.5
+//        queueButton.titleLabel!.numberOfLines = 0
+//        queueButton.titleLabel!.adjustsFontSizeToFitWidth = true
+//        queueButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
+//        queueButton.titleLabel!.minimumScaleFactor = 0.5
+//        
+//        spaceButton.titleLabel!.numberOfLines = 0
+//        spaceButton.titleLabel!.adjustsFontSizeToFitWidth = true
+//        spaceButton.titleLabel!.lineBreakMode = NSLineBreakMode.byClipping
+//        spaceButton.titleLabel!.minimumScaleFactor = 0.5
         
 //        surprisingButton.titleLabel!.numberOfLines = 0
 //        surprisingButton.titleLabel!.adjustsFontSizeToFitWidth = true
@@ -135,19 +134,20 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        if guestEventSelected {
-            pushDataToParse("guestevent")
-            unmarkLocation("guestevent")
-            submittedLabel.text = ""
-        } else if windowDrawingSelected {
-            pushDataToParse("windowdrawing")
-            unmarkLocation("windowdrawing")
-            submittedLabel.text = ""
-        } else if dtrDonutSelected {
-            pushDataToParse("dtrdonut")
-            unmarkLocation("dtrdonut")
+        if foodSelected {
+            pushDataToParse("food")
+            unmarkLocation("food")
             submittedLabel.text = ""
         }
+//        } else if windowDrawingSelected {
+//            pushDataToParse("windowdrawing")
+//            unmarkLocation("windowdrawing")
+//            submittedLabel.text = ""
+//        } else if dtrDonutSelected {
+//            pushDataToParse("dtrdonut")
+//            unmarkLocation("dtrdonut")
+//            submittedLabel.text = ""
+//        }
 //        else if surprisingSelected {
 //            pushDataToParse("surprising")
 //            unmarkLocation("surprising")
@@ -156,78 +156,78 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     @IBAction func markLocationForFood(_ sender: AnyObject) {
         // show user that button has been selected/deselected
-        if !guestEventSelected {
+        if !foodSelected {
             foodButton.alpha = 1
             foodButton.backgroundColor = brightGreenColor
             foodButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for Guest Event tracking when you exit the notification center. \n\nClick Guest Event again to untrack or click another button to change the category"
+            submittedLabel.text = "Location will be marked for Food Event tracking when you exit the notification center. \n\nClick Food Event again to untrack or click another button to change the category."
             
-            guestEventSelected = true
+            foodSelected = true
         } else {
-            unmarkLocation("guestevent")
+            unmarkLocation("food")
             submittedLabel.text = ""
         }
         
         // reset any other buttons selected
-        if windowDrawingSelected {
-            unmarkLocation("windowdrawing")
-        } else if dtrDonutSelected {
-            unmarkLocation("dtrdonut")
-        }
+//        if windowDrawingSelected {
+//            unmarkLocation("windowdrawing")
+//        } else if dtrDonutSelected {
+//            unmarkLocation("dtrdonut")
+//        }
 //        else if surprisingSelected {
 //            unmarkLocation("surprising")
 //        }
     }
     
-    @IBAction func markLocationForQueue(_ sender: AnyObject) {
-        // show user that button has been selected/deselected
-        if !windowDrawingSelected {
-            queueButton.alpha = 1
-            queueButton.backgroundColor = brightGreenColor
-            queueButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for Window Drawing tracking when you exit the notification center \n\nClick Window Drawing again to untrack or click another button to change the category"
-            
-            windowDrawingSelected = true
-        } else {
-            unmarkLocation("windowdrawing")
-            submittedLabel.text = ""
-        }
-        
-        // reset any other buttons selected
-        if guestEventSelected {
-            unmarkLocation("guestevent")
-        } else if dtrDonutSelected {
-            unmarkLocation("dtrdonut")
-        }
-//        else if surprisingSelected {
-//            unmarkLocation("surprising")
+//    @IBAction func markLocationForQueue(_ sender: AnyObject) {
+//        // show user that button has been selected/deselected
+//        if !windowDrawingSelected {
+//            queueButton.alpha = 1
+//            queueButton.backgroundColor = brightGreenColor
+//            queueButton.setTitleColor(UIColor.white, for: UIControlState())
+//            submittedLabel.text = "Location will be marked for Window Drawing tracking when you exit the notification center \n\nClick Window Drawing again to untrack or click another button to change the category"
+//            
+//            windowDrawingSelected = true
+//        } else {
+//            unmarkLocation("windowdrawing")
+//            submittedLabel.text = ""
 //        }
-    }
+//        
+//        // reset any other buttons selected
+//        if foodSelected {
+//            unmarkLocation("guestevent")
+//        } else if dtrDonutSelected {
+//            unmarkLocation("dtrdonut")
+//        }
+////        else if surprisingSelected {
+////            unmarkLocation("surprising")
+////        }
+//    }
     
-    @IBAction func markLocationForSpace(_ sender: AnyObject) {
-        // show user that button has been selected/deselected
-        if !dtrDonutSelected {
-            spaceButton.alpha = 1
-            spaceButton.backgroundColor = brightGreenColor
-            spaceButton.setTitleColor(UIColor.white, for: UIControlState())
-            submittedLabel.text = "Location will be marked for DTR Donut tracking when you exit the notification center \n\nClick DTR Donut again to untrack or click another button to change the category"
-            
-            dtrDonutSelected = true
-        } else {
-            unmarkLocation("dtrdonut")
-            submittedLabel.text = ""
-        }
-        
-        // reset any other buttons selected
-        if guestEventSelected {
-            unmarkLocation("guestevent")
-        } else if windowDrawingSelected {
-            unmarkLocation("windowdrawing")
-        }
-//        else if surprisingSelected {
-//            unmarkLocation("surprising")
+//    @IBAction func markLocationForSpace(_ sender: AnyObject) {
+//        // show user that button has been selected/deselected
+//        if !dtrDonutSelected {
+//            spaceButton.alpha = 1
+//            spaceButton.backgroundColor = brightGreenColor
+//            spaceButton.setTitleColor(UIColor.white, for: UIControlState())
+//            submittedLabel.text = "Location will be marked for DTR Donut tracking when you exit the notification center \n\nClick DTR Donut again to untrack or click another button to change the category"
+//            
+//            dtrDonutSelected = true
+//        } else {
+//            unmarkLocation("dtrdonut")
+//            submittedLabel.text = ""
 //        }
-    }
+//        
+//        // reset any other buttons selected
+//        if foodSelected {
+//            unmarkLocation("guestevent")
+//        } else if windowDrawingSelected {
+//            unmarkLocation("windowdrawing")
+//        }
+////        else if surprisingSelected {
+////            unmarkLocation("surprising")
+////        }
+//    }
     
 //    @IBAction func markLocationForSurprisingThing(_ sender: AnyObject) {
 //        // show user that button has been selected/deselected
@@ -254,25 +254,26 @@ class TodayViewController: UIViewController, NCWidgetProviding {
 //    }
     
     func unmarkLocation(_ location: String) {
-        if location == "guestevent" {
+        if location == "food" {
             foodButton.alpha = defaultAlpha
             foodButton.backgroundColor = UIColor.white
             foodButton.setTitleColor(UIColor.black, for: UIControlState())
             
-            guestEventSelected = false
-        } else if location == "windowdrawing" {
-            queueButton.alpha = defaultAlpha
-            queueButton.backgroundColor = UIColor.white
-            queueButton.setTitleColor(UIColor.black, for: UIControlState())
-            
-            windowDrawingSelected = false
-        } else if location == "dtrdonut" {
-            spaceButton.alpha = defaultAlpha
-            spaceButton.backgroundColor = UIColor.white
-            spaceButton.setTitleColor(UIColor.black, for: UIControlState())
-            
-            dtrDonutSelected = false
+            foodSelected = false
         }
+//        } else if location == "windowdrawing" {
+//            queueButton.alpha = defaultAlpha
+//            queueButton.backgroundColor = UIColor.white
+//            queueButton.setTitleColor(UIColor.black, for: UIControlState())
+//            
+//            windowDrawingSelected = false
+//        } else if location == "dtrdonut" {
+//            spaceButton.alpha = defaultAlpha
+//            spaceButton.backgroundColor = UIColor.white
+//            spaceButton.setTitleColor(UIColor.black, for: UIControlState())
+//            
+//            dtrDonutSelected = false
+//        }
 //        else if location == "surprising" {
 //            surprisingButton.alpha = defaultAlpha
 //            surprisingButton.backgroundColor = UIColor.white
@@ -316,34 +317,37 @@ class TodayViewController: UIViewController, NCWidgetProviding {
                 switch tag {
                 case "food":
                     newMonitoredLocation["info"] = foodInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
-                                                                   "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
+                    newMonitoredLocation["saveTimeForQuestion"] = ["type": epochTimestamp,
+                                                                   "quantity": epochTimestamp,
+                                                                   "freesold": epochTimestamp,
+                                                                   "cost": epochTimestamp,
+                                                                   "sellingreason": epochTimestamp]
                     break
-                case "queue":
-                    newMonitoredLocation["info"] = queueInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
-                    break
-                case "space":
-                    newMonitoredLocation["info"] = spaceInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
-                                                                   "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
-                    break
-                case "surprising":
-                    newMonitoredLocation["info"] = surprisingInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
-                    break
-                case "guestevent":
-                    newMonitoredLocation["info"] = guestEventInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["eventkind": epochTimestamp, "host": epochTimestamp, "isfood": epochTimestamp, "foodkind": epochTimestamp, "foodleft": epochTimestamp, "eventlength": epochTimestamp]
-                    break
-                case "windowdrawing":
-                    newMonitoredLocation["info"] = windowDrawingInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["objectright": epochTimestamp, "colorright": epochTimestamp, "valueright": epochTimestamp, "objectleft": epochTimestamp, "colorleft": epochTimestamp, "valueleft": epochTimestamp]
-                    break
-                case "dtrdonut":
-                    newMonitoredLocation["info"] = dtrDonutInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["room": epochTimestamp, "boxdrawing": epochTimestamp, "boxcontent": epochTimestamp, "markercolor": epochTimestamp, "plain": epochTimestamp, "frosted": epochTimestamp]
-                    break
+//                case "queue":
+//                    newMonitoredLocation["info"] = queueInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
+//                    break
+//                case "space":
+//                    newMonitoredLocation["info"] = spaceInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
+//                                                                   "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
+//                    break
+//                case "surprising":
+//                    newMonitoredLocation["info"] = surprisingInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
+//                    break
+//                case "guestevent":
+//                    newMonitoredLocation["info"] = guestEventInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["eventkind": epochTimestamp, "host": epochTimestamp, "isfood": epochTimestamp, "foodkind": epochTimestamp, "foodleft": epochTimestamp, "eventlength": epochTimestamp]
+//                    break
+//                case "windowdrawing":
+//                    newMonitoredLocation["info"] = windowDrawingInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["objectright": epochTimestamp, "colorright": epochTimestamp, "valueright": epochTimestamp, "objectleft": epochTimestamp, "colorleft": epochTimestamp, "valueleft": epochTimestamp]
+//                    break
+//                case "dtrdonut":
+//                    newMonitoredLocation["info"] = dtrDonutInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["room": epochTimestamp, "boxdrawing": epochTimestamp, "boxcontent": epochTimestamp, "markercolor": epochTimestamp, "plain": epochTimestamp, "frosted": epochTimestamp]
+//                    break
                 default:
                     break
                 }

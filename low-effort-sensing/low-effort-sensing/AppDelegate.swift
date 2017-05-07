@@ -66,8 +66,7 @@ let windowDrawingQuestionOrdering = ["objectright", "colorright", "valueright", 
 let dtrDonutQuestionOrdering = ["room", "boxdrawing", "boxcontent", "markercolor", "plain", "frosted"]
 
 // blank location info
-let foodInfo = ["isfood": "", "foodtype": "", "howmuchfood": "",
-                "freeorsold": "", "forstudentgroup": "", "cost": "", "sellingreason": ""]
+let foodInfo = ["type": "", "quantity": "", "freesold": "", "cost": "", "sellingreason": ""]
 
 let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
 
@@ -578,15 +577,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             if error == nil {
                 // create tag based on shortcut
                 var tag = ""
+                var tagDescription = ""
                 switch shortcutItem.type {
                 case "com.delta.low-effort-sensing.mark-food-location":
                     tag = "food"
-                case "com.delta.low-effort-sensing.mark-queue-location":
-                    tag = "queue"
-                case "com.delta.low-effort-sensing.mark-space-location":
-                    tag = "space"
-                case "com.delta.low-effort-sensing.mark-surprising-thing-location":
-                    tag = "surprising"
+                    tagDescription = "Free/Sold Food"
                 default:
                     return
                 }
@@ -621,44 +616,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 switch tag {
                 case "food":
                     newMonitoredLocation["info"] = foodInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isfood": epochTimestamp, "foodtype": epochTimestamp, "howmuchfood": epochTimestamp, "freeorsold": epochTimestamp,
-                                                                   "forstudentgroup": epochTimestamp, "cost": epochTimestamp, "sellingreason": epochTimestamp]
-                    break
-                case "queue":
-                    newMonitoredLocation["info"] = queueInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isline": epochTimestamp, "linetime": epochTimestamp, "islonger": epochTimestamp, "isworthwaiting": epochTimestamp, "npeople": epochTimestamp]
-                    break
-                case "space":
-                    newMonitoredLocation["info"] = spaceInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["isspace": epochTimestamp, "isavailable": epochTimestamp, "seatingtype": epochTimestamp, "seatingnearpower": epochTimestamp,
-                                                                   "iswifi": epochTimestamp, "manypeople": epochTimestamp, "loudness": epochTimestamp, "event": epochTimestamp]
-                    break
-                case "surprising":
-                    newMonitoredLocation["info"] = surprisingInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["whatshappening": epochTimestamp, "famefrom": epochTimestamp, "vehicles": epochTimestamp, "peopledoing": epochTimestamp]
+                    newMonitoredLocation["saveTimeForQuestion"] = ["type": epochTimestamp,
+                                                                   "quantity": epochTimestamp,
+                                                                   "freesold": epochTimestamp,
+                                                                   "cost": epochTimestamp,
+                                                                   "sellingreason": epochTimestamp]
                     break
                 default:
                     break
                 }
                 
                 // push to parse
-                newMonitoredLocation.saveInBackground()
+                newMonitoredLocation.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
+                    if (!success) {
+                        print("Error in saving new location to Parse: \(String(describing: error)).")
+                    }
+                }))
                 
-                // Show alert confirming location saved
-                var tagDescription = ""
-                switch(tag) {
-                case "food":
-                    tagDescription = "Food"
-                case "queue":
-                    tagDescription = "Queue"
-                case "space":
-                    tagDescription = "Space"
-                case "surprising":
-                    tagDescription = "Surprising Things"
-                default:
-                    return
-                }
-                
+                // present feedback to user letting them know it worked
                 let title = "Location Marked for \(tagDescription) Tracking"
                 let message = "Your current location has been marked for \(tagDescription) tracking. Check back later to see if someone has contributed information to it!"
                 
