@@ -374,11 +374,16 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
+        // create UNNotificationAction objects for each answer
         var actionsForAnswers = [UNNotificationAction]()
         for answer in answers {
             let currentAction = UNNotificationAction(identifier: answer, title: answer, options: [])
             actionsForAnswers.append(currentAction)
         }
+        
+        // add i dont know option
+        let idkAction = UNNotificationAction(identifier: "I don't know", title: "I don't know", options: [])
+        actionsForAnswers.append(idkAction)
         
         return actionsForAnswers
     }
