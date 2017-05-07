@@ -439,6 +439,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     BeaconTracker.sharedBeaconManager.beginMonitoringParseRegions()
                 } else if (updateType == "hotspot") {
                     MyPretracker.sharedManager.beginMonitoringParseRegions()
+                } else if (updateType == "heartbeat") {
+                    // Log application heartbeat
+                    let date = Date()
+                    let dateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                    let currentDateString = dateFormatter.string(from: date)
+                    
+                    let newLog = PFObject(className: "pretracking_debug")
+                    newLog["vendor_id"] = vendorId
+                    newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
+                    newLog["timestamp_string"] = currentDateString
+                    newLog["console_string"] = "Application heartbeat"
+                    newLog.saveInBackground()
                 }
                 
                 completionHandler(UIBackgroundFetchResult.newData)
