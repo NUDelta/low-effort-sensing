@@ -52,11 +52,13 @@ class CompletionViewController: UIViewController {
         
         // add view to hierarchy
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
-        let homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController")
+        let tabBarController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! UITabBarController
+        tabBarController.selectedIndex = 2
+        
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         appDelegate.window = UIWindow(frame: UIScreen.main.bounds)
         
-        appDelegate.window?.rootViewController = homeViewController
+        appDelegate.window?.rootViewController = tabBarController
         appDelegate.window?.makeKeyAndVisible()
     }
 }
