@@ -582,6 +582,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
     }
     
+    public func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+        print("Error monitoring failed for geofence region: \(String(describing: region)) with error \(error)")
+    }
+    
     private func outOfAllRegions() -> Bool {
         print("checking all regions")
         for (_, regionInfo) in self.locationDic {

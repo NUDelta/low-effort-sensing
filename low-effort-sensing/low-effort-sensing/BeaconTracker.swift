@@ -189,6 +189,6 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     }
     
     public func beaconManager(_ manager: Any, monitoringDidFailFor region: CLBeaconRegion?, withError error: Error) {
-        print(error)
+        print("Error monitoring failed for beacon region: \(String(describing: region)) with error \(error)")
     }
 }
