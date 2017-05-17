@@ -217,7 +217,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         // Initialize Parse.
         Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup)
         Parse.initialize(with: ParseClientConfiguration(block: { (configuration: ParseMutableClientConfiguration) -> Void in
-            configuration.server = "https://dtr-les.herokuapp.com/parse/"
+            configuration.server = "https://les-expand.herokuapp.com/parse/"
             configuration.applicationId = "PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr"
             configuration.clientKey = "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7"
         }))
