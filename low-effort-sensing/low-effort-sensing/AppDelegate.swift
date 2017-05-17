@@ -452,6 +452,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     newLog["timestamp_string"] = currentDateString
                     newLog["console_string"] = "Application heartbeat"
                     newLog.saveInBackground()
+                } else if (updateType == "location") {
+                    MyPretracker.sharedManager.locationManager!.requestLocation()
                 }
                 
                 completionHandler(UIBackgroundFetchResult.newData)

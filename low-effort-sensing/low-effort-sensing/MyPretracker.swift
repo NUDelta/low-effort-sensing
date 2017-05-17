@@ -421,26 +421,26 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         notifyIfWithinDistance(lastLocation)
         
         // store location updates if greater than threshold
-//        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 65.0) {
-//            let distance = calculateDistance(currentLocation: lastLocation)
-//            
-//            if (distance >= distanceUpdate) {
-//                let epochTimestamp = Int(Date().timeIntervalSince1970)
-//                let gmtOffset = NSTimeZone.local.secondsFromGMT()
-//                
-//                let newLocationUpdate = PFObject(className: "locationUpdates")
-//                newLocationUpdate["latitude"] = lastLocation.coordinate.latitude
-//                newLocationUpdate["longitude"] = lastLocation.coordinate.longitude
-//                newLocationUpdate["heading"] = lastLocation.course
-//                newLocationUpdate["speed"] = lastLocation.speed
-//                newLocationUpdate["horizontalAccuracy"] = lastLocation.horizontalAccuracy
-//                newLocationUpdate["vendorId"] = vendorId
-//                newLocationUpdate["timestamp"] = epochTimestamp
-//                newLocationUpdate["gmtOffset"] = gmtOffset
-//                
-//                newLocationUpdate.saveInBackground()
-//            }
-//        }
+        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 65.0) {
+            let distance = calculateDistance(currentLocation: lastLocation)
+            
+            if (distance >= distanceUpdate) {
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+                
+                let newLocationUpdate = PFObject(className: "locationUpdates")
+                newLocationUpdate["latitude"] = lastLocation.coordinate.latitude
+                newLocationUpdate["longitude"] = lastLocation.coordinate.longitude
+                newLocationUpdate["heading"] = lastLocation.course
+                newLocationUpdate["speed"] = lastLocation.speed
+                newLocationUpdate["horizontalAccuracy"] = lastLocation.horizontalAccuracy
+                newLocationUpdate["vendorId"] = vendorId
+                newLocationUpdate["timestamp"] = epochTimestamp
+                newLocationUpdate["gmtOffset"] = gmtOffset
+                
+                newLocationUpdate.saveInBackground()
+            }
+        }
         
         // reset timer
         // do any actual work before this step as it may not execute depending on timer state
