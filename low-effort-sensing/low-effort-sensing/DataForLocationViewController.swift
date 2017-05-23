@@ -10,6 +10,7 @@ import Foundation
 import Parse
 
 class DataForLocationViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    // MARK: - Class Variables
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var locationCategory: UILabel!
     @IBOutlet weak var distanceToLocationLabel: UILabel!
@@ -32,6 +33,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
                              UIColor(hue: 0.0028, saturation: 0.89, brightness: 0.76, alpha: 1.0),
                              UIColor(hue: 0.3333, saturation: 1, brightness: 0.51, alpha: 1.0)]
     
+    // MARK: - View Controller Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -66,61 +68,10 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - Data Fetching and Formatting Functions
     func updateClassVariables(_ hotspot: [String : AnyObject], distance: String) {
         self.currentHotspot = hotspot
         self.distanceToHotspot = distance
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tableData.count
-    }
-    
-    func refreshTableView() {
-        DispatchQueue.main.async{
-            self.tableView.reloadData()
-            return
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationDataCellPrototype") as! LocationDataCell
-        cell.questionLabel.text = tableData[(indexPath as NSIndexPath).row].firstRowLabel
-        cell.answerLabel.text = tableData[(indexPath as NSIndexPath).row].secondRowLabel
-        cell.timestampLabel.text = tableData[(indexPath as NSIndexPath).row].timestamp
-        cell.isUserInteractionEnabled = false
-        
-        // set image
-        let initialLabel = UILabel()
-        initialLabel.frame.size = CGSize(width: cell.userImageLabel.frame.size.width,
-                                         height: cell.userImageLabel.frame.size.height)
-        initialLabel.textColor = UIColor.white
-        initialLabel.text = tableData[(indexPath as NSIndexPath).row].initials
-        initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 36)
-        initialLabel.textAlignment = NSTextAlignment.center
-        initialLabel.backgroundColor = self.computeColor(tableData[(indexPath as NSIndexPath).row].initials)
-        initialLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
-        initialLabel.frame = initialLabel.frame.integral
-        
-        UIGraphicsBeginImageContext(initialLabel.frame.size)
-        initialLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
-        cell.userImageLabel.image = UIGraphicsGetImageFromCurrentImageContext()
-        cell.userImageLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
-        cell.userImageLabel.clipsToBounds = true;
-        cell.userImageLabel.frame = initialLabel.frame.integral
-        UIGraphicsEndImageContext()
-        
-        
-        // dynamic font sizing
-        cell.questionLabel.adjustsFontSizeToFitWidth = true
-        cell.questionLabel.minimumScaleFactor = 0.5
-        
-        cell.answerLabel.adjustsFontSizeToFitWidth = true
-        cell.answerLabel.minimumScaleFactor = 0.5
-        
-        cell.timestampLabel.adjustsFontSizeToFitWidth = true
-        cell.timestampLabel.minimumScaleFactor = 0.5
-        
-        return cell
     }
     
     func computeColor(_ initials: String) -> UIColor {
@@ -232,6 +183,59 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         default:
             return ""
         }
+    }
+    
+    // MARK: - Table View Functions
+    func refreshTableView() {
+        DispatchQueue.main.async{
+            self.tableView.reloadData()
+            return
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return tableData.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "LocationDataCellPrototype") as! LocationDataCell
+        cell.questionLabel.text = tableData[(indexPath as NSIndexPath).row].firstRowLabel
+        cell.answerLabel.text = tableData[(indexPath as NSIndexPath).row].secondRowLabel
+        cell.timestampLabel.text = tableData[(indexPath as NSIndexPath).row].timestamp
+        cell.isUserInteractionEnabled = false
+        
+        // set image
+        let initialLabel = UILabel()
+        initialLabel.frame.size = CGSize(width: cell.userImageLabel.frame.size.width,
+                                         height: cell.userImageLabel.frame.size.height)
+        initialLabel.textColor = UIColor.white
+        initialLabel.text = tableData[(indexPath as NSIndexPath).row].initials
+        initialLabel.font = UIFont(name: initialLabel.font.fontName, size: 36)
+        initialLabel.textAlignment = NSTextAlignment.center
+        initialLabel.backgroundColor = self.computeColor(tableData[(indexPath as NSIndexPath).row].initials)
+        initialLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
+        initialLabel.frame = initialLabel.frame.integral
+        
+        UIGraphicsBeginImageContext(initialLabel.frame.size)
+        initialLabel.layer.render(in: UIGraphicsGetCurrentContext()!)
+        cell.userImageLabel.image = UIGraphicsGetImageFromCurrentImageContext()
+        cell.userImageLabel.layer.cornerRadius = cell.userImageLabel.frame.size.width / 2
+        cell.userImageLabel.clipsToBounds = true;
+        cell.userImageLabel.frame = initialLabel.frame.integral
+        UIGraphicsEndImageContext()
+        
+        
+        // dynamic font sizing
+        cell.questionLabel.adjustsFontSizeToFitWidth = true
+        cell.questionLabel.minimumScaleFactor = 0.5
+        
+        cell.answerLabel.adjustsFontSizeToFitWidth = true
+        cell.answerLabel.minimumScaleFactor = 0.5
+        
+        cell.timestampLabel.adjustsFontSizeToFitWidth = true
+        cell.timestampLabel.minimumScaleFactor = 0.5
+        
+        return cell
     }
     
     @IBAction func returnToMap(_ sender: AnyObject) {

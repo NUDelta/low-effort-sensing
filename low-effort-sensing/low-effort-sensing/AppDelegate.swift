@@ -427,7 +427,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         print(deviceTokenString)
     }
     
-    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("\(userInfo)")
         
@@ -454,6 +453,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     newLog.saveInBackground()
                 } else if (updateType == "location") {
                     MyPretracker.sharedManager.locationManager!.requestLocation()
+                    MyPretracker.sharedManager.saveCurrentLocationToParse()
                 }
                 
                 completionHandler(UIBackgroundFetchResult.newData)
@@ -468,7 +468,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         print("APNs registration failed: \(error)")
     }
     
-    // MARK: - Create Custom Notifications for each question
+    // MARK: - Create Custom Notifications for each Question
     func createFoodNotifications() {
         notificationCategories.insert(UNNotificationCategory(identifier: "food_isfood", actions: createActionsForAnswers(foodAnswers["isfood"]!), intentIdentifiers: [], options: [.customDismissAction]))
         notificationCategories.insert(UNNotificationCategory(identifier: "food_foodtype", actions: createActionsForAnswers(foodAnswers["foodtype"]!), intentIdentifiers: [], options: [.customDismissAction]))
@@ -544,6 +544,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     
     //MARK: - Contextual Notification Handler
     let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
+    // TODO: check if this is eXploit or eXpand. save appropiately to different classes
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         if (!responseIgnoreSet.contains(response.actionIdentifier)) {
             // get UTC timestamp and timezone of notification
@@ -579,7 +580,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         completionHandler()
     }
     
-    // MARK: 3D Touch shortcut handler
+    // MARK: - 3D Touch shortcut handler
     // TODO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void){
         completionHandler(handleShortcut(shortcutItem))
@@ -662,7 +663,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         return true
     }
     
-    // MARK: WatchSession communication handler
+    // MARK: - WatchSession Communication Handler
     private func session(_ session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: @escaping ([String : AnyObject]) -> Void) {
         guard let command = message["command"] as! String! else {return}
         

@@ -12,12 +12,14 @@ import UserNotifications
 import Parse
 
 public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
+    // MARK: Class Variables
     // tracker parameters and storage variables
     var beaconManager: ESTBeaconManager?
     let appUserDefaults = UserDefaults(suiteName: appGroup)
     var vendorId = ""
     var prevNotifiedSet = Set<String>()
     
+    // MARK: - Initializations, Getters, and Setters
     required public override init() {
         super.init()
         
@@ -85,6 +87,33 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         }))
     }
     
+    public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
+        // set current beacon value
+        appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
+        
+        // iterate through all monitored regions and find any that match the beaconId
+        let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
+        
+        // TODO: check if exploit region
+        for (_, info) in monitoredHotspotDictionary {
+            let parsedInfo = info as! [String : AnyObject]
+            let beaconId = parsedInfo["beaconId"] as! String
+            if beaconId == region.identifier {
+                self.notifyPeople(parsedInfo, regionId: region.identifier)
+            }
+        }
+    }
+    
+    public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
+        print("Exited Region \(region.identifier)")
+        
+        if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
+            if currBeaconRegion as? String == region.identifier {
+                appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
+            }
+        }
+    }
+    
     public func notifyPeople(_ currentRegion: [String : AnyObject], regionId: String) {
         if (!prevNotifiedSet.contains(regionId)) {
             //        print("notify for region id \(region.identifier)")
@@ -126,7 +155,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                 }
             })
             
-            // add regionId to set so further notifications for region do not happen 
+            // add regionId to set so further notifications for region do not happen
             prevNotifiedSet.insert(regionId)
         }
     }
@@ -141,32 +170,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         return actionsForAnswers
     }
     
-    public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
-        // set current beacon value
-        appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
-        
-        // iterate through all monitored regions and find any that match the beaconId
-        let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
-        
-        for (_, info) in monitoredHotspotDictionary {
-            let parsedInfo = info as! [String : AnyObject]
-            let beaconId = parsedInfo["beaconId"] as! String
-            if beaconId == region.identifier {
-                self.notifyPeople(parsedInfo, regionId: region.identifier)
-            }
-        }
-    }
-    
-    public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
-        print("Exited Region \(region.identifier)")
-        
-        if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
-            if currBeaconRegion as? String == region.identifier {
-                appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
-            }
-        }
-    }
-    
+    //MARK: - Location Manager Delegate Error Functions
     public func beaconManager(_ manager: Any, didDetermineState state: CLRegionState, for region: CLBeaconRegion) {
         switch state {
         case CLRegionState.unknown:
