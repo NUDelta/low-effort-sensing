@@ -186,8 +186,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         let hasBeacon = beaconId != ""
                                                         self.addLocation(nil, latitude: currLat, longitude: currLong,
                                                                          radius: nil, id: id,
-                                                                         expandRadius: self.expandNotificationDistance, locationType: locationType!,
-                                                                         hasBeacon: hasBeacon)
+                                                                         expandRadius: self.expandNotificationDistance, locationType: locationType!, hasBeacon: hasBeacon)
                                                         
                                                         // Add data to user defaults
                                                         var unwrappedEntry = [String : AnyObject]()
@@ -616,6 +615,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         if !(region is CLBeaconRegion) {
             print("did enter region \(region.identifier)")
 
+            // compute distance to region from current location
+            let currentRegion = region as! CLCircularRegion
+            let distanceToRegion = manager.location?.distance(from: CLLocation(latitude: currentRegion.center.latitude, longitude: currentRegion.center.longitude))
+
             // split region identifier into id and type
             let regionComponents = region.identifier.components(separatedBy: "_")
             let regionId = regionComponents[0]
@@ -650,6 +653,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 newResponse["distanceCondition"] = self.expandNotificationDistance
                 newResponse["timestamp"] = epochTimestamp
                 newResponse["gmtOffset"] = gmtOffset
+                newResponse["distanceToRegion"] = distanceToRegion
                 newResponse.saveInBackground()
 
                 // Show alert if app active, else local notification
