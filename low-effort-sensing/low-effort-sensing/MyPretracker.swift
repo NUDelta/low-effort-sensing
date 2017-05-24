@@ -613,11 +613,19 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // TODO: check here if location is eXpand location. if so, send expand ping. if yes response, save response to locationDic
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if !(region is CLBeaconRegion) {
+            // check if major GPS bounce has occured, if so don't go any further
+            let lastlocation = manager.location!
+            let age = -lastlocation.timestamp.timeIntervalSinceNow
+
+            if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 65.0 || age > 20) {
+                return
+            }
+
             print("did enter region \(region.identifier)")
 
             // compute distance to region from current location
             let currentRegion = region as! CLCircularRegion
-            let distanceToRegion = manager.location?.distance(from: CLLocation(latitude: currentRegion.center.latitude, longitude: currentRegion.center.longitude))
+            let distanceToRegion = lastlocation.distance(from: CLLocation(latitude: currentRegion.center.latitude, longitude: currentRegion.center.longitude))
 
             // split region identifier into id and type
             let regionComponents = region.identifier.components(separatedBy: "_")
