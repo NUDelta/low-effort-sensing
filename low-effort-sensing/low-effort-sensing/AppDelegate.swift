@@ -546,7 +546,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
     // TODO: check if this is eXploit or eXpand. save appropiately to different classes
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+        if (response.notification.request.content.categoryIdentifier == "expand") {
+            
+        } else if (response.notification.request.content.categoryIdentifier == "exploit") {
+
+        } else if (!responseIgnoreSet.contains(response.actionIdentifier)) {
             // get UTC timestamp and timezone of notification
             let epochTimestamp = Int(Date().timeIntervalSince1970)
             let gmtOffset = NSTimeZone.local.secondsFromGMT()
@@ -682,7 +686,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                         newMonitoredLocation["location"] = geoPoint
                         newMonitoredLocation["tag"] = "free food!"
                         newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
-                        
+
                         newMonitoredLocation.saveInBackground(block: ({
                             (success: Bool, error: Error?) -> Void in
                             if (success) {
@@ -690,7 +694,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                                 let newRegionLat = (newMonitoredLocation["location"] as! PFGeoPoint).latitude
                                 let newRegionLong = (newMonitoredLocation["location"] as! PFGeoPoint).longitude
                                 let newRegionId = newMonitoredLocation.objectId!
-                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
+                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong,
+                                                                       radius: geofenceRadius, id: newRegionId,
+                                                                       expandRadius: 0, locationType: "exploit", hasBeacon: false)
                                 
                                 // Add new region to user defaults
                                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()

@@ -116,7 +116,8 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     
     public func notifyPeople(_ currentRegion: [String : AnyObject], regionId: String) {
         if (!prevNotifiedSet.contains(regionId)) {
-            //        print("notify for region id \(region.identifier)")
+            print("notify for beacon region id \(regionId)")
+            
             // Log notification to parse
             let epochTimestamp = Int(Date().timeIntervalSince1970)
             let gmtOffset = NSTimeZone.local.secondsFromGMT()
