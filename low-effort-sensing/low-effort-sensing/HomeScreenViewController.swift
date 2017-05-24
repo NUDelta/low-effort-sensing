@@ -128,7 +128,11 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         
         // draw new annotations
         for (_, info) in locations {
-            addAnnotationsForDictionary(info as! [String : AnyObject])
+            let currentLocationInfo = info as! [String : AnyObject]
+            
+            if (currentLocationInfo["locationType"] as! String != "exploit") {
+                addAnnotationsForDictionary(currentLocationInfo)
+            }
         }
     }
     
