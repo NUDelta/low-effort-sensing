@@ -24,6 +24,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     // logging location data
     var previousLocation: CLLocation?
+    var currentLocation: CLLocation?
     let distanceUpdate = 30.0
     
     // study conditions, expand and exploit variables
@@ -238,12 +239,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         self.locationDic.removeValue(forKey: key)
                                                     }
                                                 }
-
-                                                // DEBUG lots of printing
-                                                print("\(monitoredHotspotDictionary)")
-                                                print(self.locationManager!.monitoredRegions)
-                                                print("\(self.withinDistanceRecorded)")
-                                                print("\(self.locationDic)")
                                                 
                                                 // update user defaults
                                                 self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
@@ -375,6 +370,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                             let epochTimestamp = Int(Date().timeIntervalSince1970)
                                             let gmtOffset = NSTimeZone.local.secondsFromGMT()
 
+                                            let bearing = getBearingBetweenTwoPoints(point1: lastLocation, point2: monitorLocation)
+                                            let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                                            let angle = angleCourseBearing(course: course, bearing: bearing)
+
                                             let newResponse = PFObject(className: "expandGeofenceTrips")
                                             newResponse["vendorId"] = vendorId
                                             newResponse["hotspotId"] = regionId
@@ -382,7 +381,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                             newResponse["tripLocation"] = PFGeoPoint.init(location: lastLocation)
                                             newResponse["timestamp"] = epochTimestamp
                                             newResponse["gmtOffset"] = gmtOffset
-                                            newResponse["bearingToLocation"] = getBearingBetweenTwoPoints(point1: lastLocation, point2: monitorLocation)
+                                            newResponse["bearingToLocation"] = angle
                                             newResponse.saveInBackground()
 
                                             // update withinDistanceRecorded
@@ -394,15 +393,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                 }
                             }
                         } else {
-                            print(currentRegion)
                             // check if beacon region before notifying
                             if beaconId == "" {
                                 // print("Pretracker found a Geofence Region w/o beacon (\(regionId))...beginning pretracking.")
-                                
                                 if let currentLocationInfo = self.locationDic[regionId] {
                                     let distance = currentLocationInfo["distance"] as! Double
                                     let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
-                                    print(distanceToLocation)
+
                                     if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
                                         self.locationDic[regionId]?["notifiedForRegion"] = true
                                         self.locationDic[regionId]?["withinRegion"] = true
@@ -546,6 +543,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             timer!.invalidate()
             timer = nil
         }
+
         locationManager!.startUpdatingLocation()
     }
     
@@ -553,6 +551,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // check if locations should be notified for and notify if applicable
         let lastLocation = locations.last!
+        self.previousLocation = currentLocation
+        self.currentLocation = lastLocation
         notifyIfWithinDistance(lastLocation)
         
         // reset timer
@@ -605,12 +605,12 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     func calculateDistance(currentLocation: CLLocation) -> Double{
-        if previousLocation == nil {
-            previousLocation = currentLocation
+        if self.previousLocation == nil {
+            self.previousLocation = currentLocation
         }
         
-        let locationDistance = currentLocation.distance(from: previousLocation!)
-        previousLocation = currentLocation
+        let locationDistance = currentLocation.distance(from: self.previousLocation!)
+        self.previousLocation = currentLocation
         return locationDistance
     }
     
@@ -638,6 +638,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         return compassBearing
     }
+
+    func angleCourseBearing(course: Double, bearing: Double) -> Double{
+        return abs(course - bearing)
+    }
     
     private func outOfAllRegions() -> Bool {
         print("checking all regions")
@@ -653,7 +657,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
         if !(region is CLBeaconRegion) {
             // check if major GPS bounce has occured, if so don't go any further
-            if manager.location == nil {
+            if manager.location == nil || self.previousLocation == nil || self.currentLocation == nil{
                 return
             }
 
@@ -667,8 +671,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             print("did enter region \(region.identifier)")
 
             // compute distance to region from current location
-            let currentRegion = region as! CLCircularRegion
-            let distanceToRegion = lastlocation.distance(from: CLLocation(latitude: currentRegion.center.latitude, longitude: currentRegion.center.longitude))
+            let monitorRegion = region as! CLCircularRegion
+            let monitorRegionLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+            let distanceToRegion = lastlocation.distance(from: monitorRegionLocation)
 
             // split region identifier into id and type
             let regionComponents = region.identifier.components(separatedBy: "_")
@@ -684,6 +689,15 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     }
                 }
                 self.locationDic[regionId]?["askedForExpand"] = true
+
+                // check if heading is between 285 and 75
+                let bearing = getBearingBetweenTwoPoints(point1: lastlocation, point2: monitorRegionLocation)
+                let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                let angle = angleCourseBearing(course: course, bearing: bearing)
+
+                if (angle > 75) && (angle < 285) {
+                    return
+                }
 
                 // Get NSUserDefaults
                 var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
@@ -704,6 +718,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 newResponse["timestamp"] = epochTimestamp
                 newResponse["gmtOffset"] = gmtOffset
                 newResponse["distanceToRegion"] = distanceToRegion
+                newResponse["bearingToLocation"] = angle
                 newResponse.saveInBackground()
 
                 // Show alert if app active, else local notification
