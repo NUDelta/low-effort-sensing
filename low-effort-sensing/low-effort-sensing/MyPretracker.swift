@@ -413,24 +413,18 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                 // print("Pretracker found a Geofence Region w/o beacon (\(regionId))...beginning pretracking.")
                                 if let currentLocationInfo = self.locationDic[regionId] {
                                     // check if expand location and if shouldNotify for expand
-                                    if (regionType == "expand") && !(currentLocationInfo["shouldNotify"] as! Bool) {
-                                        return
-                                    }
+                                    if ((regionType == "expand") && (currentLocationInfo["shouldNotify"] as! Bool)) ||
+                                        ((regionType == "exploit") && (self.shouldPingForExploit)) {
+                                        // notify for expand or exploit location
+                                        let distance = currentLocationInfo["distance"] as! Double
+                                        let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
 
-                                    // check if exploit region and shouldPingForExploit
-                                    if (regionType == "exploit") && (!self.shouldPingForExploit) {
-                                        return
-                                    }
+                                        if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
+                                            self.locationDic[regionId]?["notifiedForRegion"] = true
+                                            self.locationDic[regionId]?["withinRegion"] = true
 
-                                    // notify for expand or exploit location
-                                    let distance = currentLocationInfo["distance"] as! Double
-                                    let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
-
-                                    if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
-                                        self.locationDic[regionId]?["notifiedForRegion"] = true
-                                        self.locationDic[regionId]?["withinRegion"] = true
-
-                                        notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                                            notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                                        }
                                     }
                                 }
                             } else {
