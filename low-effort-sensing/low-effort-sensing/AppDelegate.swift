@@ -437,7 +437,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     BeaconTracker.sharedBeaconManager.clearAllMonitoredRegions()
                     BeaconTracker.sharedBeaconManager.beginMonitoringParseRegions()
                 } else if (updateType == "hotspot") {
-                    MyPretracker.sharedManager.beginMonitoringParseRegions()
+                    MyPretracker.sharedManager.refreshLocationsFromParse()
                 } else if (updateType == "heartbeat") {
                     // Log application heartbeat
                     let date = Date()
@@ -546,41 +546,102 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
     // TODO: check if this is eXploit or eXpand. save appropiately to different classes
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        if (response.notification.request.content.categoryIdentifier == "expand") {
-            
-        } else if (response.notification.request.content.categoryIdentifier == "exploit") {
+        // make sure action is not default or dismissal
+        if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+            if (response.notification.request.content.categoryIdentifier == "expand") {
+                print("Expand response")
 
-        } else if (!responseIgnoreSet.contains(response.actionIdentifier)) {
-            // get UTC timestamp and timezone of notification
-            let epochTimestamp = Int(Date().timeIntervalSince1970)
-            let gmtOffset = NSTimeZone.local.secondsFromGMT()
-            print("\(response)")
-            
-            // get scenario and question as separate components
-            let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
-            
-            // setup response object to push to parse
-            var notificationId = ""
-            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
-                notificationId = unwrappedNotificationId as! String
-            }
-            
-            let newResponse = PFObject(className: "pingResponse")
-            newResponse["vendorId"] = vendorId
-            newResponse["hotspotId"] = notificationId
-            newResponse["question"] = notificationCategoryArr[1]
-            newResponse["response"] = ""
-            newResponse["tag"] = notificationCategoryArr[0]
-            newResponse["timestamp"] = epochTimestamp
-            newResponse["gmtOffset"] = gmtOffset
-            newResponse["response"] = response.actionIdentifier
-            
-            // if response field is not blank, save to parse
-            if newResponse["response"] as! String != "" {
-                newResponse.saveInBackground()
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                // setup response object to push to parse
+                var notificationId = ""
+                if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                    notificationId = unwrappedNotificationId as! String
+                }
+
+                let newResponse = PFObject(className: "expandResponses")
+                newResponse["vendorId"] = vendorId
+                newResponse["hotspotId"] = notificationId
+                newResponse["timestamp"] = epochTimestamp
+                newResponse["gmtOffset"] = gmtOffset
+                newResponse["emaResponse"] = response.actionIdentifier
+                newResponse["distanceCondition"] = MyPretracker.sharedManager.expandNotificationDistance
+
+                // if response field is not blank, save to parse
+                if newResponse["emaResponse"] as! String != "" {
+                    newResponse.saveInBackground()
+                }
+
+                // set variables to ping for expand location and exploit locations if user responds yes
+                let responseAcceptSet: Set = ["Yes! Great to know, I'm going to go now!", "Yes, but I was already going there."]
+                if (responseAcceptSet.contains(response.actionIdentifier)) {
+                    MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: true)
+                    MyPretracker.sharedManager.setShouldNotifyExploit(value: true)
+                    // BeaconTracker.sharedBeaconManager.locationToNotifyFor = notificationId
+                }
+            } else if (response.notification.request.content.categoryIdentifier == "exploit") {
+                print("Exploit response")
+
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                // setup response object to push to parse
+                var notificationId = ""
+                if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                    notificationId = unwrappedNotificationId as! String
+                }
+
+                let newResponse = PFObject(className: "exploitResponses")
+                newResponse["vendorId"] = vendorId
+                newResponse["exploitId"] = notificationId
+                newResponse["timestamp"] = epochTimestamp
+                newResponse["gmtOffset"] = gmtOffset
+                newResponse["questionResponse"] = response.actionIdentifier
+
+                // if response field is not blank, save to parse
+                if newResponse["questionResponse"] as! String != "" {
+                    newResponse.saveInBackground()
+                }
+            } else {
+                print("Expand response")
+
+                // get UTC timestamp and timezone of notification
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                // get scenario and question as separate components
+                let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
+
+                // setup response object to push to parse
+                var notificationId = ""
+                if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                    notificationId = unwrappedNotificationId as! String
+                }
+
+                let newResponse = PFObject(className: "pingResponse")
+                newResponse["vendorId"] = vendorId
+                newResponse["hotspotId"] = notificationId
+                newResponse["question"] = notificationCategoryArr[1]
+                newResponse["response"] = response.actionIdentifier
+                newResponse["tag"] = notificationCategoryArr[0]
+                newResponse["timestamp"] = epochTimestamp
+                newResponse["gmtOffset"] = gmtOffset
+
+                // if response field is not blank, save to parse
+                if newResponse["response"] as! String != "" {
+                    newResponse.saveInBackground()
+                }
+
+                // set variables to ping for expand location and exploit locations
+                MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: false)
+                MyPretracker.sharedManager.setShouldNotifyExploit(value: false)
+                // BeaconTracker.sharedBeaconManager.locationToNotifyFor = ""
             }
         }
-        
+
         completionHandler()
     }
     

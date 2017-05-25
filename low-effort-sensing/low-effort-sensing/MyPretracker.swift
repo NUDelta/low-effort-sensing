@@ -32,6 +32,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     var withinDistanceRecorded: [String : [String : Bool]] = [:] // [hotspotId : [distance : bool]]
     var expandNotificationDistance: Double = 0.0
     var underExploit: Bool = false
+
+    var shouldPingForExploit: Bool = false
+    var currentlyUnderExpand: Bool = false
     
     // refreshing locations being tracked
     var parseRefreshTimer: Timer?
@@ -334,6 +337,18 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - Pre-Tracking Algorithm and Notifications
+    func setShouldNotifyExpand(id: String, value: Bool) {
+        if self.locationDic[id] != nil {
+            self.locationDic[id]!["shouldNotify"] = value
+        }
+
+        self.currentlyUnderExpand = value
+    }
+
+    func setShouldNotifyExploit(value: Bool) {
+        self.shouldPingForExploit = value && self.underExploit // exploit iff yes to expand and user is currently under exploit
+    }
+
     public func notifyIfWithinDistance(_ lastLocation: CLLocation) {
         // check if location update is recent and accurate enough
         let age = -lastLocation.timestamp.timeIntervalSinceNow
@@ -397,6 +412,17 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                             if beaconId == "" {
                                 // print("Pretracker found a Geofence Region w/o beacon (\(regionId))...beginning pretracking.")
                                 if let currentLocationInfo = self.locationDic[regionId] {
+                                    // check if expand location and if shouldNotify for expand
+                                    if (regionType == "expand") && !(currentLocationInfo["shouldNotify"] as! Bool) {
+                                        return
+                                    }
+
+                                    // check if exploit region and shouldPingForExploit
+                                    if (regionType == "exploit") && (!self.shouldPingForExploit) {
+                                        return
+                                    }
+
+                                    // notify for expand or exploit location
                                     let distance = currentLocationInfo["distance"] as! Double
                                     let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
 
@@ -413,7 +439,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                         }
                     }
                 } else {
-                    print("Data currently being refreshed...waiting until finished.")
+                    print("notifyIfWithinDistance: Data currently being refreshed...waiting until finished.")
                 }
             } else {
                 // print("Pretracker found a CLBeacon Region (\(regionId))...will not pretrack.")
@@ -437,68 +463,80 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
             // Get NSUserDefaults
             var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
-            let currentRegion = monitoredHotspotDictionary[regionId] as! [String : AnyObject]
-            
-            let message = regionId
-            
-            // Log notification to parse
-            let epochTimestamp = Int(Date().timeIntervalSince1970)
-            let gmtOffset = NSTimeZone.local.secondsFromGMT()
-            
-            var distanceToLocation: Double = 0.0
-            var notificationString: String = ""
-            if let monitorRegion = region as? CLCircularRegion {
-                let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-                distanceToLocation = locationWhenNotified.distance(from: monitorLocation)
-                notificationString = "Notified for \(regionId) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude)) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance \(distanceToLocation)"
-            } else {
-                notificationString = "Notified for \(regionId) (nil, nil) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance nil"
-            }
-            
-            // Log notification sent event to parse
-            let newResponse = PFObject(className: "notificationSent")
-            newResponse["vendorId"] = vendorId
-            newResponse["hotspotId"] = currentRegion["id"] as! String
-            newResponse["timestamp"] = epochTimestamp
-            newResponse["gmtOffset"] = gmtOffset
-            newResponse["notificationString"] = notificationString
-            newResponse.saveInBackground()
-            
-            // Show alert if app active, else local notification
-            if UIApplication.shared.applicationState == .active {
-                print("Application is active")
-                if let viewController = window?.rootViewController {
-                    let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
-                    let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                    alert.addAction(action)
-                    viewController.present(alert, animated: true, completion: nil)
+            if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject] {
+                let message = regionId
+
+                // Log notification to parse
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                var distanceToLocation: Double = 0.0
+                var notificationString: String = ""
+                if let monitorRegion = region as? CLCircularRegion {
+                    let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                    distanceToLocation = locationWhenNotified.distance(from: monitorLocation)
+                    notificationString = "Notified for \(regionId) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude)) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance \(distanceToLocation)"
+                } else {
+                    notificationString = "Notified for \(regionId) (nil, nil) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance nil"
                 }
-            } else {
-                // create contextual responses
-                var currNotificationSet = Set<UNNotificationCategory>()
-                let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
-                                                         actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String],
-                                                                                          includeIdk: true),
-                                                         intentIdentifiers: [],
-                                                         options: [.customDismissAction])
-                currNotificationSet.insert(currCategory)
-                UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
-                
-                // Display notification with context
-                let content = UNMutableNotificationContent()
-                content.body = currentRegion["message"] as! String
-                content.sound = UNNotificationSound.default()
-                content.categoryIdentifier = currentRegion["notificationCategory"] as! String
-                content.userInfo = currentRegion
-                
-                let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
-                
-                UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                    if let error = error {
-                        print("Error in notifying from Pre-Tracker: \(error)")
+
+                if regionType != "exploit" {
+                    // expand notifications
+                    let newResponse = PFObject(className: "notificationSent")
+                    newResponse["vendorId"] = vendorId
+                    newResponse["hotspotId"] = currentRegion["id"] as! String
+                    newResponse["timestamp"] = epochTimestamp
+                    newResponse["gmtOffset"] = gmtOffset
+                    newResponse["notificationString"] = notificationString
+                    newResponse.saveInBackground()
+                } else {
+                    // exploit notifications
+                    let newResponse = PFObject(className: "exploitNotification")
+                    newResponse["vendorId"] = vendorId
+                    newResponse["exploitId"] = currentRegion["id"] as! String
+                    newResponse["timestamp"] = epochTimestamp
+                    newResponse["gmtOffset"] = gmtOffset
+                    newResponse.saveInBackground()
+                }
+
+                // Show alert if app active, else local notification
+                if UIApplication.shared.applicationState == .active {
+                    print("Application is active")
+                    if let viewController = window?.rootViewController {
+                        let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
+                        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                        alert.addAction(action)
+                        viewController.present(alert, animated: true, completion: nil)
                     }
-                })
+                } else {
+                    // create contextual responses
+                    var currNotificationSet = Set<UNNotificationCategory>()
+                    let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
+                                                              actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String],
+                                                                                               includeIdk: true),
+                                                              intentIdentifiers: [],
+                                                              options: [.customDismissAction])
+                    currNotificationSet.insert(currCategory)
+                    UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                    // Display notification with context
+                    let content = UNMutableNotificationContent()
+                    content.body = currentRegion["message"] as! String
+                    content.sound = UNNotificationSound.default()
+                    content.categoryIdentifier = currentRegion["notificationCategory"] as! String
+                    content.userInfo = currentRegion
+
+                    let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                    let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                    UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                        if let error = error {
+                            print("Error in notifying from Pre-Tracker: \(error)")
+                        }
+                    })
+                }
+            }  else {
+                print("Notify People: Data currently being refreshed...waiting until finished.")
             }
         }
     }
@@ -519,7 +557,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         
         return actionsForAnswers
     }
-    
+
     //MARK: - Background Task Functions
     @objc private func stopLocationUpdates() {
         print("Background stopping location updates")
@@ -682,6 +720,11 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
             // if outer expand region, notify asking if user wants to go
             if (regionType == "expand-outer" ) {
+                // check if already under expand before seeing to ping
+                if self.currentlyUnderExpand {
+                    return
+                }
+
                 // don't ask for expand again until data refresh to prevent geofence bouncing
                 if let alreadyAskedForExpand = self.locationDic[regionId]?["askedForExpand"] {
                     if alreadyAskedForExpand as! Bool {
@@ -701,65 +744,67 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
                 // Get NSUserDefaults
                 var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
-                let currentRegion = monitoredHotspotDictionary[regionId] as! [String : AnyObject]
+                if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject] {
+                    let message = regionId
 
-                let message = regionId
+                    // Log notification to parse
+                    let epochTimestamp = Int(Date().timeIntervalSince1970)
+                    let gmtOffset = NSTimeZone.local.secondsFromGMT()
 
-                // Log notification to parse
-                let epochTimestamp = Int(Date().timeIntervalSince1970)
-                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+                    // Log notification sent event to parse
+                    let newResponse = PFObject(className: "expandNotifications")
+                    newResponse["vendorId"] = vendorId
+                    newResponse["hotspotId"] = currentRegion["id"] as! String
+                    newResponse["tag"] = currentRegion["tag"] as! String
+                    newResponse["distanceCondition"] = self.expandNotificationDistance
+                    newResponse["timestamp"] = epochTimestamp
+                    newResponse["gmtOffset"] = gmtOffset
+                    newResponse["distanceToRegion"] = distanceToRegion
+                    newResponse["bearingToLocation"] = angle
+                    newResponse.saveInBackground()
 
-                // Log notification sent event to parse
-                let newResponse = PFObject(className: "expandNotifications")
-                newResponse["vendorId"] = vendorId
-                newResponse["hotspotId"] = currentRegion["id"] as! String
-                newResponse["tag"] = currentRegion["tag"] as! String
-                newResponse["distanceCondition"] = self.expandNotificationDistance
-                newResponse["timestamp"] = epochTimestamp
-                newResponse["gmtOffset"] = gmtOffset
-                newResponse["distanceToRegion"] = distanceToRegion
-                newResponse["bearingToLocation"] = angle
-                newResponse.saveInBackground()
+                    // Show alert if app active, else local notification
+                    if UIApplication.shared.applicationState == .active {
+                        print("Application is active")
+                        if let viewController = window?.rootViewController {
+                            let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
+                            let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                            alert.addAction(action)
+                            viewController.present(alert, animated: true, completion: nil)
+                        }
+                    } else {
+                        // create contextual responses
+                        var currNotificationSet = Set<UNNotificationCategory>()
+                        let expandEMAResponses = ["Yes! Great to know, I'm going to go now!",
+                                                  "Yes, but I was already going there.",
+                                                  "No, I have somewhere that I need to be.",
+                                                  "No, I'm not interested.",
+                                                  "No, other reason."]
+                        let currCategory = UNNotificationCategory(identifier: "expand",
+                                                                  actions: createActionsForAnswers(expandEMAResponses, includeIdk: false),
+                                                                  intentIdentifiers: [],
+                                                                  options: [.customDismissAction])
+                        currNotificationSet.insert(currCategory)
+                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
 
-                // Show alert if app active, else local notification
-                if UIApplication.shared.applicationState == .active {
-                    print("Application is active")
-                    if let viewController = window?.rootViewController {
-                        let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
-                        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                        alert.addAction(action)
-                        viewController.present(alert, animated: true, completion: nil)
+                        // Display notification with context
+                        let content = UNMutableNotificationContent()
+                        content.body = currentRegion["message"] as! String + " Would you like to go?"
+                        content.sound = UNNotificationSound.default()
+                        content.categoryIdentifier = "expand"
+                        content.userInfo = currentRegion
+
+                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                            if let error = error {
+                                print("Error in notifying from Pre-Tracker: \(error)")
+                            }
+                        })
                     }
                 } else {
-                    // create contextual responses
-                    var currNotificationSet = Set<UNNotificationCategory>()
-                    let expandEMAResponses = ["Yes! Great to know, I'm going to go now!",
-                                              "Yes, but I was already going there.",
-                                              "No, I have somewhere that I need to be.",
-                                              "No, I'm not interested.",
-                                              "No, other reason."]
-                    let currCategory = UNNotificationCategory(identifier: "expand",
-                                                              actions: createActionsForAnswers(expandEMAResponses, includeIdk: false),
-                                                              intentIdentifiers: [],
-                                                              options: [.customDismissAction])
-                    currNotificationSet.insert(currCategory)
-                    UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
-
-                    // Display notification with context
-                    let content = UNMutableNotificationContent()
-                    content.body = currentRegion["message"] as! String + " Would you like to go?"
-                    content.sound = UNNotificationSound.default()
-                    content.categoryIdentifier = "expand"
-                    content.userInfo = currentRegion
-
-                    let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                    let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
-
-                    UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                        if let error = error {
-                            print("Error in notifying from Pre-Tracker: \(error)")
-                        }
-                    })
+                    print("Did enter region: Data currently being refreshed...waiting until finished.")
                 }
             } else {
                 locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation

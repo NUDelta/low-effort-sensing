@@ -158,7 +158,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     // MARK: - Annotation Interaction
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         // get data for hotspot
-        var monitoredHotspotDictionary: [String : AnyObject] = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
+        var monitoredHotspotDictionary: [String : AnyObject] = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
         
         let annotationMarkedLocation = view.annotation as! MarkedLocation
         let annotationDistance = view.annotation?.subtitle
