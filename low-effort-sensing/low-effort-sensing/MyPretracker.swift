@@ -189,6 +189,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
                                                         let contextualResponses = object["contextualResponses"] as? [String]
                                                         let locationType = object["locationType"] as? String
+                                                        let levelOfInformation = object["levelOfInformation"] as? String
 
                                                         // create geofences
                                                         let hasBeacon = beaconId != ""
@@ -213,6 +214,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         unwrappedEntry["scaffoldedMessage"] = scaffoldedMessage as AnyObject
                                                         unwrappedEntry["contextualResponses"] = contextualResponses as AnyObject
                                                         unwrappedEntry["locationType"] = locationType as AnyObject
+                                                        unwrappedEntry["levelOfInformation"] = levelOfInformation as AnyObject
 
                                                         monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
                                                         
@@ -778,6 +780,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["gmtOffset"] = gmtOffset
                     newResponse["distanceToRegion"] = distanceToRegion
                     newResponse["bearingToLocation"] = angle
+                    newResponse["levelOfInformation"] = currentRegion["levelOfInformation"] as! String
                     newResponse.saveInBackground()
 
                     // Show alert if app active, else local notification

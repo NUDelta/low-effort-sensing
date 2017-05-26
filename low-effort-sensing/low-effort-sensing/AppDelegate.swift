@@ -596,6 +596,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     notificationId = unwrappedNotificationId as! String
                 }
 
+                var levelOfInformation = ""
+                if let unwrappedLevelOfInformation = response.notification.request.content.userInfo["levelOfInformation"] {
+                    levelOfInformation = unwrappedLevelOfInformation as! String
+                }
+
                 let newResponse = PFObject(className: "expandResponses")
                 newResponse["vendorId"] = vendorId
                 newResponse["hotspotId"] = notificationId
@@ -603,6 +608,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 newResponse["gmtOffset"] = gmtOffset
                 newResponse["emaResponse"] = response.actionIdentifier
                 newResponse["distanceCondition"] = MyPretracker.sharedManager.expandNotificationDistance
+                newResponse["levelOfInformation"] = levelOfInformation
 
                 // if response field is not blank, save to parse
                 if newResponse["emaResponse"] as! String != "" {
