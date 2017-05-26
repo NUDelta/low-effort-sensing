@@ -245,6 +245,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         createGuestEventNotifications()
         createWindowDrawingNotifications()
         createDtrDonutNotifications()
+
+        // create observer for low-power mode toggling
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(AppDelegate.didChangePowerState),
+            name: NSNotification.Name.NSProcessInfoPowerStateDidChange,
+            object: nil
+        )
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
@@ -387,6 +395,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "App about to terminate"
+        do {
+            try newLog.save()
+        } catch _ {
+            print("Error")
+        }
+    }
+
+    // save transitions from power state
+    func didChangePowerState() {
+        print("Phone power state toggled")
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.string(from: date)
+
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
+        newLog["timestamp_string"] = currentDateString
+
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            newLog["console_string"] = "Low-power mode enabled"
+        } else {
+            newLog["console_string"] = "Low-power mode disabled"
+        }
+
         do {
             try newLog.save()
         } catch _ {
