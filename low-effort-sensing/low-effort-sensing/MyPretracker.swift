@@ -35,6 +35,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
     var shouldPingForExploit: Bool = false
     var currentlyUnderExpand: Bool = false
+    var resetExpandExploitConditionsTimer: Timer?
     
     // refreshing locations being tracked
     var parseRefreshTimer: Timer?
@@ -343,10 +344,32 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
 
         self.currentlyUnderExpand = value
+
+        // reset timer and set new one if value is true
+        if (self.resetExpandExploitConditionsTimer != nil) {
+            self.resetExpandExploitConditionsTimer!.invalidate()
+            self.resetExpandExploitConditionsTimer = nil
+        }
+
+        if value {
+            self.resetExpandExploitConditionsTimer = Timer.scheduledTimer(timeInterval: 30.0 * 60.0, // 30 mins
+                                                                          target: self,
+                                                                          selector: #selector(MyPretracker.resetExpandExploitConditions),
+                                                                          userInfo: id,
+                                                                          repeats: false)
+        }
     }
 
     func setShouldNotifyExploit(value: Bool) {
         self.shouldPingForExploit = value && self.underExploit // exploit iff yes to expand and user is currently under exploit
+    }
+
+    func resetExpandExploitConditions(timer: Timer) {
+        print("Pretracker Resetting expand/exploit conditions")
+        if let expandId = timer.userInfo {
+            self.setShouldNotifyExpand(id: expandId as! String, value: false)
+            self.setShouldNotifyExploit(value: false)
+        }
     }
 
     public func notifyIfWithinDistance(_ lastLocation: CLLocation) {
@@ -796,6 +819,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                 print("Error in notifying from Pre-Tracker: \(error)")
                             }
                         })
+
+                        print("asking expand for region \(region.identifier)")
                     }
                 } else {
                     print("Did enter region: Data currently being refreshed...waiting until finished.")

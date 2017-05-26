@@ -546,10 +546,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
     // TODO: check if this is eXploit or eXpand. save appropiately to different classes
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        // make sure action is not default or dismissal
-        if (!responseIgnoreSet.contains(response.actionIdentifier)) {
-            if (response.notification.request.content.categoryIdentifier == "expand") {
-                print("Expand response")
+        // check if expand-outer ping, exploit ping, or ping at expand location
+        if (response.notification.request.content.categoryIdentifier == "expand") {
+            // make sure action is not default or dismissal
+            if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+                print("Expand (outer) response")
 
                 // get UTC timestamp and timezone of notification
                 let epochTimestamp = Int(Date().timeIntervalSince1970)
@@ -579,9 +580,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 if (responseAcceptSet.contains(response.actionIdentifier)) {
                     MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: true)
                     MyPretracker.sharedManager.setShouldNotifyExploit(value: true)
-                    // BeaconTracker.sharedBeaconManager.locationToNotifyFor = notificationId
+                    BeaconTracker.sharedBeaconManager.setShouldNotifyExpand(id: notificationId)
                 }
-            } else if (response.notification.request.content.categoryIdentifier == "exploit") {
+            }
+        } else if (response.notification.request.content.categoryIdentifier == "exploit") {
+            // make sure action is not default or dismissal
+            if (!responseIgnoreSet.contains(response.actionIdentifier)) {
                 print("Exploit response")
 
                 // get UTC timestamp and timezone of notification
@@ -605,8 +609,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 if newResponse["questionResponse"] as! String != "" {
                     newResponse.saveInBackground()
                 }
-            } else {
-                print("Expand response")
+            }
+        } else {
+            // setup response object to push to parse
+            var notificationId = ""
+            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                notificationId = unwrappedNotificationId as! String
+            }
+
+            // save response iff actual response, BUT reset location state anyway
+            if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+                print("Expand at location response")
 
                 // get UTC timestamp and timezone of notification
                 let epochTimestamp = Int(Date().timeIntervalSince1970)
@@ -614,12 +627,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
                 // get scenario and question as separate components
                 let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
-
-                // setup response object to push to parse
-                var notificationId = ""
-                if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
-                    notificationId = unwrappedNotificationId as! String
-                }
 
                 let newResponse = PFObject(className: "pingResponse")
                 newResponse["vendorId"] = vendorId
@@ -634,17 +641,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 if newResponse["response"] as! String != "" {
                     newResponse.saveInBackground()
                 }
-
-                // set variables to ping for expand location and exploit locations
-                MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: false)
-                MyPretracker.sharedManager.setShouldNotifyExploit(value: false)
-                // BeaconTracker.sharedBeaconManager.locationToNotifyFor = ""
             }
+
+            // reset variables to ping for expand locations only
+            MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: false)
+            MyPretracker.sharedManager.setShouldNotifyExploit(value: false)
+            BeaconTracker.sharedBeaconManager.setShouldNotifyExpand(id: "")
         }
 
         completionHandler()
     }
-    
+
     // MARK: - 3D Touch shortcut handler
     // TODO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void){

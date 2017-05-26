@@ -25,7 +25,7 @@ class CompletionViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
+
 //    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
 //        if (segue.identifier == "CompletionSegue") {
 //            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "launchedBefore")
@@ -46,10 +46,10 @@ class CompletionViewController: UIViewController {
     
     @IBAction func setupComplete(_ sender: AnyObject) {
         UserDefaults.standard.set(true, forKey: "launchedBefore")
-        
+
         let newUser = PFObject(className: "user", dictionary: appUserDefaults?.dictionary(forKey: "welcomeData"))
         newUser.saveInBackground()
-        
+
         // add view to hierarchy
         let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
         let tabBarController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController") as! UITabBarController
