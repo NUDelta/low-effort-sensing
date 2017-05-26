@@ -488,6 +488,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 } else if (updateType == "location") {
                     MyPretracker.sharedManager.locationManager!.requestLocation()
                     MyPretracker.sharedManager.saveCurrentLocationToParse()
+                } else if (updateType == "reset-expand") {
+                    // reset variables to ping for expand locations only
+                    MyPretracker.sharedManager.resetExpandExploitOnly()
+                    BeaconTracker.sharedBeaconManager.setShouldNotifyExpand(id: "")
                 }
                 
                 completionHandler(UIBackgroundFetchResult.newData)

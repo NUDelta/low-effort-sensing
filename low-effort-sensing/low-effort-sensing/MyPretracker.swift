@@ -374,6 +374,11 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    func resetExpandExploitOnly() {
+        self.currentlyUnderExpand = false
+        self.shouldPingForExploit = false
+    }
+
     public func notifyIfWithinDistance(_ lastLocation: CLLocation) {
         // check if location update is recent and accurate enough
         let age = -lastLocation.timestamp.timeIntervalSinceNow
