@@ -44,6 +44,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         // set preliminary text
         let tag = self.currentHotspot["tag"] as! String
         let locationCommonName = self.currentHotspot["locationCommonName"] as! String
+        let scaffoldedMessage = self.currentHotspot["scaffoldedMessage"] as! String
         
         if locationCommonName == "" {
             locationCategory.text = createTitleFromTag(tag)
@@ -52,7 +53,7 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         }
         
         distanceToLocationLabel.text = self.distanceToHotspot + " from current location"
-        locationInformationMessage.text = "Scaffolded information coming soon..."
+        locationInformationMessage.text = scaffoldedMessage
         locationInformationMessage.sizeToFit()
         
         locationCategory.adjustsFontSizeToFitWidth = true

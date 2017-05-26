@@ -806,7 +806,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
                         // Display notification with context
                         let content = UNMutableNotificationContent()
-                        content.body = currentRegion["message"] as! String + " Would you like to go?"
+                        content.body = currentRegion["scaffoldedMessage"] as! String + " Would you like to go?"
                         content.sound = UNNotificationSound.default()
                         content.categoryIdentifier = "expand"
                         content.userInfo = currentRegion
