@@ -125,8 +125,10 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         // notify only if expand response has been done
         for (_, info) in monitoredHotspotDictionary {
             let parsedInfo = info as! [String : AnyObject]
+            let hotspotId = parsedInfo["id"] as! String
             let beaconId = parsedInfo["beaconId"] as! String
-            if beaconId == region.identifier && self.locationToNotifyFor == region.identifier {
+
+            if beaconId == region.identifier && self.locationToNotifyFor == hotspotId {
                 self.notifyPeople(parsedInfo, regionId: region.identifier)
             }
         }
