@@ -586,39 +586,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         // check if expand-outer ping, exploit ping, or ping at expand location
         if (response.notification.request.content.categoryIdentifier == "expand") {
-            // make sure action is not default or dismissal
+            print("Expand (outer) response")
+
+            // get UTC timestamp and timezone of notification
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+            // setup response object to push to parse
+            var notificationId = ""
+            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                notificationId = unwrappedNotificationId as! String
+            }
+
+            var levelOfInformation = ""
+            if let unwrappedLevelOfInformation = response.notification.request.content.userInfo["levelOfInformation"] {
+                levelOfInformation = unwrappedLevelOfInformation as! String
+            }
+
+            let newResponse = PFObject(className: "expandResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = notificationId
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["emaResponse"] = response.actionIdentifier
+            newResponse["distanceCondition"] = MyPretracker.sharedManager.expandNotificationDistance
+            newResponse["levelOfInformation"] = levelOfInformation
+
+            // if response field is not blank, save to parse
+            if newResponse["emaResponse"] as! String != "" {
+                newResponse.saveInBackground()
+            }
+
+            // make sure action is not default or dismissal for deciding to track location
             if (!responseIgnoreSet.contains(response.actionIdentifier)) {
-                print("Expand (outer) response")
-
-                // get UTC timestamp and timezone of notification
-                let epochTimestamp = Int(Date().timeIntervalSince1970)
-                let gmtOffset = NSTimeZone.local.secondsFromGMT()
-
-                // setup response object to push to parse
-                var notificationId = ""
-                if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
-                    notificationId = unwrappedNotificationId as! String
-                }
-
-                var levelOfInformation = ""
-                if let unwrappedLevelOfInformation = response.notification.request.content.userInfo["levelOfInformation"] {
-                    levelOfInformation = unwrappedLevelOfInformation as! String
-                }
-
-                let newResponse = PFObject(className: "expandResponses")
-                newResponse["vendorId"] = vendorId
-                newResponse["hotspotId"] = notificationId
-                newResponse["timestamp"] = epochTimestamp
-                newResponse["gmtOffset"] = gmtOffset
-                newResponse["emaResponse"] = response.actionIdentifier
-                newResponse["distanceCondition"] = MyPretracker.sharedManager.expandNotificationDistance
-                newResponse["levelOfInformation"] = levelOfInformation
-
-                // if response field is not blank, save to parse
-                if newResponse["emaResponse"] as! String != "" {
-                    newResponse.saveInBackground()
-                }
-
                 // set variables to ping for expand location and exploit locations if user responds yes
                 let responseAcceptSet: Set = ["Yes! Great to know, I'm going to go now!", "Yes, but I was already going there."]
                 if (responseAcceptSet.contains(response.actionIdentifier)) {
@@ -628,31 +628,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 }
             }
         } else if (response.notification.request.content.categoryIdentifier == "exploit") {
-            // make sure action is not default or dismissal
-            if (!responseIgnoreSet.contains(response.actionIdentifier)) {
-                print("Exploit response")
+            print("Exploit response")
 
-                // get UTC timestamp and timezone of notification
-                let epochTimestamp = Int(Date().timeIntervalSince1970)
-                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+            // get UTC timestamp and timezone of notification
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
 
-                // setup response object to push to parse
-                var notificationId = ""
-                if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
-                    notificationId = unwrappedNotificationId as! String
-                }
+            // setup response object to push to parse
+            var notificationId = ""
+            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                notificationId = unwrappedNotificationId as! String
+            }
 
-                let newResponse = PFObject(className: "exploitResponses")
-                newResponse["vendorId"] = vendorId
-                newResponse["exploitId"] = notificationId
-                newResponse["timestamp"] = epochTimestamp
-                newResponse["gmtOffset"] = gmtOffset
-                newResponse["questionResponse"] = response.actionIdentifier
+            let newResponse = PFObject(className: "exploitResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["exploitId"] = notificationId
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["questionResponse"] = response.actionIdentifier
 
-                // if response field is not blank, save to parse
-                if newResponse["questionResponse"] as! String != "" {
-                    newResponse.saveInBackground()
-                }
+            // if response field is not blank, save to parse
+            if newResponse["questionResponse"] as! String != "" {
+                newResponse.saveInBackground()
             }
         } else {
             // setup response object to push to parse
@@ -662,29 +659,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             }
 
             // save response iff actual response, BUT reset location state anyway
-            if (!responseIgnoreSet.contains(response.actionIdentifier)) {
-                print("Expand at location response")
+            print("Expand at location response")
 
-                // get UTC timestamp and timezone of notification
-                let epochTimestamp = Int(Date().timeIntervalSince1970)
-                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+            // get UTC timestamp and timezone of notification
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
 
-                // get scenario and question as separate components
-                let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
+            // get scenario and question as separate components
+            let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
 
-                let newResponse = PFObject(className: "pingResponse")
-                newResponse["vendorId"] = vendorId
-                newResponse["hotspotId"] = notificationId
-                newResponse["question"] = notificationCategoryArr[1]
-                newResponse["response"] = response.actionIdentifier
-                newResponse["tag"] = notificationCategoryArr[0]
-                newResponse["timestamp"] = epochTimestamp
-                newResponse["gmtOffset"] = gmtOffset
+            let newResponse = PFObject(className: "pingResponse")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = notificationId
+            newResponse["question"] = notificationCategoryArr[1]
+            newResponse["response"] = response.actionIdentifier
+            newResponse["tag"] = notificationCategoryArr[0]
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
 
-                // if response field is not blank, save to parse
-                if newResponse["response"] as! String != "" {
-                    newResponse.saveInBackground()
-                }
+            // if response field is not blank, save to parse
+            if newResponse["response"] as! String != "" {
+                newResponse.saveInBackground()
             }
 
             // reset variables to ping for expand locations only
