@@ -404,6 +404,86 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
                         // make sure not a expand-outer region before looking to ping or not
                         if regionType == "expand-outer" {
+                            // notify if within condition distance but NOT a geofence trip
+
+                            // compute angle between heading and location
+                            let bearing = getBearingBetweenTwoPoints(point1: lastLocation, point2: monitorLocation)
+                            let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                            let angle = angleCourseBearing(course: course, bearing: bearing)
+
+                            // Get NSUserDefaults
+                            // don't ask for expand again until data refresh to prevent geofence bouncing
+                            // check if already under expand before seeing to ping
+                            // don't ask for expand again until data refresh to prevent geofence bouncing
+                            // check if distance is less than study condition
+                            if let alreadyAskedForExpand = self.locationDic[regionId]?["askedForExpand"] {
+                                if (!self.currentlyUnderExpand) && (!(alreadyAskedForExpand as! Bool)) && (distanceToLocation <= self.expandNotificationDistance) {
+                                    self.locationDic[regionId]?["askedForExpand"] = true
+                                    let message = regionId
+
+                                    // Log notification to parse
+                                    let epochTimestamp = Int(Date().timeIntervalSince1970)
+                                    let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                                    // Log notification sent event to parse
+                                    let newResponse = PFObject(className: "expandNotifications")
+                                    newResponse["vendorId"] = vendorId
+                                    newResponse["hotspotId"] = currentRegion["id"] as! String
+                                    newResponse["tag"] = currentRegion["tag"] as! String
+                                    newResponse["distanceCondition"] = self.expandNotificationDistance
+                                    newResponse["timestamp"] = epochTimestamp
+                                    newResponse["gmtOffset"] = gmtOffset
+                                    newResponse["distanceToRegion"] = distanceToLocation
+                                    newResponse["bearingToLocation"] = angle
+                                    newResponse["levelOfInformation"] = currentRegion["levelOfInformation"] as! String
+                                    newResponse.saveInBackground()
+
+                                    // Show alert if app active, else local notification
+                                    if UIApplication.shared.applicationState == .active {
+                                        print("Application is active")
+                                        if let viewController = window?.rootViewController {
+                                            let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
+                                            let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                                            alert.addAction(action)
+                                            viewController.present(alert, animated: true, completion: nil)
+                                        }
+                                    } else {
+                                        // create contextual responses
+                                        var currNotificationSet = Set<UNNotificationCategory>()
+                                        let expandEMAResponses = ["Yes! Great to know, I'm going to go now!",
+                                                                  "Yes, but I was already going there.",
+                                                                  "No, I have somewhere that I need to be.",
+                                                                  "No, I'm not interested.",
+                                                                  "No, other reason."]
+                                        let currCategory = UNNotificationCategory(identifier: "expand",
+                                                                                  actions: createActionsForAnswers(expandEMAResponses, includeIdk: false),
+                                                                                  intentIdentifiers: [],
+                                                                                  options: [.customDismissAction])
+                                        currNotificationSet.insert(currCategory)
+                                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                                        // Display notification with context
+                                        let content = UNMutableNotificationContent()
+                                        content.body = currentRegion["scaffoldedMessage"] as! String + " Would you like to go?"
+                                        content.sound = UNNotificationSound.default()
+                                        content.categoryIdentifier = "expand"
+                                        content.userInfo = currentRegion
+
+                                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                                            if let error = error {
+                                                print("Error in notifying from Pre-Tracker: \(error)")
+                                            }
+                                        })
+                                        
+                                        print("asking expand for region based on location \(region.identifier)")
+                                    }
+
+                                }
+                            }
+
                             // store if within each condition distance
                             if self.withinDistanceRecorded[regionId] != nil {
                                 // condition distances should be increasing, find whichever they are furthest out from
@@ -828,7 +908,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                             }
                         })
 
-                        print("asking expand for region \(region.identifier)")
+                        print("asking expand for region based on geofence \(region.identifier)")
                     }
                 } else {
                     print("Did enter region: Data currently being refreshed...waiting until finished.")
