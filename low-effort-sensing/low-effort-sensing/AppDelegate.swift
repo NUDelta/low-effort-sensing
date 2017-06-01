@@ -217,7 +217,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         // Initialize Parse.
         Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup)
         Parse.initialize(with: ParseClientConfiguration(block: { (configuration: ParseMutableClientConfiguration) -> Void in
-            configuration.server = "https://dtr-les.herokuapp.com/parse/"
+            configuration.server = "https://les-expand.herokuapp.com/parse/"
             configuration.applicationId = "PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr"
             configuration.clientKey = "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7"
         }))
@@ -245,6 +245,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         createGuestEventNotifications()
         createWindowDrawingNotifications()
         createDtrDonutNotifications()
+
+        // create observer for low-power mode toggling
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(AppDelegate.didChangePowerState),
+            name: NSNotification.Name.NSProcessInfoPowerStateDidChange,
+            object: nil
+        )
         
         // check if user has already opened app before, if not show welcome screen
         let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
@@ -393,6 +401,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             print("Error")
         }
     }
+
+    // save transitions from power state
+    func didChangePowerState() {
+        print("Phone power state toggled")
+        let date = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        let currentDateString = dateFormatter.string(from: date)
+
+        let newLog = PFObject(className: "pretracking_debug")
+        newLog["vendor_id"] = vendorId
+        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
+        newLog["timestamp_string"] = currentDateString
+
+        if ProcessInfo.processInfo.isLowPowerModeEnabled {
+            newLog["console_string"] = "Low-power mode enabled"
+        } else {
+            newLog["console_string"] = "Low-power mode disabled"
+        }
+
+        do {
+            try newLog.save()
+        } catch _ {
+            print("Error")
+        }
+    }
     
     func registerForNotifications() {
         print("Registering categories for local notifications")
@@ -422,11 +456,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
         self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
         self.appUserDefaults?.synchronize()
-        
+
+        // save new push token
+        PFCloud.callFunction(inBackground: "saveNewPushTokenForUser",
+                             withParameters: ["vendorId": vendorId,
+                                              "pushToken": deviceTokenString])
+
         // print token for debugging
         print(deviceTokenString)
     }
-    
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("\(userInfo)")
@@ -438,7 +476,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     BeaconTracker.sharedBeaconManager.clearAllMonitoredRegions()
                     BeaconTracker.sharedBeaconManager.beginMonitoringParseRegions()
                 } else if (updateType == "hotspot") {
-                    MyPretracker.sharedManager.beginMonitoringParseRegions()
+                    MyPretracker.sharedManager.refreshLocationsFromParse()
                 } else if (updateType == "heartbeat") {
                     // Log application heartbeat
                     let date = Date()
@@ -452,6 +490,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     newLog["timestamp_string"] = currentDateString
                     newLog["console_string"] = "Application heartbeat"
                     newLog.saveInBackground()
+                } else if (updateType == "location") {
+                    MyPretracker.sharedManager.locationManager!.requestLocation()
+                    MyPretracker.sharedManager.saveCurrentLocationToParse()
+                } else if (updateType == "reset-expand") {
+                    // reset variables to ping for expand locations only
+                    MyPretracker.sharedManager.resetExpandExploitOnly()
+                    BeaconTracker.sharedBeaconManager.setShouldNotifyExpand(id: "")
                 }
                 
                 completionHandler(UIBackgroundFetchResult.newData)
@@ -466,7 +511,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         print("APNs registration failed: \(error)")
     }
     
-    // MARK: - Create Custom Notifications for each question
+    // MARK: - Create Custom Notifications for each Question
     func createFoodNotifications() {
         notificationCategories.insert(UNNotificationCategory(identifier: "food_isfood", actions: createActionsForAnswers(foodAnswers["isfood"]!), intentIdentifiers: [], options: [.customDismissAction]))
         notificationCategories.insert(UNNotificationCategory(identifier: "food_foodtype", actions: createActionsForAnswers(foodAnswers["foodtype"]!), intentIdentifiers: [], options: [.customDismissAction]))
@@ -542,42 +587,116 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     
     //MARK: - Contextual Notification Handler
     let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
+    // TODO: check if this is eXploit or eXpand. save appropiately to different classes
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+        // check if expand-outer ping, exploit ping, or ping at expand location
+        if (response.notification.request.content.categoryIdentifier == "expand") {
+            print("Expand (outer) response")
+
             // get UTC timestamp and timezone of notification
             let epochTimestamp = Int(Date().timeIntervalSince1970)
             let gmtOffset = NSTimeZone.local.secondsFromGMT()
-            print("\(response)")
-            
-            // get scenario and question as separate components
-            let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
-            
+
             // setup response object to push to parse
             var notificationId = ""
             if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
                 notificationId = unwrappedNotificationId as! String
             }
-            
+
+            var levelOfInformation = ""
+            if let unwrappedLevelOfInformation = response.notification.request.content.userInfo["levelOfInformation"] {
+                levelOfInformation = unwrappedLevelOfInformation as! String
+            }
+
+            let newResponse = PFObject(className: "expandResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["hotspotId"] = notificationId
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["emaResponse"] = response.actionIdentifier
+            newResponse["distanceCondition"] = MyPretracker.sharedManager.expandNotificationDistance
+            newResponse["levelOfInformation"] = levelOfInformation
+
+            // if response field is not blank, save to parse
+            if newResponse["emaResponse"] as! String != "" {
+                newResponse.saveInBackground()
+            }
+
+            // make sure action is not default or dismissal for deciding to track location
+            if (!responseIgnoreSet.contains(response.actionIdentifier)) {
+                // set variables to ping for expand location and exploit locations if user responds yes
+                let responseAcceptSet: Set = ["Yes! Great to know, I'm going to go now!", "Yes, but I was already going there."]
+                if (responseAcceptSet.contains(response.actionIdentifier)) {
+                    MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: true)
+                    MyPretracker.sharedManager.setShouldNotifyExploit(value: true)
+                    BeaconTracker.sharedBeaconManager.setShouldNotifyExpand(id: notificationId)
+                }
+            }
+        } else if (response.notification.request.content.categoryIdentifier == "exploit") {
+            print("Exploit response")
+
+            // get UTC timestamp and timezone of notification
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+            // setup response object to push to parse
+            var notificationId = ""
+            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                notificationId = unwrappedNotificationId as! String
+            }
+
+            let newResponse = PFObject(className: "exploitResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["exploitId"] = notificationId
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["questionResponse"] = response.actionIdentifier
+
+            // if response field is not blank, save to parse
+            if newResponse["questionResponse"] as! String != "" {
+                newResponse.saveInBackground()
+            }
+        } else {
+            // setup response object to push to parse
+            var notificationId = ""
+            if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
+                notificationId = unwrappedNotificationId as! String
+            }
+
+            // save response iff actual response, BUT reset location state anyway
+            print("Expand at location response")
+
+            // get UTC timestamp and timezone of notification
+            let epochTimestamp = Int(Date().timeIntervalSince1970)
+            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+            // get scenario and question as separate components
+            let notificationCategoryArr = response.notification.request.content.categoryIdentifier.components(separatedBy: "_")
+
             let newResponse = PFObject(className: "pingResponse")
             newResponse["vendorId"] = vendorId
             newResponse["hotspotId"] = notificationId
             newResponse["question"] = notificationCategoryArr[1]
-            newResponse["response"] = ""
+            newResponse["response"] = response.actionIdentifier
             newResponse["tag"] = notificationCategoryArr[0]
             newResponse["timestamp"] = epochTimestamp
             newResponse["gmtOffset"] = gmtOffset
-            newResponse["response"] = response.actionIdentifier
-            
+
             // if response field is not blank, save to parse
             if newResponse["response"] as! String != "" {
                 newResponse.saveInBackground()
             }
+
+            // reset variables to ping for expand locations only
+            MyPretracker.sharedManager.setShouldNotifyExpand(id: notificationId, value: false)
+            MyPretracker.sharedManager.setShouldNotifyExploit(value: false)
+            BeaconTracker.sharedBeaconManager.setShouldNotifyExpand(id: "")
         }
-        
+
         completionHandler()
     }
-    
-    // MARK: 3D Touch shortcut handler
+
+    // MARK: - 3D Touch shortcut handler
     // TODO: use the contextual notification code above to ensure no weird errors with views existing affect transitioning
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void){
         completionHandler(handleShortcut(shortcutItem))
@@ -660,7 +779,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         return true
     }
     
-    // MARK: WatchSession communication handler
+    // MARK: - WatchSession Communication Handler
     private func session(_ session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: @escaping ([String : AnyObject]) -> Void) {
         guard let command = message["command"] as! String! else {return}
         
@@ -679,7 +798,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                         newMonitoredLocation["location"] = geoPoint
                         newMonitoredLocation["tag"] = "free food!"
                         newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
-                        
+
                         newMonitoredLocation.saveInBackground(block: ({
                             (success: Bool, error: Error?) -> Void in
                             if (success) {
@@ -687,7 +806,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                                 let newRegionLat = (newMonitoredLocation["location"] as! PFGeoPoint).latitude
                                 let newRegionLong = (newMonitoredLocation["location"] as! PFGeoPoint).longitude
                                 let newRegionId = newMonitoredLocation.objectId!
-                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong, radius: geofenceRadius, name: newRegionId)
+                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong,
+                                                                       radius: geofenceRadius, id: newRegionId,
+                                                                       expandRadius: 0, locationType: "exploit", hasBeacon: false)
                                 
                                 // Add new region to user defaults
                                 var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()

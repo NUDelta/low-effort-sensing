@@ -18,7 +18,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     
     let appUserDefaults = UserDefaults.init(suiteName: appGroup)
     
-    // MARK: Class Functions
+    // MARK: - View Controller Functions
     override func viewDidLoad() {
         super.viewDidLoad()
         // setup map view
@@ -52,6 +52,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    // MARK: - Annotation Drawing
     func defaultsChanged(_ notification:Notification){
         if (notification.object as? UserDefaults) != nil {
             let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
@@ -80,7 +81,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         let tag = location["tag"] as! String
         
         var distanceToLocation: Double
-        var distanceInFeet: Int
+        var distanceInMinutes: Int
         var distanceString = ""
         
         // check if pretracker has an updated location to compute distance, if not don't display a distance.
@@ -88,8 +89,8 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             lastLocation = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
             
             distanceToLocation = lastLocation.distance(from: annotationLocation)
-            distanceInFeet = Int(distanceToLocation * 3.28084)
-            distanceString =  "\(distanceInFeet) feet away"
+            distanceInMinutes = Int(distanceToLocation / 100.0) // approximate walking speed = 100m/min
+            distanceString =  "\(distanceInMinutes) minutes away"
         } else {
             distanceString = "Distance currently unavailable"
         }
@@ -100,6 +101,11 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             annotationTitle = createTitleFromTag(tag)
         } else {
             annotationTitle = locationCommonName
+        }
+
+        // special case: free/sold food
+        if tag == "food" {
+            annotationTitle = "Free/Sold Food"
         }
         
         let newLocation = MarkedLocation(title: annotationTitle,
@@ -120,13 +126,18 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    // TODO: check if exploit location, if so don't draw
     func drawNewAnnotations(_ locations: [String : AnyObject]) {
         // clear all existing annotations
         mapView.removeAnnotations(mapView.annotations)
         
         // draw new annotations
         for (_, info) in locations {
-            addAnnotationsForDictionary(info as! [String : AnyObject])
+            let currentLocationInfo = info as! [String : AnyObject]
+            
+            if (currentLocationInfo["locationType"] as! String != "exploit") {
+                addAnnotationsForDictionary(currentLocationInfo)
+            }
         }
     }
     
@@ -149,9 +160,10 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         return nil
     }
     
+    // MARK: - Annotation Interaction
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         // get data for hotspot
-        var monitoredHotspotDictionary: [String : AnyObject] = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? Dictionary()
+        var monitoredHotspotDictionary: [String : AnyObject] = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
         
         let annotationMarkedLocation = view.annotation as! MarkedLocation
         let annotationDistance = view.annotation?.subtitle

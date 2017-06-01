@@ -12,6 +12,7 @@ import UserNotifications
 import Parse
 
 public class MyPretracker: NSObject, CLLocationManagerDelegate {
+    // MARK: Class Variables
     // tracker parameters and storage variables
     var distance: Double = 20.0
     var radius: Double = 150.0
@@ -23,9 +24,21 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     
     // logging location data
     var previousLocation: CLLocation?
+    var currentLocation: CLLocation?
     let distanceUpdate = 30.0
     
-    var parseRefreshTimer: Timer? = Timer() // refreshing locations being tracked
+    // study conditions, expand and exploit variables
+    var studyDistances: [Int] = []
+    var withinDistanceRecorded: [String : [String : Bool]] = [:] // [hotspotId : [distance : bool]]
+    var expandNotificationDistance: Double = 0.0
+    var underExploit: Bool = false
+
+    var shouldPingForExploit: Bool = false
+    var currentlyUnderExpand: Bool = false
+    var resetExpandExploitConditionsTimer: Timer?
+    
+    // refreshing locations being tracked
+    var parseRefreshTimer: Timer?
     
     let appUserDefaults = UserDefaults(suiteName: appGroup)
     var window: UIWindow?
@@ -37,7 +50,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     var timer: Timer? = Timer()
     var delay10Seconds: Timer? = Timer()
     
-    // MARK: Initializations, getters, and setters
+    // MARK: - Initializations, Getters, and Setters
     required public override init() {
         super.init()
         
@@ -71,15 +84,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         // set location manager parameters
         locationManager!.desiredAccuracy = self.accuracy
         locationManager!.distanceFilter = self.distanceFilter
-    }
-    
-    public func clearAllMonitoredRegions() {
-        print("Monitored regions: \(locationManager!.monitoredRegions)")
-        for region in locationManager!.monitoredRegions {
-            if !(region is CLBeaconRegion) {
-                locationManager!.stopMonitoring(for: region)
-            }
-        }
     }
     
     public func getAuthorizationForLocationManager() {
@@ -119,6 +123,15 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     }
     
     // MARK: - Location Functions
+    public func clearAllMonitoredRegions() {
+        print("Monitored regions: \(locationManager!.monitoredRegions)")
+        for region in locationManager!.monitoredRegions {
+            if !(region is CLBeaconRegion) {
+                locationManager!.stopMonitoring(for: region)
+            }
+        }
+    }
+    
     func refreshLocationsFromParse() {
         if (parseRefreshTimer != nil) {
             parseRefreshTimer!.invalidate()
@@ -134,9 +147,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         print("Getting monitored regions")
         PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
             (geoPoint: PFGeoPoint?, error: Error?) -> Void in
-            print(geoPoint as Any)
             if error == nil {
-                PFCloud.callFunction(inBackground: "naivelyRetrieveLocationsForTracking",
+                PFCloud.callFunction(inBackground: "retrieveExpandExploitLocations",
                                      withParameters: ["latitude": (geoPoint?.latitude)!,
                                                       "longitude": (geoPoint?.longitude)!,
                                                       "vendorId": vendorId,
@@ -145,15 +157,24 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                         if error == nil {
                                             // parse response
                                             if let foundObjs = foundObjs {
-                                                let foundObjsArray = foundObjs as! [AnyObject]
+                                                let foundObjDictionary = foundObjs as! [String : AnyObject]
                                                 var monitoredHotspotDictionary: [String : AnyObject] = [String : AnyObject]()
                                                 
+                                                // pull out distance conditions, expand distance, and under exploit
+                                                self.studyDistances = foundObjDictionary["allConditionDistances"] as! [Int]
+                                                self.expandNotificationDistance = foundObjDictionary["expandDistance"] as! Double
+                                                self.underExploit = foundObjDictionary["underExploit"] as! Bool
+                                                
+                                                // hold all current valid expand locations
+                                                var currentValidRegions: Set<String> = Set<String>()
+                                                
+                                                let foundObjsArray = foundObjDictionary["locations"] as! [AnyObject]
                                                 for object in foundObjsArray {
                                                     if let object = object as? [String : Any?] {
+                                                        // get individual variables from queried objects
                                                         let id = object["objectId"] as! String
                                                         let vendorId = object["vendorId"] as! String
                                                         let tag = object["tag"] as! String
-                                                        let info: [String : AnyObject]? = object["info"] as? [String : AnyObject]
                                                         
                                                         let currGeopoint = object["location"] as! PFGeoPoint
                                                         let currLat = currGeopoint.latitude
@@ -161,42 +182,81 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         let beaconId = object["beaconId"] as? String
                                                         
                                                         let locationCommonName = object["locationCommonName"] as? String
-                                                        let archived = object["archived"] as? Bool
                                                         let notificationCategory = object["notificationCategory"] as? String
-                                                        let message = object["message"] as? String
-                                                        let contextualResponses = object["contextualResponses"] as? [String]
 
-                                                        self.addLocation(nil, latitude: currLat, longitude: currLong, radius: nil, name: id)
+                                                        let message = object["message"] as? String
+                                                        let scaffoldedMessage = object["scaffoldedMessage"] as? String
+
+                                                        let contextualResponses = object["contextualResponses"] as? [String]
+                                                        let locationType = object["locationType"] as? String
+                                                        let levelOfInformation = object["levelOfInformation"] as? String
+
+                                                        // create geofences
+                                                        let hasBeacon = beaconId != ""
+                                                        self.addLocation(nil, latitude: currLat, longitude: currLong,
+                                                                         radius: nil, id: id,
+                                                                         expandRadius: self.expandNotificationDistance, locationType: locationType!, hasBeacon: hasBeacon)
                                                         
                                                         // Add data to user defaults
                                                         var unwrappedEntry = [String : AnyObject]()
                                                         unwrappedEntry["id"] = id as AnyObject
                                                         unwrappedEntry["vendorId"] = vendorId as AnyObject
                                                         unwrappedEntry["tag"] = tag as AnyObject
-                                                        unwrappedEntry["info"] = info as AnyObject
                                                         
                                                         unwrappedEntry["latitude"] = currLat as AnyObject
                                                         unwrappedEntry["longitude"] = currLong as AnyObject
                                                         
-                                                        unwrappedEntry["archived"] = archived as AnyObject
-//                                                        unwrappedEntry["gmtOffset"] = (object["gmtOffset"] as? Int) as AnyObject
-//                                                        unwrappedEntry["timestampLastUpdate"] = (object["timestampLastUpdate"] as? Int) as AnyObject
-//                                                        unwrappedEntry["submissionMethod"] = (object["submissionMethod"] as? String) as AnyObject
                                                         unwrappedEntry["locationCommonName"] = locationCommonName as AnyObject
                                                         unwrappedEntry["beaconId"] = beaconId as AnyObject
-                                                        
+
                                                         unwrappedEntry["notificationCategory"] = notificationCategory as AnyObject
                                                         unwrappedEntry["message"] = message as AnyObject
+                                                        unwrappedEntry["scaffoldedMessage"] = scaffoldedMessage as AnyObject
                                                         unwrappedEntry["contextualResponses"] = contextualResponses as AnyObject
-                                                        
+                                                        unwrappedEntry["locationType"] = locationType as AnyObject
+                                                        unwrappedEntry["levelOfInformation"] = levelOfInformation as AnyObject
+
                                                         monitoredHotspotDictionary[id] = unwrappedEntry as AnyObject
+                                                        
+                                                        // create dictionary to hold geofence trips for study conditions
+                                                        if (locationType == "expand") && (self.withinDistanceRecorded[id] == nil) {
+                                                            var idDistanceDict: [String : Bool] = [:]
+                                                            for studyDistance in self.studyDistances {
+                                                                idDistanceDict[String(studyDistance)] = false
+                                                            }
+                                                            
+                                                            self.withinDistanceRecorded[id] = idDistanceDict
+                                                        }
+                                                        
+                                                        // add current valid expand and exploit locations to set
+                                                        currentValidRegions.insert(id)
                                                     }
                                                 }
-
+                                                
+                                                // check withinDistanceRecorded and locationDic to make sure all old locations have been removed
+                                                for (key, _) in self.withinDistanceRecorded {
+                                                    if !currentValidRegions.contains(key) {
+                                                        self.withinDistanceRecorded.removeValue(forKey: key)
+                                                    }
+                                                }
+                                                
+                                                for (key, _) in self.locationDic {
+                                                    if !currentValidRegions.contains(key) {
+                                                        self.locationDic.removeValue(forKey: key)
+                                                    }
+                                                }
+                                                
+                                                // update user defaults
                                                 self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
                                                 self.appUserDefaults?.synchronize()
                                                 
                                                 // refresh data every 10 minutes
+                                                // invalidate first if push refresh was called before timer could run
+                                                if self.parseRefreshTimer != nil {
+                                                    self.parseRefreshTimer?.invalidate()
+                                                    self.parseRefreshTimer = nil
+                                                }
+                                                
                                                 self.parseRefreshTimer = Timer.scheduledTimer(timeInterval: 10.0 * 60.0,
                                                                                               target: self,
                                                                                               selector: #selector(MyPretracker.refreshLocationsFromParse),
@@ -216,8 +276,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }))
     }
     
-    // MARK: Adding/Removing Locations
-    public func addLocation(_ distance: Double?, latitude: Double, longitude: Double, radius: Double?, name: String) {
+    // MARK: - Adding/Removing Locations
+    public func addLocation(_ distance: Double?, latitude: Double, longitude: Double, radius: Double?,
+                            id: String, expandRadius: Double, locationType: String, hasBeacon: Bool) {
         // check if optional distance and radius values are set
         var newLocationDistance: Double = self.distance
         if let unwrappedDistance = distance {
@@ -228,13 +289,36 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         if let unwrappedRadius = radius {
             newLocationRadius = unwrappedRadius
         }
-        
-        // create and start monitoring new region
+
+        // create region identifier
+        // expand inner: id_expand
+        // expand outer: id_expand-outer
+        // exploit: id_exploit
+        let regionIdentifier: String = id + "_" + locationType
+
+        // check if expand vs exploit region
+        // if expand, create 2 geofences (inner and outer)
+        // if exploit, create only inner geofence
         let newRegionCenter = CLLocationCoordinate2DMake(latitude, longitude)
-        let newRegionForMonitoring = CLCircularRegion.init(center: newRegionCenter, radius: newLocationRadius, identifier: name)
-        
-        locationManager!.startMonitoring(for: newRegionForMonitoring)
-        self.locationDic[name] = ["distance": newLocationDistance, "withinRegion": false, "notifiedForRegion": false]
+        if (locationType == "expand") {
+            let outerExpandRegion = CLCircularRegion.init(center: newRegionCenter, radius: expandRadius, identifier: regionIdentifier + "-outer")
+            locationManager!.startMonitoring(for: outerExpandRegion)
+        }
+
+        if (!hasBeacon) {
+            let innerRegion = CLCircularRegion.init(center: newRegionCenter, radius: newLocationRadius, identifier: regionIdentifier)
+            locationManager!.startMonitoring(for: innerRegion)
+        }
+
+        // add location to locationDic with state variables
+        if (self.locationDic[id] != nil) {
+            let shouldNotifyBool = self.locationDic[id]?["shouldNotify"] as! Bool
+            self.locationDic[id] = ["distance": newLocationDistance, "withinRegion": false, "notifiedForRegion": false,
+                                    "shouldNotify": shouldNotifyBool, "locationType": locationType, "askedForExpand": false]
+        } else {
+            self.locationDic[id] = ["distance": newLocationDistance, "withinRegion": false, "notifiedForRegion": false,
+                                    "shouldNotify": false, "locationType": locationType, "askedForExpand": false]
+        }
     }
     
     public func removeLocation(_ name: String) {
@@ -243,7 +327,11 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             print(locationManager!.monitoredRegions)
             
             for region in monitoredRegions {
-                if name == region.identifier {
+                // split region identifier into id and type
+                let regionComponents = region.identifier.components(separatedBy: "_")
+                let regionId = regionComponents[0]
+
+                if name == regionId {
                     locationManager!.stopMonitoring(for: region)
                     print("stopped monitoring \(name)")
                 }
@@ -251,129 +339,313 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
     }
     
-    // MARK: Pre-tracking algorithm and notifications
+    // MARK: - Pre-Tracking Algorithm and Notifications
+    func setShouldNotifyExpand(id: String, value: Bool) {
+        if self.locationDic[id] != nil {
+            self.locationDic[id]!["shouldNotify"] = value
+        }
+
+        self.currentlyUnderExpand = value
+
+        // reset timer and set new one if value is true
+        if (self.resetExpandExploitConditionsTimer != nil) {
+            self.resetExpandExploitConditionsTimer!.invalidate()
+            self.resetExpandExploitConditionsTimer = nil
+        }
+
+        if value {
+            self.resetExpandExploitConditionsTimer = Timer.scheduledTimer(timeInterval: 30.0 * 60.0, // 30 mins
+                                                                          target: self,
+                                                                          selector: #selector(MyPretracker.resetExpandExploitConditions),
+                                                                          userInfo: id,
+                                                                          repeats: false)
+        }
+    }
+
+    func setShouldNotifyExploit(value: Bool) {
+        self.shouldPingForExploit = value && self.underExploit // exploit iff yes to expand and user is currently under exploit
+    }
+
+    func resetExpandExploitConditions(timer: Timer) {
+        print("Pretracker Resetting expand/exploit conditions")
+        if let expandId = timer.userInfo {
+            self.setShouldNotifyExpand(id: expandId as! String, value: false)
+            self.setShouldNotifyExploit(value: false)
+        }
+    }
+
+    func resetExpandExploitOnly() {
+        self.currentlyUnderExpand = false
+        self.shouldPingForExploit = false
+    }
+
     public func notifyIfWithinDistance(_ lastLocation: CLLocation) {
-        //        print("User position \(lastLocation), course \(lastLocation.course) and, elevation \(lastLocation.altitude) with location accuracy \(locationManager?.desiredAccuracy)")
-        
         // check if location update is recent and accurate enough
         let age = -lastLocation.timestamp.timeIntervalSinceNow
         if (lastLocation.horizontalAccuracy < 0 || lastLocation.horizontalAccuracy > 65.0 || age > 20) {
             return
         }
         
-        // compute distance from current point to all monitored regions and notifiy if close enough
-        var distanceToRegions: [String: String] = [:]
-        
         for region in locationManager!.monitoredRegions {
             if !(region is CLBeaconRegion) {
+                // split region identifier into id and type 
+                let regionComponents = region.identifier.components(separatedBy: "_")
+                let regionId = regionComponents[0]
+                let regionType = regionComponents[1]
+
                 // Get NSUserDefaults
                 var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
                 
                 // check if monitoredHotspotDictionary is currently being refreshed, if so quit
-                if let currentRegion = monitoredHotspotDictionary[region.identifier] as? [String : AnyObject], let beaconId = currentRegion["beaconId"] as? String {
-                    if beaconId == "" {
-                        print("Pretracker found a Geofence Region w/o beacon (\(region.identifier))...beginning pretracking.")
-                        if let monitorRegion = region as? CLCircularRegion {
-                            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-                            let distanceToLocation = lastLocation.distance(from: monitorLocation)
-                            
-                            distanceToRegions[monitorRegion.identifier] = String(distanceToLocation)
-                            
-                            if let currentLocationInfo = self.locationDic[monitorRegion.identifier] {
-                                let distance = currentLocationInfo["distance"] as! Double
-                                let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
-                                
-                                if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
-                                    self.locationDic[monitorRegion.identifier]?["notifiedForRegion"] = true
-                                    self.locationDic[monitorRegion.identifier]?["withinRegion"] = true
-                                    
-                                    notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject], let beaconId = currentRegion["beaconId"] as? String {
+                    if let monitorRegion = region as? CLCircularRegion {
+                        let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                        let distanceToLocation = lastLocation.distance(from: monitorLocation)
+
+                        // make sure not a expand-outer region before looking to ping or not
+                        if regionType == "expand-outer" {
+                            // notify if within condition distance but NOT a geofence trip
+
+                            // compute angle between heading and location
+                            let bearing = getBearingBetweenTwoPoints(point1: lastLocation, point2: monitorLocation)
+                            let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                            let angle = angleCourseBearing(course: course, bearing: bearing)
+
+                            // Get NSUserDefaults
+                            // don't ask for expand again until data refresh to prevent geofence bouncing
+                            // check if already under expand before seeing to ping
+                            // don't ask for expand again until data refresh to prevent geofence bouncing
+                            // check if distance is less than study condition
+                            if let alreadyAskedForExpand = self.locationDic[regionId]?["askedForExpand"] {
+                                if (!self.currentlyUnderExpand) && (!(alreadyAskedForExpand as! Bool)) && (distanceToLocation <= self.expandNotificationDistance) {
+                                    self.locationDic[regionId]?["askedForExpand"] = true
+                                    let message = regionId
+
+                                    // Log notification to parse
+                                    let epochTimestamp = Int(Date().timeIntervalSince1970)
+                                    let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                                    // Log notification sent event to parse
+                                    let newResponse = PFObject(className: "expandNotifications")
+                                    newResponse["vendorId"] = vendorId
+                                    newResponse["hotspotId"] = currentRegion["id"] as! String
+                                    newResponse["tag"] = currentRegion["tag"] as! String
+                                    newResponse["distanceCondition"] = self.expandNotificationDistance
+                                    newResponse["timestamp"] = epochTimestamp
+                                    newResponse["gmtOffset"] = gmtOffset
+                                    newResponse["distanceToRegion"] = distanceToLocation
+                                    newResponse["bearingToLocation"] = angle
+                                    newResponse["levelOfInformation"] = currentRegion["levelOfInformation"] as! String
+                                    newResponse.saveInBackground()
+
+                                    // Show alert if app active, else local notification
+                                    if UIApplication.shared.applicationState == .active {
+                                        print("Application is active")
+                                        if let viewController = window?.rootViewController {
+                                            let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
+                                            let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                                            alert.addAction(action)
+                                            viewController.present(alert, animated: true, completion: nil)
+                                        }
+                                    } else {
+                                        // create contextual responses
+                                        var currNotificationSet = Set<UNNotificationCategory>()
+                                        let expandEMAResponses = ["Yes! Great to know, I'm going to go now!",
+                                                                  "Yes, but I was already going there.",
+                                                                  "No, I have somewhere that I need to be.",
+                                                                  "No, I'm not interested.",
+                                                                  "No, other reason."]
+                                        let currCategory = UNNotificationCategory(identifier: "expand",
+                                                                                  actions: createActionsForAnswers(expandEMAResponses, includeIdk: false),
+                                                                                  intentIdentifiers: [],
+                                                                                  options: [.customDismissAction])
+                                        currNotificationSet.insert(currCategory)
+                                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                                        // Display notification with context
+                                        let content = UNMutableNotificationContent()
+                                        content.body = currentRegion["scaffoldedMessage"] as! String + " Would you like to go?"
+                                        content.sound = UNNotificationSound.default()
+                                        content.categoryIdentifier = "expand"
+                                        content.userInfo = currentRegion
+
+                                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                                            if let error = error {
+                                                print("Error in notifying from Pre-Tracker: \(error)")
+                                            }
+                                        })
+                                        
+                                        print("asking expand for region based on location \(region.identifier)")
+                                    }
+
                                 }
                             }
+
+                            // store if within each condition distance
+                            if self.withinDistanceRecorded[regionId] != nil {
+                                // condition distances should be increasing, find whichever they are furthest out from
+                                for condition in self.studyDistances {
+                                    // check if less than condition distance
+                                    if distanceToLocation <= Double(condition) {
+                                        if !self.withinDistanceRecorded[regionId]![String(condition)]! {
+                                            // save condition trip
+                                            let epochTimestamp = Int(Date().timeIntervalSince1970)
+                                            let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                                            let bearing = getBearingBetweenTwoPoints(point1: lastLocation, point2: monitorLocation)
+                                            let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                                            let angle = angleCourseBearing(course: course, bearing: bearing)
+
+                                            let newResponse = PFObject(className: "expandGeofenceTrips")
+                                            newResponse["vendorId"] = vendorId
+                                            newResponse["hotspotId"] = regionId
+                                            newResponse["distanceCondition"] = condition
+                                            newResponse["tripLocation"] = PFGeoPoint.init(location: lastLocation)
+                                            newResponse["timestamp"] = epochTimestamp
+                                            newResponse["gmtOffset"] = gmtOffset
+                                            newResponse["bearingToLocation"] = angle
+                                            newResponse.saveInBackground()
+
+                                            // update withinDistanceRecorded
+                                            self.withinDistanceRecorded[regionId]![String(condition)]! = true
+                                        }
+
+                                        break // stop searching once a condition trip is found
+                                    }
+                                }
+                            }
+                        } else {
+                            // check if beacon region before notifying
+                            if beaconId == "" {
+                                // print("Pretracker found a Geofence Region w/o beacon (\(regionId))...beginning pretracking.")
+                                if let currentLocationInfo = self.locationDic[regionId] {
+                                    // check if expand location and if shouldNotify for expand
+                                    if ((regionType == "expand") && (currentLocationInfo["shouldNotify"] as! Bool)) ||
+                                        ((regionType == "exploit") && (self.shouldPingForExploit)) {
+                                        // notify for expand or exploit location
+                                        let distance = currentLocationInfo["distance"] as! Double
+                                        let hasBeenNotifiedForRegion = currentLocationInfo["notifiedForRegion"] as! Bool
+
+                                        if (distanceToLocation <= distance && !hasBeenNotifiedForRegion) {
+                                            self.locationDic[regionId]?["notifiedForRegion"] = true
+                                            self.locationDic[regionId]?["withinRegion"] = true
+
+                                            notifyPeople(monitorRegion, locationWhenNotified: lastLocation)
+                                        }
+                                    }
+                                }
+                            } else {
+                                // print("Pretracker found a Geofence Region w/CLBeacon (\(regionId))...will not pretrack.")
+                            }
                         }
-                    } else {
-                        print("Pretracker found a Geofence Region w/CLBeacon (\(region.identifier))...will not pretrack.")
                     }
                 } else {
-                    print("Data currently being refreshed...waiting until finished.")
+                    print("notifyIfWithinDistance: Data currently being refreshed...waiting until finished.")
                 }
             } else {
-                print("Pretracker found a CLBeacon Region (\(region.identifier))...will not pretrack.")
+                // print("Pretracker found a CLBeacon Region (\(regionId))...will not pretrack.")
             }
         }
     }
     
     public func notifyPeople(_ region: CLRegion, locationWhenNotified: CLLocation) {
         if !(region is CLBeaconRegion) {
-            //        print("notify for region id \(region.identifier)")
+            // split region identifier into id and type
+            let regionComponents = region.identifier.components(separatedBy: "_")
+            let regionId = regionComponents[0]
+            let regionType = regionComponents[1]
+
+            // make sure not a expand-outer region
+            if regionType == "expand-outer" {
+                return
+            }
+
+            print("notify for region id \(regionId)")
+
             // Get NSUserDefaults
             var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
-            let currentRegion = monitoredHotspotDictionary[region.identifier] as! [String : AnyObject]
-            
-            let message = region.identifier
-            
-            // Log notification to parse
-            let epochTimestamp = Int(Date().timeIntervalSince1970)
-            let gmtOffset = NSTimeZone.local.secondsFromGMT()
-            
-            var distanceToLocation: Double = 0.0
-            var notificationString: String = ""
-            if let monitorRegion = region as? CLCircularRegion {
-                let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-                distanceToLocation = locationWhenNotified.distance(from: monitorLocation)
-                notificationString = "Notified for \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude)) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance \(distanceToLocation)"
-            } else {
-                notificationString = "Notified for \(region.identifier) (nil, nil) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance nil"
-            }
-            
-            // Log notification sent event to parse
-            let newResponse = PFObject(className: "notificationSent")
-            newResponse["vendorId"] = vendorId
-            newResponse["hotspotId"] = currentRegion["id"] as! String
-            newResponse["timestamp"] = epochTimestamp
-            newResponse["gmtOffset"] = gmtOffset
-            newResponse["notificationString"] = notificationString
-            newResponse.saveInBackground()
-            
-            // Show alert if app active, else local notification
-            if UIApplication.shared.applicationState == .active {
-                print("Application is active")
-                if let viewController = window?.rootViewController {
-                    let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
-                    let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                    alert.addAction(action)
-                    viewController.present(alert, animated: true, completion: nil)
+            if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject] {
+                let message = regionId
+
+                // Log notification to parse
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                var distanceToLocation: Double = 0.0
+                var notificationString: String = ""
+                if let monitorRegion = region as? CLCircularRegion {
+                    let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                    distanceToLocation = locationWhenNotified.distance(from: monitorLocation)
+                    notificationString = "Notified for \(regionId) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude)) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance \(distanceToLocation)"
+                } else {
+                    notificationString = "Notified for \(regionId) (nil, nil) when at location (\(locationWhenNotified.coordinate.latitude), \(locationWhenNotified.coordinate.longitude)) at distance nil"
                 }
-            } else {
-                // create contextual responses
-                var currNotificationSet = Set<UNNotificationCategory>()
-                let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
-                                                         actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String]),
-                                                         intentIdentifiers: [],
-                                                         options: [.customDismissAction])
-                currNotificationSet.insert(currCategory)
-                UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
-                
-                // Display notification with context
-                let content = UNMutableNotificationContent()
-                content.body = currentRegion["message"] as! String
-                content.sound = UNNotificationSound.default()
-                content.categoryIdentifier = currentRegion["notificationCategory"] as! String
-                content.userInfo = currentRegion
-                
-                let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
-                
-                UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                    if let error = error {
-                        print("Error in notifying from Pre-Tracker: \(error)")
+
+                if regionType != "exploit" {
+                    // expand notifications
+                    let newResponse = PFObject(className: "notificationSent")
+                    newResponse["vendorId"] = vendorId
+                    newResponse["hotspotId"] = currentRegion["id"] as! String
+                    newResponse["timestamp"] = epochTimestamp
+                    newResponse["gmtOffset"] = gmtOffset
+                    newResponse["notificationString"] = notificationString
+                    newResponse.saveInBackground()
+                } else {
+                    // exploit notifications
+                    let newResponse = PFObject(className: "exploitNotification")
+                    newResponse["vendorId"] = vendorId
+                    newResponse["exploitId"] = currentRegion["id"] as! String
+                    newResponse["timestamp"] = epochTimestamp
+                    newResponse["gmtOffset"] = gmtOffset
+                    newResponse.saveInBackground()
+                }
+
+                // Show alert if app active, else local notification
+                if UIApplication.shared.applicationState == .active {
+                    print("Application is active")
+                    if let viewController = window?.rootViewController {
+                        let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
+                        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                        alert.addAction(action)
+                        viewController.present(alert, animated: true, completion: nil)
                     }
-                })
+                } else {
+                    // create contextual responses
+                    var currNotificationSet = Set<UNNotificationCategory>()
+                    let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
+                                                              actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String],
+                                                                                               includeIdk: true),
+                                                              intentIdentifiers: [],
+                                                              options: [.customDismissAction])
+                    currNotificationSet.insert(currCategory)
+                    UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                    // Display notification with context
+                    let content = UNMutableNotificationContent()
+                    content.body = currentRegion["message"] as! String
+                    content.sound = UNNotificationSound.default()
+                    content.categoryIdentifier = currentRegion["notificationCategory"] as! String
+                    content.userInfo = currentRegion
+
+                    let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                    let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                    UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                        if let error = error {
+                            print("Error in notifying from Pre-Tracker: \(error)")
+                        }
+                    })
+                }
+            }  else {
+                print("Notify People: Data currently being refreshed...waiting until finished.")
             }
         }
     }
     
-    func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
+    func createActionsForAnswers(_ answers: [String], includeIdk: Bool) -> [UNNotificationAction] {
         // create UNNotificationAction objects for each answer
         var actionsForAnswers = [UNNotificationAction]()
         for answer in answers {
@@ -382,13 +654,15 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         }
         
         // add i dont know option
-        let idkAction = UNNotificationAction(identifier: "I don't know", title: "I don't know", options: [])
-        actionsForAnswers.append(idkAction)
+        if includeIdk {
+            let idkAction = UNNotificationAction(identifier: "I don't know", title: "I don't know", options: [])
+            actionsForAnswers.append(idkAction)
+        }
         
         return actionsForAnswers
     }
-    
-    //MARK: Background Task Functions
+
+    //MARK: - Background Task Functions
     @objc private func stopLocationUpdates() {
         print("Background stopping location updates")
         
@@ -411,36 +685,17 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             timer!.invalidate()
             timer = nil
         }
+
         locationManager!.startUpdatingLocation()
     }
     
-    //MARK: Tracking Location Updates
+    //MARK: - Tracking Location Updates
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // check if locations should be notified for and notify if applicable
         let lastLocation = locations.last!
+        self.previousLocation = currentLocation
+        self.currentLocation = lastLocation
         notifyIfWithinDistance(lastLocation)
-        
-        // store location updates if greater than threshold
-//        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 65.0) {
-//            let distance = calculateDistance(currentLocation: lastLocation)
-//            
-//            if (distance >= distanceUpdate) {
-//                let epochTimestamp = Int(Date().timeIntervalSince1970)
-//                let gmtOffset = NSTimeZone.local.secondsFromGMT()
-//                
-//                let newLocationUpdate = PFObject(className: "locationUpdates")
-//                newLocationUpdate["latitude"] = lastLocation.coordinate.latitude
-//                newLocationUpdate["longitude"] = lastLocation.coordinate.longitude
-//                newLocationUpdate["heading"] = lastLocation.course
-//                newLocationUpdate["speed"] = lastLocation.speed
-//                newLocationUpdate["horizontalAccuracy"] = lastLocation.horizontalAccuracy
-//                newLocationUpdate["vendorId"] = vendorId
-//                newLocationUpdate["timestamp"] = epochTimestamp
-//                newLocationUpdate["gmtOffset"] = gmtOffset
-//                
-//                newLocationUpdate.saveInBackground()
-//            }
-//        }
         
         // reset timer
         // do any actual work before this step as it may not execute depending on timer state
@@ -465,16 +720,226 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         delay10Seconds = Timer.scheduledTimer(timeInterval: delayLength, target: self, selector: #selector(MyPretracker.stopLocationWithDelay), userInfo: nil, repeats: false)
     }
     
+    func saveCurrentLocationToParse() {
+        let lastLocation = (locationManager?.location)!
+        
+        // store location updates if greater than threshold
+        if (lastLocation.horizontalAccuracy > 0 && lastLocation.horizontalAccuracy < 65.0) {
+            let distance = calculateDistance(currentLocation: lastLocation)
+            
+            if (distance >= distanceUpdate) {
+                let epochTimestamp = Int(Date().timeIntervalSince1970)
+                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+                
+                let newLocationUpdate = PFObject(className: "locationUpdates")
+                newLocationUpdate["latitude"] = lastLocation.coordinate.latitude
+                newLocationUpdate["longitude"] = lastLocation.coordinate.longitude
+                newLocationUpdate["heading"] = lastLocation.course
+                newLocationUpdate["speed"] = lastLocation.speed
+                newLocationUpdate["horizontalAccuracy"] = lastLocation.horizontalAccuracy
+                newLocationUpdate["vendorId"] = vendorId
+                newLocationUpdate["timestamp"] = epochTimestamp
+                newLocationUpdate["gmtOffset"] = gmtOffset
+                
+                newLocationUpdate.saveInBackground()
+            }
+        }
+    }
+    
     func calculateDistance(currentLocation: CLLocation) -> Double{
-        if previousLocation == nil {
-            previousLocation = currentLocation
+        if self.previousLocation == nil {
+            self.previousLocation = currentLocation
         }
         
-        let locationDistance = currentLocation.distance(from: previousLocation!)
-        previousLocation = currentLocation
+        let locationDistance = currentLocation.distance(from: self.previousLocation!)
+        self.previousLocation = currentLocation
         return locationDistance
     }
     
+    func degreesToRadians(degrees: Double) -> Double { return degrees * Double.pi / 180.0 }
+    
+    func radiansToDegrees(radians: Double) -> Double { return radians * 180.0 / Double.pi }
+    
+    func getBearingBetweenTwoPoints(point1 : CLLocation, point2 : CLLocation) -> Double {
+        // compute degree bearing between two points
+        let lat1 = degreesToRadians(degrees: point1.coordinate.latitude)
+        let lon1 = degreesToRadians(degrees: point1.coordinate.longitude)
+        
+        let lat2 = degreesToRadians(degrees: point2.coordinate.latitude)
+        let lon2 = degreesToRadians(degrees: point2.coordinate.longitude)
+        
+        let dLon = lon2 - lon1
+        
+        let y = sin(dLon) * cos(lat2)
+        let x = cos(lat1) * sin(lat2) - sin(lat1) * cos(lat2) * cos(dLon)
+        let radiansBearing = atan2(y, x)
+        
+        // return as 0-360 rather than +- 180
+        let initalBearing = radiansToDegrees(radians: radiansBearing)
+        let compassBearing = (initalBearing + 360.0).truncatingRemainder(dividingBy: 360.0)
+        
+        return compassBearing
+    }
+
+    func angleCourseBearing(course: Double, bearing: Double) -> Double{
+        return abs(course - bearing)
+    }
+    
+    private func outOfAllRegions() -> Bool {
+        print("checking all regions")
+        for (_, regionInfo) in self.locationDic {
+            if regionInfo["withinRegion"] as! Bool{
+                return false
+            }
+        }
+        return true
+    }
+    
+    // TODO: check here if location is eXpand location. if so, send expand ping. if yes response, save response to locationDic
+    public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
+        if !(region is CLBeaconRegion) {
+            // check if major GPS bounce has occured, if so don't go any further
+            if manager.location == nil || self.previousLocation == nil || self.currentLocation == nil{
+                return
+            }
+
+            let lastlocation = manager.location!
+            let age = -lastlocation.timestamp.timeIntervalSinceNow
+
+            if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 65.0 || age > 20) {
+                return
+            }
+
+            print("did enter region \(region.identifier)")
+
+            // compute distance to region from current location
+            let monitorRegion = region as! CLCircularRegion
+            let monitorRegionLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+            let distanceToRegion = lastlocation.distance(from: monitorRegionLocation)
+
+            // split region identifier into id and type
+            let regionComponents = region.identifier.components(separatedBy: "_")
+            let regionId = regionComponents[0]
+            let regionType = regionComponents[1]
+
+            // if outer expand region, notify asking if user wants to go
+            if (regionType == "expand-outer" ) {
+                // check if already under expand before seeing to ping
+                if self.currentlyUnderExpand {
+                    return
+                }
+
+                // don't ask for expand again until data refresh to prevent geofence bouncing
+                if let alreadyAskedForExpand = self.locationDic[regionId]?["askedForExpand"] {
+                    if alreadyAskedForExpand as! Bool {
+                        return
+                    }
+                }
+                self.locationDic[regionId]?["askedForExpand"] = true
+
+                // check if heading is between 285 and 75
+                let bearing = getBearingBetweenTwoPoints(point1: lastlocation, point2: monitorRegionLocation)
+                let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                let angle = angleCourseBearing(course: course, bearing: bearing)
+
+                if (angle > 75) && (angle < 285) {
+                    return
+                }
+
+                // Get NSUserDefaults
+                var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
+                if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject] {
+                    let message = regionId
+
+                    // Log notification to parse
+                    let epochTimestamp = Int(Date().timeIntervalSince1970)
+                    let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+                    // Log notification sent event to parse
+                    let newResponse = PFObject(className: "expandNotifications")
+                    newResponse["vendorId"] = vendorId
+                    newResponse["hotspotId"] = currentRegion["id"] as! String
+                    newResponse["tag"] = currentRegion["tag"] as! String
+                    newResponse["distanceCondition"] = self.expandNotificationDistance
+                    newResponse["timestamp"] = epochTimestamp
+                    newResponse["gmtOffset"] = gmtOffset
+                    newResponse["distanceToRegion"] = distanceToRegion
+                    newResponse["bearingToLocation"] = angle
+                    newResponse["levelOfInformation"] = currentRegion["levelOfInformation"] as! String
+                    newResponse.saveInBackground()
+
+                    // Show alert if app active, else local notification
+                    if UIApplication.shared.applicationState == .active {
+                        print("Application is active")
+                        if let viewController = window?.rootViewController {
+                            let alert = UIAlertController(title: "Region Entered", message: "You are near \(message).", preferredStyle: .alert)
+                            let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                            alert.addAction(action)
+                            viewController.present(alert, animated: true, completion: nil)
+                        }
+                    } else {
+                        // create contextual responses
+                        var currNotificationSet = Set<UNNotificationCategory>()
+                        let expandEMAResponses = ["Yes! Great to know, I'm going to go now!",
+                                                  "Yes, but I was already going there.",
+                                                  "No, I have somewhere that I need to be.",
+                                                  "No, I'm not interested.",
+                                                  "No, other reason."]
+                        let currCategory = UNNotificationCategory(identifier: "expand",
+                                                                  actions: createActionsForAnswers(expandEMAResponses, includeIdk: false),
+                                                                  intentIdentifiers: [],
+                                                                  options: [.customDismissAction])
+                        currNotificationSet.insert(currCategory)
+                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                        // Display notification with context
+                        let content = UNMutableNotificationContent()
+                        content.body = currentRegion["scaffoldedMessage"] as! String + " Would you like to go?"
+                        content.sound = UNNotificationSound.default()
+                        content.categoryIdentifier = "expand"
+                        content.userInfo = currentRegion
+
+                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                            if let error = error {
+                                print("Error in notifying from Pre-Tracker: \(error)")
+                            }
+                        })
+
+                        print("asking expand for region based on geofence \(region.identifier)")
+                    }
+                } else {
+                    print("Did enter region: Data currently being refreshed...waiting until finished.")
+                }
+            } else {
+                locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+                locationManager!.distanceFilter = kCLDistanceFilterNone
+            }
+            self.locationDic[regionId]?["withinRegion"] = true
+        }
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
+        if !(region is CLBeaconRegion) {
+            print("did exit region \(region.identifier)")
+
+            // split region identifier into id and type
+            let regionComponents = region.identifier.components(separatedBy: "_")
+            let regionId = regionComponents[0]
+
+            self.locationDic[regionId]?["withinRegion"] = false
+            self.locationDic[regionId]?["notifiedForRegion"] = false
+            
+            if outOfAllRegions() {
+                locationManager!.desiredAccuracy = self.accuracy
+                locationManager!.distanceFilter = self.distanceFilter
+            }
+        }
+    }
+    
+    //MARK: - Location Manager Delegate Error Functions
     public func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Location manager failed with error: \(error)")
         let date = Date()
@@ -488,6 +953,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = error.localizedDescription
         newLog.saveInBackground()
+    }
+    
+    public func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
+        print("Error monitoring failed for geofence region: \(String(describing: region)) with error \(error)")
     }
     
     public func locationManagerDidPauseLocationUpdates(_ manager: CLLocationManager) {
@@ -516,83 +985,5 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         newLog["timestamp_string"] = currentDateString
         newLog["console_string"] = "Location Updates Resumed by iOS"
         newLog.saveInBackground()
-    }
-    
-    public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if !(region is CLBeaconRegion) {
-            print("did enter region \(region.identifier)")
-            locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-            locationManager!.distanceFilter = kCLDistanceFilterNone
-            self.locationDic[region.identifier]?["withinRegion"] = true
-            
-            //        // log region entry events to Parse
-            //        let date = NSDate()
-            //        let dateFormatter = NSDateFormatter()
-            //        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            //        let currentDateString = dateFormatter.stringFromDate(date)
-            //
-            //        var notificationString: String = ""
-            //        if let monitorRegion = region as? CLCircularRegion {
-            //            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-            //            notificationString = "Entered region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
-            //        } else {
-            //            notificationString = "Entered region \(region.identifier) (nil, nil)"
-            //        }
-            //
-            //        let newLog = PFObject(className: "pretracking_debug")
-            //        newLog["vendor_id"] = vendorId
-            //        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
-            //        newLog["timestamp_string"] = currentDateString
-            //        newLog["console_string"] = notificationString
-            //        newLog.saveInBackground()
-        }
-    }
-    
-    public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
-        if !(region is CLBeaconRegion) {
-            print("did exit region \(region.identifier)")
-            self.locationDic[region.identifier]?["withinRegion"] = false
-            self.locationDic[region.identifier]?["notifiedForRegion"] = false
-            
-            if outOfAllRegions() {
-                locationManager!.desiredAccuracy = self.accuracy
-                locationManager!.distanceFilter = self.distanceFilter
-            }
-            
-            //        // log region exit events to Parse
-            //        let date = NSDate()
-            //        let dateFormatter = NSDateFormatter()
-            //        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            //        let currentDateString = dateFormatter.stringFromDate(date)
-            //
-            //        var notificationString: String = ""
-            //        if let monitorRegion = region as? CLCircularRegion {
-            //            let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-            //            notificationString = "Exited region \(region.identifier) (\(monitorLocation.coordinate.latitude), \(monitorLocation.coordinate.longitude))"
-            //        } else {
-            //            notificationString = "Exited region \(region.identifier) (nil, nil)"
-            //        }
-            //
-            //        let newLog = PFObject(className: "pretracking_debug")
-            //        newLog["vendor_id"] = vendorId
-            //        newLog["timestamp_epoch"] = Int(date.timeIntervalSince1970)
-            //        newLog["timestamp_string"] = currentDateString
-            //        newLog["console_string"] = notificationString
-            //        newLog.saveInBackground()
-        }
-    }
-    
-    public func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
-        print("Error monitoring failed for geofence region: \(String(describing: region)) with error \(error)")
-    }
-    
-    private func outOfAllRegions() -> Bool {
-        print("checking all regions")
-        for (_, regionInfo) in self.locationDic {
-            if regionInfo["withinRegion"] as! Bool{
-                return false
-            }
-        }
-        return true
     }
 }
