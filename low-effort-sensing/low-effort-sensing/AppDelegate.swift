@@ -456,7 +456,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
         self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
         self.appUserDefaults?.synchronize()
-        
+
+        // save new push token
+        PFCloud.callFunction(inBackground: "saveNewPushTokenForUser",
+                             withParameters: ["vendorId": vendorId,
+                                              "pushToken": deviceTokenString])
+
         // print token for debugging
         print(deviceTokenString)
     }
