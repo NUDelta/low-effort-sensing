@@ -51,6 +51,11 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         } else {
             locationCategory.text = locationCommonName
         }
+
+        // special case: free/sold food 
+        if tag == "food" {
+            locationCategory.text = "Free/Sold Food"
+        }
         
         distanceToLocationLabel.text = self.distanceToHotspot + " from current location"
         locationInformationMessage.text = scaffoldedMessage

@@ -102,6 +102,11 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         } else {
             annotationTitle = locationCommonName
         }
+
+        // special case: free/sold food
+        if tag == "food" {
+            annotationTitle = "Free/Sold Food"
+        }
         
         let newLocation = MarkedLocation(title: annotationTitle,
                                          locationName: distanceString,
