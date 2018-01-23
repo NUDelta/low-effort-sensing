@@ -36,7 +36,7 @@ extension UIViewController {
         view.addGestureRecognizer(tap)
     }
     
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         view.endEditing(true)
     }
 }
@@ -185,7 +185,7 @@ let dtrDonutKeyToQuestion = ["room": "Are the donuts in the Hackerspace or Delta
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUserNotificationCenterDelegate {
     // MARK: Class Variables
     var window: UIWindow?
-    let watchSession = WCSession.default()
+    let watchSession = WCSession.default
     var shortcutItem: UIApplicationShortcutItem?
     
     let appUserDefaults = UserDefaults.init(suiteName: appGroup)

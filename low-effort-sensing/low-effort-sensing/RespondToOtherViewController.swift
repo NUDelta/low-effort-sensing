@@ -120,12 +120,12 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
     }
     
     // Response Picker buttons
-    func doneResponsePicker() {
+    @objc func doneResponsePicker() {
         oldSelection = responseTextField.text!
         responseTextField.resignFirstResponder()
     }
     
-    func cancelResponsePicker() {
+    @objc func cancelResponsePicker() {
         responseTextField.text =  oldSelection
         responseTextField.resignFirstResponder()
     }

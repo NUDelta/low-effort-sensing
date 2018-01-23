@@ -24,7 +24,7 @@ class GetInformationInterfaceController: WKInterfaceController, WCSessionDelegat
     var locationInstanceDictionary = Dictionary<String, AnyObject>()
     
     // session for communicating with iphone
-    let watchSession = WCSession.default()
+    let watchSession = WCSession.default
     
     // MARK: Class Functions
     override func awake(withContext context: Any?) {

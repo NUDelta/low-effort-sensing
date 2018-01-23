@@ -18,7 +18,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     // MARK: Class Variables
     
     // session for communicating with iphone
-    let watchSession = WCSession.default()
+    let watchSession = WCSession.default
     
     // MARK: Class Functions
     override func awake(withContext context: Any?) {
@@ -53,7 +53,7 @@ class InterfaceController: WKInterfaceController, WCSessionDelegate {
     
     // handle notification
     override func handleAction(withIdentifier identifier: String?, for localNotification: UILocalNotification) {
-        let watchSession = WCSession.default()
+        let watchSession = WCSession.default
         watchSession.delegate = self
         watchSession.activate()
         print(watchSession.isReachable)

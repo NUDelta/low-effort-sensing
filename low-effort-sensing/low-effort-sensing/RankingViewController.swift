@@ -58,7 +58,7 @@ class RankingViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     
-    func handleTableViewLongGesture(_ sender: UILongPressGestureRecognizer) {
+    @objc func handleTableViewLongGesture(_ sender: UILongPressGestureRecognizer) {
         let state = sender.state
         let location = sender.location(in: tableView)
         guard let indexPath = tableView.indexPathForRow(at: location) else {

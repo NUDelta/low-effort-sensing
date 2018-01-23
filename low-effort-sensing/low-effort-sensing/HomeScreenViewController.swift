@@ -37,8 +37,8 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.titleTextAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 18, weight: UIFontWeightLight),
-                                                                        NSForegroundColorAttributeName: UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 18, weight: UIFont.Weight.light),
+                                                                        NSAttributedStringKey.foregroundColor: UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
         super.viewWillAppear(animated)
     }
@@ -52,7 +52,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func defaultsChanged(_ notification:Notification){
+    @objc func defaultsChanged(_ notification:Notification){
         if (notification.object as? UserDefaults) != nil {
             let monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
             drawNewAnnotations(monitoredHotspotDictionary as [String : AnyObject])
