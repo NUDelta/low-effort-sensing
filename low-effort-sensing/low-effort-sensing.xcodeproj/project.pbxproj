@@ -61,6 +61,8 @@
 		00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */; };
 		00AFE22D1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */; };
 		00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */; };
+		00B4C8E01ED67112005DFA33 /* sheridan-ridge-box.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 00B4C8DF1ED67112005DFA33 /* sheridan-ridge-box.gpx */; };
+		00B4C8E21ED67F2C005DFA33 /* ridge-sheridan-box.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 00B4C8E11ED67F2C005DFA33 /* ridge-sheridan-box.gpx */; };
 		00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */; };
 		00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D06D741CE1A92A002E8CCA /* TodayViewController.swift */; };
 		00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */; };
@@ -82,11 +84,9 @@
 		00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1B8A01CF416BA006D2FBD /* HomeScreenViewController.swift */; };
 		00F1B8A51CF42D0B006D2FBD /* MarkedLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F1B8A41CF42D0B006D2FBD /* MarkedLocation.swift */; };
 		00F1B8A71CF4398F006D2FBD /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00F1B8A21CF41775006D2FBD /* MapKit.framework */; };
-		355D2452F18278C76DDEB6E0 /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */; };
 		53B26A44B28114D6518ED1F3 /* Pods_CustomNotification.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC24C03A91759B500378F85E /* Pods_CustomNotification.framework */; };
 		B1F3227F46D2FDE708FC9CD0 /* Pods_LES_Widget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBB19518BF117A4D173E3EDF /* Pods_LES_Widget.framework */; };
 		D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */; };
-		DBD28EDA5A4D3C3A59B70E5E /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -159,7 +159,6 @@
 
 /* Begin PBXFileReference section */
 		000447451CD3AB830033DCD3 /* MyPretracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyPretracker.swift; sourceTree = "<group>"; };
-		00046C6A1CF615410085755A /* Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision */ = {isa = PBXFileReference; lastKnownFileType = file; name = Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision; path = ../../../../../Downloads/Delta_Lab_Les_Provisioning_Profiles/Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision; sourceTree = "<group>"; };
 		001627CF1CF297610049107E /* NameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NameViewController.swift; sourceTree = "<group>"; };
 		001627D11CF297A70049107E /* AuthorizationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorizationViewController.swift; sourceTree = "<group>"; };
 		001627D31CF297C10049107E /* RankingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RankingViewController.swift; sourceTree = "<group>"; };
@@ -219,6 +218,8 @@
 		00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCreator.swift; sourceTree = "<group>"; };
+		00B4C8DF1ED67112005DFA33 /* sheridan-ridge-box.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "sheridan-ridge-box.gpx"; sourceTree = "<group>"; };
+		00B4C8E11ED67F2C005DFA33 /* ridge-sheridan-box.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ridge-sheridan-box.gpx"; sourceTree = "<group>"; };
 		00D06D701CE1A92A002E8CCA /* LES Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LES Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		00D06D741CE1A92A002E8CCA /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
@@ -237,11 +238,9 @@
 		1F054FFE31E72067FC700FFA /* Pods-low-effort-sensing WatchKit App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit App.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App.release.xcconfig"; sourceTree = "<group>"; };
 		40E888C9F348E031B6FC9FC8 /* Pods-low-effort-sensing WatchKit Extension.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit Extension.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension.release.xcconfig"; sourceTree = "<group>"; };
 		4485ED9B1A95F20035FB6A32 /* Pods-LES Widget.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LES Widget.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LES Widget/Pods-LES Widget.debug.xcconfig"; sourceTree = "<group>"; };
-		4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		674E991FB331CC094C713AF4 /* Pods-low-effort-sensing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.debug.xcconfig"; sourceTree = "<group>"; };
 		774A8511AA0852A8508216AA /* Pods-low-effort-sensing WatchKit Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		7AC0232147E86A95B90D88FD /* Pods-low-effort-sensing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.release.xcconfig"; sourceTree = "<group>"; };
-		94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BAFB3377D55E0C393DC1129 /* Pods-CustomNotification.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CustomNotification.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CustomNotification/Pods-CustomNotification.debug.xcconfig"; sourceTree = "<group>"; };
 		A351C0A9C6CA74555A94EE32 /* Pods-LES Widget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LES Widget.release.xcconfig"; path = "Pods/Target Support Files/Pods-LES Widget/Pods-LES Widget.release.xcconfig"; sourceTree = "<group>"; };
 		B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -276,7 +275,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DBD28EDA5A4D3C3A59B70E5E /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,7 +313,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				355D2452F18278C76DDEB6E0 /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +361,8 @@
 			children = (
 				004213331EBB1171006B31EE /* les-simulation.gpx */,
 				007B2D391EBCB292004C3397 /* coffee-lab.gpx */,
+				00B4C8DF1ED67112005DFA33 /* sheridan-ridge-box.gpx */,
+				00B4C8E11ED67F2C005DFA33 /* ridge-sheridan-box.gpx */,
 				009B99AB1E4BA2CC0076FBF0 /* Help */,
 				00D93F611DDCB5E3006DFB8B /* Leaderboard */,
 				001627CE1CF297430049107E /* WelcomeScreens */,
@@ -426,7 +425,6 @@
 		001A900B1C55D0B6009F964C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				00046C6A1CF615410085755A /* Delta_Lab_Les_Watch_Kit_App_Extension.mobileprovision */,
 				00F1B8A21CF41775006D2FBD /* MapKit.framework */,
 				00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */,
 				001A90221C55D260009F964C /* libsqlite3.tbd */,
@@ -442,8 +440,6 @@
 				001A900E1C55D0FB009F964C /* Parse.framework */,
 				00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */,
 				B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */,
-				4EA37EC7E91ADD429ACEE9A7 /* Pods_low_effort_sensing_WatchKit_App.framework */,
-				94929C3163C5140DC82A9770 /* Pods_low_effort_sensing_WatchKit_Extension.framework */,
 				006709C71D89AB5F001E4528 /* UserNotifications.framework */,
 				006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */,
 				CC24C03A91759B500378F85E /* Pods_CustomNotification.framework */,
@@ -744,10 +740,12 @@
 			files = (
 				004213341EBB1171006B31EE /* les-simulation.gpx in Resources */,
 				001A8FD71C55CE6E009F964C /* LaunchScreen.storyboard in Resources */,
+				00B4C8E01ED67112005DFA33 /* sheridan-ridge-box.gpx in Resources */,
 				001A8FD41C55CE6E009F964C /* Assets.xcassets in Resources */,
 				001A8FD21C55CE6E009F964C /* Main.storyboard in Resources */,
 				00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */,
 				007B2D3A1EBCB292004C3397 /* coffee-lab.gpx in Resources */,
+				00B4C8E21ED67F2C005DFA33 /* ridge-sheridan-box.gpx in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

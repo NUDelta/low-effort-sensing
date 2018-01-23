@@ -12,12 +12,17 @@ import UserNotifications
 import Parse
 
 public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
+    // MARK: Class Variables
     // tracker parameters and storage variables
     var beaconManager: ESTBeaconManager?
     let appUserDefaults = UserDefaults(suiteName: appGroup)
     var vendorId = ""
     var prevNotifiedSet = Set<String>()
+
+    var locationToNotifyFor: String = ""
+    var resetIndoorExpandConditionsTimer: Timer?
     
+    // MARK: - Initializations, Getters, and Setters
     required public override init() {
         super.init()
         
@@ -63,7 +68,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         self.beginMonitoringParseRegions()
     }
     
-    // MARK: - Location Functions
+    // MARK: - Location and Notification Functions
     func beginMonitoringParseRegions() {
         print("getting tracked beacon regions")
         let query = PFQuery(className: "beacons")
@@ -84,10 +89,65 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             }
         }))
     }
+
+    func setShouldNotifyExpand(id: String) {
+        self.locationToNotifyFor = id
+
+        // reset timer and set new one if value is true
+        if (self.resetIndoorExpandConditionsTimer != nil) {
+            self.resetIndoorExpandConditionsTimer!.invalidate()
+            self.resetIndoorExpandConditionsTimer = nil
+        }
+
+        if id != "" {
+            self.resetIndoorExpandConditionsTimer = Timer.scheduledTimer(timeInterval: 30.0 * 60.0, // 30 mins
+                                                                         target: self,
+                                                                         selector: #selector(BeaconTracker.resetIndoorExpandConditions),
+                                                                         userInfo: "",
+                                                                         repeats: false)
+        }
+    }
+
+    @objc func resetIndoorExpandConditions(timer: Timer) {
+        print("Beacon Tracker Resetting expand/exploit conditions")
+        if let value = timer.userInfo {
+            self.setShouldNotifyExpand(id: value as! String)
+        }
+    }
+
+    public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
+        // set current beacon value
+        appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
+
+        // iterate through all monitored regions and find any that match the beaconId
+        let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
+
+        // notify only if expand response has been done
+        for (_, info) in monitoredHotspotDictionary {
+            let parsedInfo = info as! [String : AnyObject]
+            let hotspotId = parsedInfo["id"] as! String
+            let beaconId = parsedInfo["beaconId"] as! String
+
+            if beaconId == region.identifier && self.locationToNotifyFor == hotspotId {
+                self.notifyPeople(parsedInfo, regionId: region.identifier)
+            }
+        }
+    }
+    
+    public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
+        print("Exited Region \(region.identifier)")
+        
+        if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
+            if currBeaconRegion as? String == region.identifier {
+                appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
+            }
+        }
+    }
     
     public func notifyPeople(_ currentRegion: [String : AnyObject], regionId: String) {
         if (!prevNotifiedSet.contains(regionId)) {
-            //        print("notify for region id \(region.identifier)")
+            print("notify for beacon region id \(regionId)")
+            
             // Log notification to parse
             let epochTimestamp = Int(Date().timeIntervalSince1970)
             let gmtOffset = NSTimeZone.local.secondsFromGMT()
@@ -126,7 +186,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                 }
             })
             
-            // add regionId to set so further notifications for region do not happen 
+            // add regionId to set so further notifications for region do not happen
             prevNotifiedSet.insert(regionId)
         }
     }
@@ -141,32 +201,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         return actionsForAnswers
     }
     
-    public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
-        // set current beacon value
-        appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
-        
-        // iterate through all monitored regions and find any that match the beaconId
-        let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
-        
-        for (_, info) in monitoredHotspotDictionary {
-            let parsedInfo = info as! [String : AnyObject]
-            let beaconId = parsedInfo["beaconId"] as! String
-            if beaconId == region.identifier {
-                self.notifyPeople(parsedInfo, regionId: region.identifier)
-            }
-        }
-    }
-    
-    public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
-        print("Exited Region \(region.identifier)")
-        
-        if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
-            if currBeaconRegion as? String == region.identifier {
-                appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
-            }
-        }
-    }
-    
+    //MARK: - Location Manager Delegate Error Functions
     public func beaconManager(_ manager: Any, didDetermineState state: CLRegionState, for region: CLBeaconRegion) {
         switch state {
         case CLRegionState.unknown:
