@@ -43,7 +43,6 @@
 		004213341EBB1171006B31EE /* les-simulation.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 004213331EBB1171006B31EE /* les-simulation.gpx */; };
 		0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
-		005DD76A1DEF699200D89088 /* NotificationCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */; };
 		006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */; };
 		006709C81D89AB5F001E4528 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C71D89AB5F001E4528 /* UserNotifications.framework */; };
 		006709CA1D89AB5F001E4528 /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */; };
@@ -60,7 +59,6 @@
 		00AFE2291CF6551200753DC7 /* low-effort-sensing Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */; };
 		00AFE22B1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */; };
 		00AFE22D1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */; };
-		00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */; };
 		00B4C8E01ED67112005DFA33 /* sheridan-ridge-box.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 00B4C8DF1ED67112005DFA33 /* sheridan-ridge-box.gpx */; };
 		00B4C8E21ED67F2C005DFA33 /* ridge-sheridan-box.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 00B4C8E11ED67F2C005DFA33 /* ridge-sheridan-box.gpx */; };
 		00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D711CE1A92A002E8CCA /* NotificationCenter.framework */; };
@@ -217,7 +215,6 @@
 		00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22A1CF6554B00753DC7 /* low-effort-sensing WatchKit App Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit App Debug.entitlements"; sourceTree = "<group>"; };
 		00AFE22C1CF6557300753DC7 /* low-effort-sensing WatchKit Extension Debug.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "low-effort-sensing WatchKit Extension Debug.entitlements"; sourceTree = "<group>"; };
-		00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationCreator.swift; sourceTree = "<group>"; };
 		00B4C8DF1ED67112005DFA33 /* sheridan-ridge-box.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "sheridan-ridge-box.gpx"; sourceTree = "<group>"; };
 		00B4C8E11ED67F2C005DFA33 /* ridge-sheridan-box.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ridge-sheridan-box.gpx"; sourceTree = "<group>"; };
 		00D06D701CE1A92A002E8CCA /* LES Widget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "LES Widget.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -483,7 +480,6 @@
 			children = (
 				000447451CD3AB830033DCD3 /* MyPretracker.swift */,
 				0044402B1DED685300B64AD1 /* BeaconTracker.swift */,
-				00AFE22E1CF6C4FB00753DC7 /* NotificationCreator.swift */,
 				006527C51CF7444C005B77BA /* RespondToOtherViewController.swift */,
 			);
 			name = LocationAndNotification;
@@ -1008,7 +1004,6 @@
 				001627D41CF297C10049107E /* RankingViewController.swift in Sources */,
 				00D93F5E1DDCB5A8006DFB8B /* LeaderboardDataCell.swift in Sources */,
 				00F1B8A11CF416BA006D2FBD /* HomeScreenViewController.swift in Sources */,
-				00AFE22F1CF6C4FB00753DC7 /* NotificationCreator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1040,7 +1035,6 @@
 			files = (
 				0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */,
 				00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */,
-				005DD76A1DEF699200D89088 /* NotificationCreator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

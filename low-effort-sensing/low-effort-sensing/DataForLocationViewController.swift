@@ -135,33 +135,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
     
     func getQuestionForKey(_ questionKey: String, tag: String) -> String {
         var questionDictionary: [String : String] = [:]
-        
-        switch tag {
-        case "food":
-            questionDictionary = foodKeyToQuestion
-            break
-        case "queue":
-            questionDictionary = queueKeyToQuestion
-            break
-        case "space":
-            questionDictionary = spaceKeyToQuestion
-            break
-        case "surprising":
-            questionDictionary = surprisingKeyToQuestion
-            break
-        case "guestevent":
-            questionDictionary = guestEventKeyToQuestion
-            break
-        case "dtrdonut":
-            questionDictionary = dtrDonutKeyToQuestion
-            break
-        case "windowdrawing":
-            questionDictionary = windowDrawingKeyToQuestion
-            break
-        default:
-            break
-        }
-        
         return questionDictionary[questionKey]!
     }
     

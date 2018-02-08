@@ -61,24 +61,6 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
     
     override func viewWillAppear(_ animated: Bool) {
         // set question text and populate answer list for question
-        switch self.scenario {
-        case "food":
-            pickerData = [""] + foodAnswers[self.currentQuestion]!
-            break
-        case "queue":
-            pickerData = [""] + queueAnswers[self.currentQuestion]!
-            break
-        case "space":
-            pickerData = [""] + spaceAnswers[self.currentQuestion]!
-            break
-        case "surprising":
-            pickerData = [""] + surprisingAnswers[self.currentQuestion]!
-            break
-        default:
-            pickerData = [""]
-            break
-        }
-        
         self.question.text = self.notificationMessage
         self.question.adjustsFontSizeToFitWidth = true
     }

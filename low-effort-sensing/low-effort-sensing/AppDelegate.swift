@@ -48,139 +48,6 @@ extension String {
     }
 }
 
-// question ordering
-let foodQuestionOrdering = ["isfood", "foodtype", "howmuchfood",
-                            "freeorsold", "forstudentgroup", "cost", "sellingreason"]
-
-let queueQuestionOrdering = ["isline", "linetime", "islonger", "isworthwaiting", "npeople"]
-
-let spaceQuestionOrdering = ["isspace", "isavailable", "seatingtype", "seatingnearpower",
-                             "iswifi", "manypeople", "loudness", "event"]
-
-let surprisingQuestionOrdering = ["whatshappening", "famefrom", "vehicles", "peopledoing"]
-
-let guestEventQuestionOrdering = ["eventkind", "host", "isfood", "foodkind", "foodleft", "eventlength"]
-
-let windowDrawingQuestionOrdering = ["objectright", "colorright", "valueright", "objectleft", "colorleft", "valueleft"]
-
-let dtrDonutQuestionOrdering = ["room", "boxdrawing", "boxcontent", "markercolor", "plain", "frosted"]
-
-// blank location info
-let foodInfo = ["type": "", "quantity": "", "freesold": "", "cost": "", "sellingreason": ""]
-
-let queueInfo = ["isline": "", "linetime": "", "islonger": "", "isworthwaiting": "", "npeople": ""]
-
-let spaceInfo = ["isspace": "", "isavailable": "", "seatingtype": "", "seatingnearpower": "",
-                 "iswifi": "", "manypeople": "", "loudness": "", "event": ""]
-
-let surprisingInfo = ["whatshappening": "", "famefrom": "", "vehicles": "", "peopledoing": ""]
-
-let guestEventInfo = ["eventkind": "", "host": "", "isfood": "", "foodkind": "", "foodleft": "", "eventlength": ""]
-
-let windowDrawingInfo = ["objectright": "", "colorright": "", "valueright": "", "objectleft": "", "colorleft": "", "valueleft": ""]
-
-let dtrDonutInfo = ["room": "", "boxdrawing": "", "boxcontent": "", "markercolor": "", "plain": "", "frosted": ""]
-
-// notification answers
-let foodAnswers = ["isfood": ["yes", "no"],
-                   "foodtype": ["no food here", "pizza slices", "buns", "pastries", "other"],
-                   "howmuchfood": ["none", "very little", "some", "lots"],
-                   "freeorsold": ["free", "sold"],
-                   "forstudentgroup": ["yes", "no"],
-                   "cost": ["< $2", "$2-3", "$3-4", "$5+"],
-                   "sellingreason": ["fundraising", "charity", "other"]]
-
-let queueAnswers = ["isline": ["yes", "no"],
-                    "linetime": ["< 5 mins", "5-10 mins", "10-20 mins", "20+ mins"],
-                    "islonger": ["yes", "no", "I don't come here regularly"],
-                    "isworthwaiting": ["yes", "no"],
-                    "npeople": ["< 5", "5-10", "10+"]]
-
-let spaceAnswers = ["isspace": ["yes", "no"],
-                    "isavailable": ["yes", "no"],
-                    "seatingtype": ["small tables", "large tables", "couches/chairs"],
-                    "seatingnearpower": ["yes", "no"],
-                    "iswifi": ["yes", "no"],
-                    "manypeople": ["yes", "no"],
-                    "loudness": ["loud", "light conversation", "quiet"],
-                    "event": ["no", "sports", "music", "gathering", "other"]]
-
-let surprisingAnswers = ["whatshappening": ["no", "celebrity", "emergency vehicles", "lots of people"],
-                         "famefrom": ["no longer here", "musician", "actor/actress", "politician", "comedian", "other", "I don't know"],
-                         "vehicles": ["no longer here", "just police", "police, firetrucks, and ambulances"],
-                         "peopledoing": ["no longer here", "protest/riot", "student gathering for organization", "university or formal event", "other", "I don't know"]]
-
-let guestEventAnswers = ["eventkind": ["lecture", "talk", "workshop", "other", "I don't know"],
-                         "host": ["student group", "northwestern organization", "northwestern faculty", "I don't know"],
-                         "isfood": ["yes", "no", "I don't know"],
-                         "foodkind": ["sandwiches", "pizza", "desserts", "other", "I don't know"],
-                         "foodleft": ["still a lot", "less than half", "very little", "I don't know"],
-                         "eventlength": ["< 1 hour", "1-2 hours", "> 2 hours", "I don't know"]]
-
-let windowDrawingAnswers = ["objectright": ["letter", "number", "I don't know"],
-                            "colorright": ["pink", "orange", "blue", "I don't know"],
-                            "valueright": ["1", "2", "3", "A", "B", "C", "I don't know"],
-                            "objectleft": ["letter", "number", "I don't know"],
-                            "colorleft": ["pink", "orange", "blue", "I don't know"],
-                            "valueleft": ["1", "2", "3", "A", "B", "C", "I don't know"]]
-
-let dtrDonutAnswers = ["room": ["hackerspace", "delta lab", "I don't know"],
-                       "boxdrawing": ["yes", "no", "I don't know"],
-                       "boxcontent": ["inspirational message", "quote", "I don't know"],
-                       "markercolor": ["red", "black", "green", "other", "I don't know"],
-                       "plain": ["yes", "no", "I don't know"],
-                       "frosted": ["yes", "no", "I don't know"]]
-
-// key to question dictionary
-let foodKeyToQuestion = ["isfood": "Is there food here?",
-                         "foodtype": "What kind of food is here?",
-                         "howmuchfood": "How much food is left?",
-                         "freeorsold": "Is it free or sold?",
-                         "forstudentgroup": "Is it for a student group?",
-                         "cost": "How much does it cost?",
-                         "sellingreason": "Why is it being sold?"]
-
-let queueKeyToQuestion = ["isline": "Is there a line here?",
-                          "linetime": "How much time do you think it would take to go through the line right now?",
-                          "islonger": "If you come here regularly, is the line longer than normal?",
-                          "isworthwaiting": "Is it worth waiting in line?",
-                          "npeople": "How many people are in line right now?"]
-
-let spaceKeyToQuestion = ["isspace": "Is there a communal space to track here?",
-                          "isavailable": "Is there seating/space available?",
-                          "seatingtype": "What kind of seating?",
-                          "seatingnearpower": "Is there seating near power outlets?",
-                          "iswifi": "Is there Wifi?",
-                          "manypeople": "Are there a lot of people here?",
-                          "loudness": "How loud is the place?",
-                          "event": "Is there an event, like a sports game on TV or live music, going on here?"]
-
-let surprisingKeyToQuestion = ["whatshappening": "What’s happening here?",
-                               "famefrom": "What are they known for?",
-                               "vehicles": "What vehicles are there?",
-                               "peopledoing": "What are they doing there?"]
-
-let guestEventKeyToQuestion = ["eventkind": "What kind of event is happening?",
-                               "host": "Who is hosting the event?",
-                               "isfood": "Is there food?",
-                               "foodkind": "What kind of food is there?",
-                               "foodleft": "How much food is left?",
-                               "eventlength": "How much longer will the event be going on?"]
-
-let windowDrawingKeyToQuestion = ["objectright": "What's drawn on the right?",
-                                  "colorright": "What color is the right drawing?",
-                                  "valueright": "What's the value of the right drawing?",
-                                  "objectleft": "What's drawn on the left?",
-                                  "colorleft": "What color is the left drawing?",
-                                  "valueleft": "What's the value of the left drawing?"]
-
-let dtrDonutKeyToQuestion = ["room": "Are the donuts in the Hackerspace or Delta Lab?",
-                             "boxdrawing": "Does the box have anything written on it?",
-                             "boxcontent": "What's written on the box?",
-                             "markercolor": "What color marker was used to write on the box?",
-                             "plain": "Are there any plain donuts?",
-                             "frosted": "Are there any frosted donuts?"]
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUserNotificationCenterDelegate {
     // MARK: Class Variables
@@ -236,15 +103,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         
         // create default category for notification without any questions asked
         notificationCategories.insert(UNNotificationCategory(identifier: "no question", actions: [], intentIdentifiers: [], options: [.customDismissAction]))
-        
-        // create notifications for all types
-        createFoodNotifications()
-        createQueueNotifications()
-        createSpaceNotifications()
-        createSurprisingNotifications()
-        createGuestEventNotifications()
-        createWindowDrawingNotifications()
-        createDtrDonutNotifications()
 
         // create observer for low-power mode toggling
         NotificationCenter.default.addObserver(
@@ -510,81 +368,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         // Print the error to console (you should alert the user that registration failed)
         print("APNs registration failed: \(error)")
     }
-    
-    // MARK: - Create Custom Notifications for each Question
-    func createFoodNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_isfood", actions: createActionsForAnswers(foodAnswers["isfood"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_foodtype", actions: createActionsForAnswers(foodAnswers["foodtype"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_howmuchfood", actions: createActionsForAnswers(foodAnswers["howmuchfood"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_freeorsold", actions: createActionsForAnswers(foodAnswers["freeorsold"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_forstudentgroup", actions: createActionsForAnswers(foodAnswers["forstudentgroup"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_cost", actions: createActionsForAnswers(foodAnswers["cost"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "food_sellingreason", actions: createActionsForAnswers(foodAnswers["sellingreason"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createQueueNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "queue_isline", actions: createActionsForAnswers(queueAnswers["isline"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "queue_linetime", actions: createActionsForAnswers(queueAnswers["linetime"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "queue_islonger", actions: createActionsForAnswers(queueAnswers["islonger"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "queue_isworthwaiting", actions: createActionsForAnswers(queueAnswers["isworthwaiting"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "queue_npeople", actions: createActionsForAnswers(queueAnswers["npeople"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createSpaceNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_isspace", actions: createActionsForAnswers(spaceAnswers["isspace"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_isavailable", actions: createActionsForAnswers(spaceAnswers["isavailable"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_seatingtype", actions: createActionsForAnswers(spaceAnswers["seatingtype"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_seatingnearpower", actions: createActionsForAnswers(spaceAnswers["seatingnearpower"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_iswifi", actions: createActionsForAnswers(spaceAnswers["iswifi"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_manypeople", actions: createActionsForAnswers(spaceAnswers["manypeople"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_loudness", actions: createActionsForAnswers(spaceAnswers["loudness"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "space_event", actions: createActionsForAnswers(spaceAnswers["event"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createSurprisingNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "surprising_whatshappening", actions: createActionsForAnswers(surprisingAnswers["whatshappening"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "surprising_famefrom", actions: createActionsForAnswers(surprisingAnswers["famefrom"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "surprising_vehicles", actions: createActionsForAnswers(surprisingAnswers["vehicles"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "surprising_peopledoing", actions: createActionsForAnswers(surprisingAnswers["peopledoing"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createGuestEventNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_eventkind", actions: createActionsForAnswers(guestEventAnswers["eventkind"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_host", actions: createActionsForAnswers(guestEventAnswers["host"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_isfood", actions: createActionsForAnswers(guestEventAnswers["isfood"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_foodkind", actions: createActionsForAnswers(guestEventAnswers["foodkind"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_foodleft", actions: createActionsForAnswers(guestEventAnswers["foodleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "guestevent_eventlength", actions: createActionsForAnswers(guestEventAnswers["eventlength"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createWindowDrawingNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_objectright", actions: createActionsForAnswers(windowDrawingAnswers["objectright"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_colorright", actions: createActionsForAnswers(windowDrawingAnswers["colorright"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_valueright", actions: createActionsForAnswers(windowDrawingAnswers["valueright"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_objectleft", actions: createActionsForAnswers(windowDrawingAnswers["objectleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_colorleft", actions: createActionsForAnswers(windowDrawingAnswers["colorleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "windowdrawing_valueleft", actions: createActionsForAnswers(windowDrawingAnswers["valueleft"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createDtrDonutNotifications() {
-        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_room", actions: createActionsForAnswers(dtrDonutAnswers["room"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_boxdrawing", actions: createActionsForAnswers(dtrDonutAnswers["boxdrawing"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_boxcontent", actions: createActionsForAnswers(dtrDonutAnswers["boxcontent"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_markercolor", actions: createActionsForAnswers(dtrDonutAnswers["markercolor"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_plain", actions: createActionsForAnswers(dtrDonutAnswers["plain"]!), intentIdentifiers: [], options: [.customDismissAction]))
-        notificationCategories.insert(UNNotificationCategory(identifier: "dtrdonut_frosted", actions: createActionsForAnswers(dtrDonutAnswers["frosted"]!), intentIdentifiers: [], options: [.customDismissAction]))
-    }
-    
-    func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
-        var actionsForAnswers = [UNNotificationAction]()
-        for answer in answers {
-            let currentAction = UNNotificationAction(identifier: answer, title: answer, options: [])
-            actionsForAnswers.append(currentAction)
-        }
-        
-        return actionsForAnswers
-    }
-    
+
     //MARK: - Contextual Notification Handler
     let responseIgnoreSet: Set = ["com.apple.UNNotificationDefaultActionIdentifier", "com.apple.UNNotificationDismissActionIdentifier"]
     // TODO: check if this is eXploit or eXpand. save appropiately to different classes
@@ -746,14 +530,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 
                 // set info dict and saveTimeForQuestion based on tag
                 switch tag {
-                case "food":
-                    newMonitoredLocation["info"] = foodInfo
-                    newMonitoredLocation["saveTimeForQuestion"] = ["type": epochTimestamp,
-                                                                   "quantity": epochTimestamp,
-                                                                   "freesold": epochTimestamp,
-                                                                   "cost": epochTimestamp,
-                                                                   "sellingreason": epochTimestamp]
-                    break
+//                case "food":
+//                    newMonitoredLocation["info"] = foodInfo
+//                    newMonitoredLocation["saveTimeForQuestion"] = ["type": epochTimestamp,
+//                                                                   "quantity": epochTimestamp,
+//                                                                   "freesold": epochTimestamp,
+//                                                                   "cost": epochTimestamp,
+//                                                                   "sellingreason": epochTimestamp]
+//                    break
                 default:
                     break
                 }
