@@ -295,7 +295,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
                 
                 // setup remote notifications
-                UIApplication.shared.registerForRemoteNotifications()
+                DispatchQueue.main.async(execute: {
+                    UIApplication.shared.registerForRemoteNotifications()
+                })
                 
                 print("Notification setup complete")
             } else {
