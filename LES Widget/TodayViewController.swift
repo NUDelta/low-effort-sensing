@@ -24,6 +24,13 @@ import Parse
     let containingApplication = "edu.northwestern.delta.les.widget"       // for enterprise distribution builds
 #endif
 
+// Server to use for local vs. deployed
+#if DEBUG
+    let parseServer = "http://10.0.129.102:5000/parse/"
+#else
+    let parseServer = "https://les-expand.herokuapp.com/parse/"
+#endif
+
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
 let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
 
@@ -75,7 +82,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
             Parse.enableDataSharing(withApplicationGroupIdentifier: appGroup,
                                                                   containingApplication: containingApplication)
             Parse.initialize(with: ParseClientConfiguration(block: { (configuration: ParseMutableClientConfiguration) -> Void in
-                configuration.server = "https://les-expand.herokuapp.com/parse/"
+                configuration.server = parseServer
                 configuration.applicationId = "PkngqKtJygU9WiQ1GXM9eC0a17tKmioKKmpWftYr"
                 configuration.clientKey = "vsA30VpFQlGFKhhjYdrPttTvbcg1JxkbSSNeGCr7"
             }))
