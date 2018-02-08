@@ -1,12 +1,20 @@
 PODS:
+  - Bolts/Tasks (1.9.0)
   - EstimoteSDK (4.27.0)
+  - Parse (1.16.0):
+    - Parse/Core (= 1.16.0)
+  - Parse/Core (1.16.0):
+    - Bolts/Tasks (~> 1.9)
 
 DEPENDENCIES:
   - EstimoteSDK
+  - Parse
 
 SPEC CHECKSUMS:
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   EstimoteSDK: 61935c7fbcb9fe93b97b0360351aef66fb1c338d
+  Parse: 5b36dc2c2f0a2fd82a257ae018bc3d68cf2c24e7
 
-PODFILE CHECKSUM: 257c48b0d5e0b5d39bc7ca3e2ba852be4b3808e8
+PODFILE CHECKSUM: ec528f0528e6ffd7265a93f7d8cdaf526fceeb1b
 
 COCOAPODS: 1.4.0

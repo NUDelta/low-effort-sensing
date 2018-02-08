@@ -26,8 +26,6 @@
 		001A8FF81C55CE6E009F964C /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A8FF71C55CE6E009F964C /* GlanceController.swift */; };
 		001A8FFA1C55CE6E009F964C /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001A8FF91C55CE6E009F964C /* ComplicationController.swift */; };
 		001A8FFC1C55CE6E009F964C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 001A8FFB1C55CE6E009F964C /* Assets.xcassets */; };
-		001A900F1C55D0FB009F964C /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A900E1C55D0FB009F964C /* Parse.framework */; };
-		001A90111C55D105009F964C /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90101C55D105009F964C /* Bolts.framework */; };
 		001A90131C55D12A009F964C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90121C55D12A009F964C /* AudioToolbox.framework */; };
 		001A90151C55D131009F964C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90141C55D131009F964C /* CFNetwork.framework */; };
 		001A90171C55D13C009F964C /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90161C55D13C009F964C /* CoreLocation.framework */; };
@@ -65,8 +63,6 @@
 		00D06D751CE1A92A002E8CCA /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D06D741CE1A92A002E8CCA /* TodayViewController.swift */; };
 		00D06D781CE1A92A002E8CCA /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00D06D761CE1A92A002E8CCA /* MainInterface.storyboard */; };
 		00D06D7C1CE1A92A002E8CCA /* LES Widget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00D06D701CE1A92A002E8CCA /* LES Widget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		00D06D821CE1AD0F002E8CCA /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90101C55D105009F964C /* Bolts.framework */; };
-		00D06D831CE1AD0F002E8CCA /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A900E1C55D0FB009F964C /* Parse.framework */; };
 		00D06D841CE1AD33002E8CCA /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90121C55D12A009F964C /* AudioToolbox.framework */; };
 		00D06D851CE1AD3B002E8CCA /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90141C55D131009F964C /* CFNetwork.framework */; };
 		00D06D871CE1AD43002E8CCA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00D06D861CE1AD43002E8CCA /* CoreGraphics.framework */; };
@@ -84,6 +80,8 @@
 		00F1B8A71CF4398F006D2FBD /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00F1B8A21CF41775006D2FBD /* MapKit.framework */; };
 		53B26A44B28114D6518ED1F3 /* Pods_CustomNotification.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC24C03A91759B500378F85E /* Pods_CustomNotification.framework */; };
 		B1F3227F46D2FDE708FC9CD0 /* Pods_LES_Widget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBB19518BF117A4D173E3EDF /* Pods_LES_Widget.framework */; };
+		C4B8C98FFAC927BCB07E02E5 /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FD97F1A08923C9595C093208 /* Pods_low_effort_sensing_WatchKit_Extension.framework */; };
+		CB431F3831DDA7A98ECAF58E /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9D459657B4594A46EA91A06E /* Pods_low_effort_sensing_WatchKit_App.framework */; };
 		D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */; };
 /* End PBXBuildFile section */
 
@@ -239,12 +237,14 @@
 		774A8511AA0852A8508216AA /* Pods-low-effort-sensing WatchKit Extension.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit Extension.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension.debug.xcconfig"; sourceTree = "<group>"; };
 		7AC0232147E86A95B90D88FD /* Pods-low-effort-sensing.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing.release.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing.release.xcconfig"; sourceTree = "<group>"; };
 		9BAFB3377D55E0C393DC1129 /* Pods-CustomNotification.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CustomNotification.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CustomNotification/Pods-CustomNotification.debug.xcconfig"; sourceTree = "<group>"; };
+		9D459657B4594A46EA91A06E /* Pods_low_effort_sensing_WatchKit_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A351C0A9C6CA74555A94EE32 /* Pods-LES Widget.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LES Widget.release.xcconfig"; path = "Pods/Target Support Files/Pods-LES Widget/Pods-LES Widget.release.xcconfig"; sourceTree = "<group>"; };
 		B3AC6BDCC0B6EF9D0CEB2B6B /* Pods_low_effort_sensing.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C812A51A6B9D2E15DAC2A725 /* Pods-low-effort-sensing WatchKit App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-low-effort-sensing WatchKit App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App.debug.xcconfig"; sourceTree = "<group>"; };
 		CC24C03A91759B500378F85E /* Pods_CustomNotification.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CustomNotification.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBB19518BF117A4D173E3EDF /* Pods_LES_Widget.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LES_Widget.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBE586B5E5C7025C5D82E58D /* Pods-CustomNotification.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CustomNotification.release.xcconfig"; path = "Pods/Target Support Files/Pods-CustomNotification/Pods-CustomNotification.release.xcconfig"; sourceTree = "<group>"; };
+		FD97F1A08923C9595C093208 /* Pods_low_effort_sensing_WatchKit_Extension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_low_effort_sensing_WatchKit_Extension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,8 +261,6 @@
 				001A90171C55D13C009F964C /* CoreLocation.framework in Frameworks */,
 				001A90151C55D131009F964C /* CFNetwork.framework in Frameworks */,
 				001A90131C55D12A009F964C /* AudioToolbox.framework in Frameworks */,
-				001A900F1C55D0FB009F964C /* Parse.framework in Frameworks */,
-				001A90111C55D105009F964C /* Bolts.framework in Frameworks */,
 				D405A13BA9E86A3C2FED62CF /* Pods_low_effort_sensing.framework in Frameworks */,
 				00F1B8A71CF4398F006D2FBD /* MapKit.framework in Frameworks */,
 			);
@@ -272,6 +270,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C4B8C98FFAC927BCB07E02E5 /* Pods_low_effort_sensing_WatchKit_Extension.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -300,8 +299,6 @@
 				00D06D851CE1AD3B002E8CCA /* CFNetwork.framework in Frameworks */,
 				00D06D841CE1AD33002E8CCA /* AudioToolbox.framework in Frameworks */,
 				00D06D721CE1A92A002E8CCA /* NotificationCenter.framework in Frameworks */,
-				00D06D821CE1AD0F002E8CCA /* Bolts.framework in Frameworks */,
-				00D06D831CE1AD0F002E8CCA /* Parse.framework in Frameworks */,
 				B1F3227F46D2FDE708FC9CD0 /* Pods_LES_Widget.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -310,6 +307,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB431F3831DDA7A98ECAF58E /* Pods_low_effort_sensing_WatchKit_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +439,8 @@
 				006709C91D89AB5F001E4528 /* UserNotificationsUI.framework */,
 				CC24C03A91759B500378F85E /* Pods_CustomNotification.framework */,
 				EBB19518BF117A4D173E3EDF /* Pods_LES_Widget.framework */,
+				9D459657B4594A46EA91A06E /* Pods_low_effort_sensing_WatchKit_App.framework */,
+				FD97F1A08923C9595C093208 /* Pods_low_effort_sensing_WatchKit_Extension.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -874,9 +874,14 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Bolts/Bolts.framework",
+				"${BUILT_PRODUCTS_DIR}/Parse/Parse.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Bolts.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Parse.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
