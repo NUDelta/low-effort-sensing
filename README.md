@@ -1,7 +1,7 @@
 # Low Effort Sensing
 A platform for low-effort data collection on the iPhone and Apple Watch enabled by the 4X process.
 
-# Related Directories
+# Related Repositories
 1. [Backend](https://github.com/NUDelta/les-heroku): a Node.js and Parse Cloud backend that coordinates the collection and querying of data from users.
 2. [Data Analysis](https://github.com/NUDelta/les-study-analysis): a set of Jupter Notebooks analyzing log data from previous studies.
 
