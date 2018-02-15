@@ -1,8 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>                                                                                                                                                                                                                                                                                                     
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>compileBitcode</key>
+    <false/>
+
     <key>method</key>
     <string>enterprise</string>
+
+    <key>teamID</key>
+    <string>823S57WQK3</string>
+
+    <key>signingStyle</key>
+    <string>manual</string>
+
+    <key>signingCertificate</key>
+    <string>iOS Distribution</string>
+
+    <key>provisioningProfiles</key>
+    <dict>
+        <key>edu.northwestern.delta.les</key>
+        <string>Delta Lab Les</string>
+
+        <key>edu.northwestern.delta.les.widget</key>
+        <string>Delta Lab Les Widget</string>
+
+        <key>edu.northwestern.delta.les.watchkitapp</key>
+        <string>Delta Lab Les Watch Kit App</string>
+
+        <key>edu.northwestern.delta.les.watchkitapp.watchkitextension</key>
+        <string>Delta Lab Les Watch Kit App Extension</string>
+
+        <key>edu.northwestern.delta.les.CustomNotification</key>
+        <string>Delta Lab Les Notification Extension</string>
+    </dict>
 </dict>
 </plist>
