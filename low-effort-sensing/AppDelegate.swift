@@ -119,35 +119,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             object: nil
         )
         
-        // check if user has already opened app before, if not show welcome screen
-        let launchedBefore = UserDefaults.standard.bool(forKey: "launchedBefore")
-        if launchedBefore  {
+        // check if user is logged in, if not present login screen
+        let currentUser = PFUser.current()
+        if currentUser != nil {
+            // print logged in user
+            print(currentUser!)
+
             // register categories for notifications
             registerForNotifications()
-            
+
             // open map view
             self.window = UIWindow(frame: UIScreen.main.bounds)
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
             let homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController")
-            
+
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
-            
+
 //            // DEBUG NOTIFICATION
 //            Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: true)
-        }
-        else {
-            print("First launch, going to welcome screen")
-            let userInfo: [String : String] = ["firstName": "",
-                                               "lastName": "",
-                                               "vendorId": vendorId,
-                                               "firstPreference": "",
-                                               "secondPreference": "",
-                                               "thirdPreference": "",
-                                               "fourthPreference": ""]
-            
-            self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
-            self.appUserDefaults?.synchronize()
         }
         
         // show light-colored status bar on each page
@@ -295,42 +285,42 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     
     func registerForNotifications() {
         print("Registering categories for local notifications")
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
-            if (granted) {
-                // setup notification categories
-                UNUserNotificationCenter.current().setNotificationCategories(self.notificationCategories)
-                UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-                
-                // setup remote notifications
-                DispatchQueue.main.async(execute: {
-                    UIApplication.shared.registerForRemoteNotifications()
-                })
-                
-                print("Notification setup complete")
-            } else {
-                print("Error when registering for notifications: \(String(describing: error))")
-            }
-        })
+
+        let currentUser = PFUser.current()
+        if currentUser != nil {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
+                if (granted) {
+                    // setup notification categories
+                    UNUserNotificationCenter.current().setNotificationCategories(self.notificationCategories)
+                    UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+
+                    // setup remote notifications
+                    DispatchQueue.main.async(execute: {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    })
+
+                    print("Notification setup complete")
+                } else {
+                    print("Error when registering for notifications: \(String(describing: error))")
+                }
+            })
+        }
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         // create hashed remote notification token
         let deviceTokenString = deviceToken.reduce("", {$0 + String(format: "%02X", $1)})
-        
-        // save in userInfo for pushing to DB later
-        var userInfo = appUserDefaults?.dictionary(forKey: "welcomeData")
-        userInfo!["pushToken"] = deviceTokenString
-
-        self.appUserDefaults?.set(userInfo, forKey: "welcomeData")
-        self.appUserDefaults?.synchronize()
 
         // save new push token
-        PFCloud.callFunction(inBackground: "saveNewPushTokenForUser",
-                             withParameters: ["vendorId": vendorId,
-                                              "pushToken": deviceTokenString])
+        let currentUser = PFUser.current()
+        if let currentUser = currentUser {
+            currentUser["vendorId"] = vendorId
+            currentUser["pushToken"] = deviceTokenString
+            currentUser.saveInBackground()
 
-        // print token for debugging
-        print(deviceTokenString)
+            // print token for debugging
+            print("updating push token for current user: \(deviceTokenString)")
+        }
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
