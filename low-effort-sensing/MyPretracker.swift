@@ -195,7 +195,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         let hasBeacon = beaconId != ""
                                                         self.addLocation(nil, latitude: currLat, longitude: currLong,
                                                                          radius: nil, id: id,
-                                                                         expandRadius: self.expandNotificationDistance, locationType: locationType!, hasBeacon: hasBeacon)
+                                                                         expandRadius: self.expandNotificationDistance,
+                                                                         locationType: locationType!,
+                                                                         hasBeacon: hasBeacon)
                                                         
                                                         // Add data to user defaults
                                                         var unwrappedEntry = [String : AnyObject]()

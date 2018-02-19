@@ -99,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         // location manager and setting up monitored locations
         MyPretracker.sharedManager.setupParameters(distanceFromTarget,
                                                      radius: geofenceRadius,
-                                                     accuracy: kCLLocationAccuracyNearestTenMeters,
+                                                     accuracy: kCLLocationAccuracyHundredMeters,
                                                      distanceFilter: nil)
         
         // setup beacon manager
