@@ -16,7 +16,7 @@ import Parse
 import Bolts
 import WatchConnectivity
 
-let distanceFromTarget = 40.0
+let distanceFromTarget = 30.0
 let geofenceRadius = 100.0
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
 let myHotspotsRegionKey = "savedMarkedHotspots" // for saving all hotspots user has marked before
