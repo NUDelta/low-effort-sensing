@@ -33,17 +33,36 @@ class LoginViewController: UIViewController {
             PFUser.logInWithUsername(inBackground: userEmail!, password: userPassword!, block: {(user, error) -> Void in
                 if error == nil {
                     print("user successfully logged in")
+
+                    // save last login time
+                    let currentUser = PFUser.current()
+                    if let currentUser = currentUser {
+                        let date = Date()
+                        let dateFormatter = DateFormatter()
+                        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                        let currentDateString = dateFormatter.string(from: date)
+                        
+                        currentUser["lastLoggedIn"] = currentDateString
+                        currentUser.saveInBackground()
+                    }
+
                     self.performSegue(withIdentifier: "LoginSegue", sender: self)
                 } else {
                     print("error in logging in: \(error!.localizedDescription)")
 
-                    let alert = UIAlertController(title: "Login Failed: Invalid email/password",
-                                                  message: "Please verify your email and password.",
+                    let alert = UIAlertController(title: "Login Failed",
+                                                  message: "Invalid email/password. Please verify your email and password.",
                                                   preferredStyle: UIAlertControllerStyle.alert)
                     alert.addAction(UIAlertAction(title: "ok", style: UIAlertActionStyle.default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 }
             })
+        } else {
+            let alert = UIAlertController(title: "Login Failed",
+                                          message: "Email and Password must both be filled.",
+                                          preferredStyle: UIAlertControllerStyle.alert)
+            alert.addAction(UIAlertAction(title: "ok", style: UIAlertActionStyle.default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
         }
     }
 }

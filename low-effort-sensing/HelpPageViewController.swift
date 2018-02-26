@@ -37,8 +37,22 @@ class HelpPageViewController: UIViewController {
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) { (result : UIAlertAction) -> Void in
             print("Logging user out and redirecting to signup")
 
-            // logout user
-            PFUser.logOut() // TODO: log logout events in DB
+            // update user object on server and logout
+            let currentUser = PFUser.current()
+            if let currentUser = currentUser {
+                let date = Date()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                let currentDateString = dateFormatter.string(from: date)
+
+                currentUser["vendorId"] = ""
+                currentUser["pushToken"] = ""
+                currentUser["lastLoggedOut"] = currentDateString
+                currentUser.saveInBackground(block: {(success, error) -> Void in
+                    // logout user
+                    PFUser.logOut()
+                })
+            }
 
             // redirect to signup view
             let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
