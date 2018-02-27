@@ -31,13 +31,14 @@ var vendorId: String = ""
 
 // Server to use for local vs. deployed
 #if DEBUG
-    let parseServer = "http://10.0.129.102:5000/parse/" // home
-//    let parseServer = "http://10.105.95.43:5000/parse/" // nu
+//    let parseServer = "http://10.0.129.102:5000/parse/" // home
+    let parseServer = "http://10.105.110.109:5000/parse/" // nu
 #else
     let parseServer = "https://les-expand.herokuapp.com/parse/"
 #endif
 
-// extension used to dismiss keyboard, from Esqarrouth http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
+// extension used to dismiss keyboard, from Esqarrouth
+// http://stackoverflow.com/questions/24126678/close-ios-keyboard-by-touching-anywhere-using-swift
 extension UIViewController {
     func hideKeyboardWhenTappedAround() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
@@ -361,11 +362,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     }
 
     //MARK: - Contextual Notification Handler
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        // TODO: check if there is a categoryIdentifier when user responds with a DefaultAction (swipe right)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        // check if user has tapped on notification and open response view if so
+        // else, handle contextual response
+        if response.actionIdentifier == "com.apple.UNNotificationDefaultActionIdentifier" &&
+            response.notification.request.content.categoryIdentifier != "" {
+            print("opening Respond To Other view")
+            // create view controller
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            let respondToOtherViewController = storyboard.instantiateViewController(withIdentifier:
+                "RespondToOtherViewController") as! RespondToOtherViewController
 
-        // check if expand-outer ping, exploit ping, or ping at expand location
-        if (response.notification.request.content.categoryIdentifier == "atdistance") {
+            // setup data
+            respondToOtherViewController.setCurrentVariables((response.notification.request.content.userInfo as? [String : AnyObject])!,
+                categoryIdentifier: response.notification.request.content.categoryIdentifier)
+
+            // open view
+            self.window?.rootViewController = respondToOtherViewController
+            self.window?.makeKeyAndVisible()
+        } else if (response.notification.request.content.categoryIdentifier == "atdistance") {
             print("AtDistance Response")
 
             // get UTC timestamp and timezone of notification
@@ -446,7 +462,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             if newResponse["questionResponse"] as! String != "" {
                 newResponse.saveInBackground()
             }
-        } else if (response.notification.request.content.categoryIdentifier == "atlocation") {
+        } else if (response.notification.request.content.categoryIdentifier != "") {
             // setup response object to push to parse
             var notificationId = ""
             if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
@@ -485,6 +501,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             }
         }
 
+        // if code gets to here, just open the app and do nothing with the contextual response
         completionHandler()
     }
 
