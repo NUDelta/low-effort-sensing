@@ -349,7 +349,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         // reset timer after 30 mins
         if value {
             self.resetAtDistanceTimer = Timer.scheduledTimer(timeInterval: 30.0 * 60.0, target: self,
-                                                             selector: #selector(MyPretracker.resetAtDistanceEnRouteTimer), userInfo: id, repeats: false)
+                                                             selector: #selector(MyPretracker.resetAtDistanceEnRouteTimer),
+                                                             userInfo: id, repeats: false)
         }
     }
 

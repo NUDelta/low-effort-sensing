@@ -88,7 +88,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             lastLocation = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
             
             distanceToLocation = lastLocation.distance(from: annotationLocation)
-            distanceInMinutes = Int(distanceToLocation / 100.0) // approximate walking speed = 100m/min
+            distanceInMinutes = Int(distanceToLocation / 84.0) // approximate walking speed = 1.4 m/s * 60s/min = 84 m/min
             distanceString =  "\(distanceInMinutes) minutes away"
         } else {
             distanceString = "Distance currently unavailable"

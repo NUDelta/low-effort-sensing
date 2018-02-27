@@ -10,6 +10,8 @@ import Foundation
 import Parse
 
 class HelpPageViewController: UIViewController {
+    @IBOutlet weak var welcomeText: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -19,6 +21,15 @@ class HelpPageViewController: UIViewController {
                                                                                                                       weight: UIFont.Weight.light),
                                                                         NSAttributedStringKey.foregroundColor: UIColor.white]
         self.navigationController?.navigationBar.tintColor = UIColor.white
+
+        // add user's first name to welcome text
+        let currentUser = PFUser.current()
+        if let currentUser = currentUser {
+            let userName = currentUser["firstName"] as! String
+            welcomeText.text = "Welcome, \(userName)!"
+        } else {
+            welcomeText.text = "Welcome!"
+        }
     }
     
     override func didReceiveMemoryWarning() {
