@@ -78,8 +78,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
                                                                                     course: 0.0,
                                                                                     speed: 0.0,
                                                                                     timestamp: Date.init())
-        let tag = location["tag"] as! String
-        
+        let locationType = location["locationType"] as! String
         var distanceToLocation: Double
         var distanceInMinutes: Int
         var distanceString = ""
@@ -89,44 +88,27 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
             lastLocation = CLLocation(latitude: currentLocation.latitude, longitude: currentLocation.longitude)
             
             distanceToLocation = lastLocation.distance(from: annotationLocation)
-            distanceInMinutes = Int(distanceToLocation / 100.0) // approximate walking speed = 100m/min
+            distanceInMinutes = Int(distanceToLocation / 84.0) // approximate walking speed = 1.4 m/s * 60s/min = 84 m/min
             distanceString =  "\(distanceInMinutes) minutes away"
         } else {
             distanceString = "Distance currently unavailable"
         }
-        
-        var annotationTitle = ""
-        let locationCommonName = location["locationCommonName"] as! String
-        if locationCommonName == "" {
-            annotationTitle = createTitleFromTag(tag)
-        } else {
-            annotationTitle = locationCommonName
+
+        var annotationTitle = location["locationName"] as! String
+        if annotationTitle == "" {
+            annotationTitle = "Unnamed Location"
         }
 
-        // special case: free/sold food
-        if tag == "food" {
-            annotationTitle = "Free/Sold Food"
-        }
-        
+        // make pin
         let newLocation = MarkedLocation(title: annotationTitle,
                                          locationName: distanceString,
-                                         discipline: tag,
+                                         discipline: locationType,
                                          coordinate: CLLocationCoordinate2D(latitude: location["latitude"] as! Double,
                                                                             longitude: location["longitude"] as! Double),
-                                         hotspotId: location["id"] as! String)
+                                         taskLocationId: location["id"] as! String)
         mapView.addAnnotation(newLocation)
     }
     
-    func createTitleFromTag(_ tag: String) -> String{
-        switch tag {
-        case "food":
-            return "Free/Sold Food Here"
-        default:
-            return ""
-        }
-    }
-    
-    // TODO: check if exploit location, if so don't draw
     func drawNewAnnotations(_ locations: [String : AnyObject]) {
         // clear all existing annotations
         mapView.removeAnnotations(mapView.annotations)
@@ -135,7 +117,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         for (_, info) in locations {
             let currentLocationInfo = info as! [String : AnyObject]
             
-            if (currentLocationInfo["locationType"] as! String != "exploit") {
+            if (currentLocationInfo["notificationCategory"] as! String != "enroute") {
                 addAnnotationsForDictionary(currentLocationInfo)
             }
         }
@@ -167,7 +149,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         
         let annotationMarkedLocation = view.annotation as! MarkedLocation
         let annotationDistance = view.annotation?.subtitle
-        let annotationHotpspotDictionary = monitoredHotspotDictionary[annotationMarkedLocation.hotspotId]
+        let annotationHotpspotDictionary = monitoredHotspotDictionary[annotationMarkedLocation.taskLocationId]
     
         // show DataForLocationViewController
         let mainStoryboard = UIStoryboard(name: "Main", bundle: nil)
@@ -175,7 +157,7 @@ class HomeScreenViewController: UIViewController, MKMapViewDelegate {
         
         dataForLocation.updateClassVariables(annotationHotpspotDictionary as! [String : AnyObject],
                                              distance: annotationDistance!!)
-        dataForLocation.retrieveAndDrawData(annotationMarkedLocation.hotspotId)
+        dataForLocation.retrieveAndDrawData(annotationMarkedLocation.taskLocationId)
         self.show(dataForLocation, sender: dataForLocation)
     }
 }

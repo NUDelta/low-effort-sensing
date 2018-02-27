@@ -148,7 +148,7 @@ class TodayViewController: UIViewController, NCWidgetProviding {
     
     override func viewWillDisappear(_ animated: Bool) {
         if foodSelected {
-            pushDataToParse("food")
+            // pushDataToParse("food")
             unmarkLocation("food")
             submittedLabel.text = ""
         }

@@ -139,7 +139,7 @@ class UserProfileViewController: UIViewController, MKMapViewDelegate, UITableVie
                                              discipline: object.contributionType,
                                              coordinate:  CLLocationCoordinate2D(latitude: object.latitude,
                                                                                  longitude: object.longitude),
-                                             hotspotId: object.hotspotId)
+                                             taskLocationId: object.hotspotId)
             
             contributionMap.addAnnotation(newLocation)
         }

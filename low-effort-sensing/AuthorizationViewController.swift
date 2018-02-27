@@ -11,8 +11,6 @@ import Foundation
 class AuthorizationViewController: UIViewController {
     @IBOutlet weak var authLabel: UILabel!
     
-    let appUserDefaults = UserDefaults.init(suiteName: appGroup)
-    
     // MARK: Class Functions
     override func viewDidLoad() {
         super.viewDidLoad()

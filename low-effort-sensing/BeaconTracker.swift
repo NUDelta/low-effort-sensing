@@ -18,9 +18,6 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     let appUserDefaults = UserDefaults(suiteName: appGroup)
     var vendorId = ""
     var prevNotifiedSet = Set<String>()
-
-    var locationToNotifyFor: String = ""
-    var resetIndoorExpandConditionsTimer: Timer?
     
     // MARK: - Initializations, Getters, and Setters
     required public override init() {
@@ -90,31 +87,6 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         }))
     }
 
-    func setShouldNotifyExpand(id: String) {
-        self.locationToNotifyFor = id
-
-        // reset timer and set new one if value is true
-        if (self.resetIndoorExpandConditionsTimer != nil) {
-            self.resetIndoorExpandConditionsTimer!.invalidate()
-            self.resetIndoorExpandConditionsTimer = nil
-        }
-
-        if id != "" {
-            self.resetIndoorExpandConditionsTimer = Timer.scheduledTimer(timeInterval: 30.0 * 60.0, // 30 mins
-                                                                         target: self,
-                                                                         selector: #selector(BeaconTracker.resetIndoorExpandConditions),
-                                                                         userInfo: "",
-                                                                         repeats: false)
-        }
-    }
-
-    @objc func resetIndoorExpandConditions(timer: Timer) {
-        print("Beacon Tracker Resetting expand/exploit conditions")
-        if let value = timer.userInfo {
-            self.setShouldNotifyExpand(id: value as! String)
-        }
-    }
-
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
         // set current beacon value
         appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
@@ -125,10 +97,9 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         // notify only if expand response has been done
         for (_, info) in monitoredHotspotDictionary {
             let parsedInfo = info as! [String : AnyObject]
-            let hotspotId = parsedInfo["id"] as! String
             let beaconId = parsedInfo["beaconId"] as! String
 
-            if beaconId == region.identifier && self.locationToNotifyFor == hotspotId {
+            if beaconId == region.identifier {
                 self.notifyPeople(parsedInfo, regionId: region.identifier)
             }
         }
@@ -148,23 +119,37 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         if (!prevNotifiedSet.contains(regionId)) {
             print("notify for beacon region id \(regionId)")
             
+
+            
             // Log notification to parse
             let epochTimestamp = Int(Date().timeIntervalSince1970)
             let gmtOffset = NSTimeZone.local.secondsFromGMT()
-            
-            // Log notification sent event to parse
-            let newResponse = PFObject(className: "notificationSent")
-            newResponse["vendorId"] = vendorId
-            newResponse["hotspotId"] = currentRegion["id"] as! String
-            newResponse["timestamp"] = epochTimestamp
-            newResponse["gmtOffset"] = gmtOffset
-            newResponse["notificationString"] = "Notified for beacon region \(regionId)"
-            newResponse.saveInBackground()
+
+            if currentRegion["notificationCategory"] as! String != "enroute" {
+                // AtLocation Notifications
+                let newResponse = PFObject(className: "AtLocationNotificationsSent")
+                newResponse["vendorId"] = vendorId
+                newResponse["taskLocationId"] = currentRegion["id"] as! String
+                newResponse["timestamp"] = epochTimestamp
+                newResponse["gmtOffset"] = gmtOffset
+                newResponse["notificationString"] = "Notified for beacon region \(regionId)"
+                newResponse.saveInBackground()
+            } else {
+                // EnRoute Notifications
+                let newResponse = PFObject(className: "EnRouteNotificationsSent")
+                newResponse["vendorId"] = vendorId
+                newResponse["enRouteLocationId"] = currentRegion["id"] as! String
+                newResponse["timestamp"] = epochTimestamp
+                newResponse["gmtOffset"] = gmtOffset
+                newResponse["notificationString"] = "Notified for beacon region \(regionId)"
+                newResponse.saveInBackground()
+            }
             
             // create contextual responses
             var currNotificationSet = Set<UNNotificationCategory>()
             let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
-                                                      actions: createActionsForAnswers(currentRegion["contextualResponses"] as! [String]),
+                                                      actions: createActionsForAnswers(currentRegion["atLocationResponses"] as! [String],
+                                                                                       includeIdk: false),
                                                       intentIdentifiers: [],
                                                       options: [.customDismissAction])
             currNotificationSet.insert(currCategory)
@@ -172,7 +157,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             
             // Display notification with context
             let content = UNMutableNotificationContent()
-            content.body = currentRegion["message"] as! String
+            content.body = currentRegion["atLocationMessage"] as! String
             content.sound = UNNotificationSound.default()
             content.categoryIdentifier = currentRegion["notificationCategory"] as! String
             content.userInfo = currentRegion
@@ -191,13 +176,20 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
         }
     }
     
-    func createActionsForAnswers(_ answers: [String]) -> [UNNotificationAction] {
+    func createActionsForAnswers(_ answers: [String], includeIdk: Bool) -> [UNNotificationAction] {
+        // create UNNotificationAction objects for each answer
         var actionsForAnswers = [UNNotificationAction]()
         for answer in answers {
             let currentAction = UNNotificationAction(identifier: answer, title: answer, options: [])
             actionsForAnswers.append(currentAction)
         }
-        
+
+        // add i dont know option
+        if includeIdk {
+            let idkAction = UNNotificationAction(identifier: "I don't know", title: "I don't know", options: [])
+            actionsForAnswers.append(idkAction)
+        }
+
         return actionsForAnswers
     }
     

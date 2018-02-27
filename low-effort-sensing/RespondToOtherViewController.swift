@@ -11,52 +11,36 @@ import UIKit
 import Parse
 
 class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
-    
-    // MARK: Class Variables
-    @IBOutlet weak var responseTextField: UITextField!
+    // MARK: Class Properties
+    @IBOutlet weak var responsePicker: UIPickerView!
     @IBOutlet weak var question: UILabel!
-    
-    var notificationMessage = ""
-    var oldSelection = ""
-    var pickerData: [String] = [String]()
-    var responsePicker: UIPickerView!
-    
+
+    // MARK: Class Variables
+    var window: UIWindow?
     let appUserDefaults = UserDefaults(suiteName: appGroup)
+
+    // variables for picker
+    var pickerData: [String] = [""]
+    var notificationMessage = ""
     
     // Passed in arguments
-    var currentHotspotId: String = ""
-    var scenario: String = ""
-    var currentQuestion: String = ""
+    var userInfo: [String : AnyObject] = [:]
+    var categoryIdentifier: String = ""
     
     // MARK: Class Variables
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        // Set up response picker
+        self.responsePicker.backgroundColor = UIColor.white
         
-        // Set up food type picker
-        responsePicker = UIPickerView(frame: CGRect(x: 0, y: 200, width: view.frame.width, height: 300))
-        responsePicker.backgroundColor = UIColor.white
-        
-        responsePicker.showsSelectionIndicator = true
-        responsePicker.delegate = self
-        responsePicker.dataSource = self
+        self.responsePicker.showsSelectionIndicator = true
+        self.responsePicker.delegate = self
+        self.responsePicker.dataSource = self
         
         let responseToolBar = UIToolbar()
         responseToolBar.barStyle = UIBarStyle.default
         responseToolBar.isTranslucent = true
         responseToolBar.sizeToFit()
-        
-        let doneResponseButton = UIBarButtonItem(title: "Done", style: UIBarButtonItemStyle.plain, target: self, action: #selector(RespondToOtherViewController.doneResponsePicker))
-        let spaceResponseButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: nil, action: nil)
-        let cancelResponseButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.plain, target: self, action: #selector(RespondToOtherViewController.cancelResponsePicker))
-        
-        responseToolBar.setItems([cancelResponseButton, spaceResponseButton, doneResponseButton], animated: false)
-        responseToolBar.isUserInteractionEnabled = true
-        
-        responseTextField.inputView = responsePicker
-        responseTextField.inputAccessoryView = responseToolBar
-        
-        self.responseTextField.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,16 +53,32 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    // MARK: - UI and Other Functions
-    func setCurrentVariables(_ hotspotId: String, scenario: String, question: String, notification: String) {
-        self.currentHotspotId = hotspotId
-        self.scenario = scenario
-        self.currentQuestion = question
-        
-        self.notificationMessage = notification
+
+    // MARK: - Data Setup
+    func setCurrentVariables(_ userInfo: [String : AnyObject], categoryIdentifier: String) {
+        // clear out pickerData
+        self.pickerData = [""]
+
+        // set class level variables
+        self.userInfo = userInfo
+        self.categoryIdentifier = categoryIdentifier
+
+        // create data for picker
+        switch categoryIdentifier {
+        case "atdistance":
+            self.notificationMessage = userInfo["atDistanceMessage"] as! String
+            self.pickerData += userInfo["atDistanceResponses"] as! [String]
+            break
+        case "enroute":
+            fallthrough
+        default:
+            self.notificationMessage = userInfo["atLocationMessage"] as! String
+            self.pickerData += userInfo["atLocationResponses"] as! [String]
+            break
+        }
     }
-    
+
+    // MARK: - Setup Picker
     // The number of columns of data
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -93,74 +93,152 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return self.pickerData[row]
     }
-    
-    // Catpure the picker view selection
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        // This method is triggered whenever the user makes a change to the picker selection.
-        // The parameter named row and component represents what was selected.
-        responseTextField.text = pickerData[row]
+
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 50
     }
-    
-    // Response Picker buttons
-    @objc func doneResponsePicker() {
-        oldSelection = responseTextField.text!
-        responseTextField.resignFirstResponder()
+
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 45));
+        label.lineBreakMode = .byWordWrapping;
+        label.numberOfLines = 0;
+        label.text = self.pickerData[row]
+        label.textAlignment = .center
+        label.sizeToFit()
+        return label;
     }
-    
-    @objc func cancelResponsePicker() {
-        responseTextField.text =  oldSelection
-        responseTextField.resignFirstResponder()
-    }
-    
+
+    // MARK: - Buttons
     @IBAction func submitData(_ sender: AnyObject) {
-        if responseTextField.text != "" {
-            // get UTC timestamp and timezone of notification
-            let epochTimestamp = Int(Date().timeIntervalSince1970)
-            let gmtOffset = NSTimeZone.local.secondsFromGMT()
-            
-            // Push data to parse
-            let newResponse = PFObject(className: "pingResponse")
-            newResponse["vendorId"] = vendorId
-            newResponse["hotspotId"] = self.currentHotspotId
-            newResponse["question"] = self.currentQuestion
-            newResponse["response"] = responseTextField.text
-            newResponse["tag"] = self.scenario
-            newResponse["timestamp"] = epochTimestamp
-            newResponse["gmtOffset"] = gmtOffset
-            
-            newResponse.saveInBackground()
-            
+        let currentData = self.pickerData[self.responsePicker.selectedRow(inComponent: 0)]
+        print(currentData)
+        if currentData != "" {
+            // save response
+            self.savePickerResponse(currentData)
+
             // Inform user data has been saved
-            let alertController = UIAlertController(title: "Data Saved Successfully", message: "You will now return to the home screen.", preferredStyle: .alert)
-            
+            let alertController = UIAlertController(title: "Data Saved Successfully",
+                                                    message: "Hooray \u{1F389}, thank you! You will now return to the home screen.",
+                                                    preferredStyle: .alert)
+
             let okAction = UIAlertAction(title: "OK", style: .default) { (action:UIAlertAction!) in
-                self.dismiss(animated: true, completion: nil)
+                // return to mapview
+                self.returnToMapView()
             }
+
             alertController.addAction(okAction)
             self.present(alertController, animated: true, completion: nil)
         } else {
             // Inform user that response cannot be blank
-            let alertController = UIAlertController(title: "Response Cannot Be Blank", message: "Please fill out a value using the text box or click \"Cancel\" to exit.", preferredStyle: .alert)
+            let alertController = UIAlertController(title: "Response Cannot Be Blank",
+                                                    message: "Please fill out a value using the text box or click \"Cancel\" to exit.",
+                                                    preferredStyle: .alert)
             alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            
             self.present(alertController, animated: true, completion: nil)
         }
     }
     
     @IBAction func cancelResponse(_ sender: AnyObject) {
         // Ask user if they are sure they want to go back to main screen
-        let alertController = UIAlertController(title: "Are you sure you want to back?", message: "You cannot return to this screen and any unsaved data will be lost.", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Are you sure you want to back?",
+                                                message: "You cannot return to this screen and any unsaved data will be lost.",
+                                                preferredStyle: .alert)
         
         let yesAction = UIAlertAction(title: "Yes", style: .default) { (action:UIAlertAction!) in
-            self.dismiss(animated: true, completion: nil)
+            // save this as a dismissal
+            self.savePickerResponse("com.apple.UNNotificationDismissActionIdentifier")
+
+            // return to mapview
+            self.returnToMapView()
         }
+
         let noAction = UIAlertAction(title: "No", style: .default) { (action:UIAlertAction!) in
             return
         }
-        
+
+        // add actions and present to user
         alertController.addAction(yesAction)
         alertController.addAction(noAction)
         self.present(alertController, animated: true, completion: nil)
+    }
+
+    private func returnToMapView() {
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        let mainStoryboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let homeViewController = mainStoryboard.instantiateViewController(withIdentifier: "HomeScreenViewController")
+
+        self.window?.rootViewController = homeViewController
+        self.window?.makeKeyAndVisible()
+    }
+
+    private func savePickerResponse(_ responseValue: String) {
+        // get UTC timestamp and timezone of notification
+        let epochTimestamp = Int(Date().timeIntervalSince1970)
+        let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+        // create object to push
+        let newResponse: PFObject
+        let notificationId = self.userInfo["id"] as! String
+
+        switch self.categoryIdentifier {
+        case "atdistance":
+            var didIncludeInfoAtDistance: Bool = false
+            if let preferredInfo = self.userInfo["preferredInfo"], let shouldNotifyAtDistance = self.userInfo["shouldNotifyAtDistance"] {
+                didIncludeInfoAtDistance = !(preferredInfo as! String == "") && (shouldNotifyAtDistance as! Bool)
+            }
+
+            newResponse = PFObject(className: "AtDistanceNotificationResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["taskLocationId"] = notificationId
+            newResponse["locationType"] = self.userInfo["locationType"] as! String
+            newResponse["notificationDistance"] = self.userInfo["atDistanceNotificationDistance"] as! Double
+            newResponse["infoIncluded"] = didIncludeInfoAtDistance
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["emaResponse"] = responseValue
+
+            // check whether to update Pretracker AtDistance and EnRoute states
+            let responseAcceptSet: Set = [
+                "Yes! This info is useful, I'm going now.",
+                "Yes. This info is useful but I'm already going there.",
+                "Sure! I would be happy to go out of my way!",
+                "Sure, but I was going to walk past it anyway."
+            ]
+            if (responseAcceptSet.contains(responseValue)) {
+                MyPretracker.sharedManager.setShouldNotifyAtDistance(id: notificationId, value: true)
+                MyPretracker.sharedManager.setShouldNotifyEnRoute(value: true)
+            }
+            break
+        case "enroute":
+            newResponse = PFObject(className: "EnRouteNotificationResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["enRouteLocationId"] = notificationId
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["questionResponse"] = responseValue
+            break
+        default:
+            // get scenario and question as separate components
+            let notificationCategoryArr = self.categoryIdentifier.components(separatedBy: "_")
+
+            newResponse = PFObject(className: "AtLocationNotificationResponses")
+            newResponse["vendorId"] = vendorId
+            newResponse["taskLocationId"] = notificationId
+            newResponse["locationType"] = notificationCategoryArr[0]
+            newResponse["timestamp"] = epochTimestamp
+            newResponse["gmtOffset"] = gmtOffset
+            newResponse["question"] = notificationCategoryArr[1]
+            newResponse["response"] = responseValue
+
+
+            let currentAtDistanceLocation = MyPretracker.sharedManager.currentAtDistanceLocation
+            if (currentAtDistanceLocation != "") && (notificationId == currentAtDistanceLocation) {
+                MyPretracker.sharedManager.setShouldNotifyAtDistance(id: notificationId, value: false)
+                MyPretracker.sharedManager.setShouldNotifyEnRoute(value: false)
+            }
+            break
+        }
+        newResponse.saveInBackground()
     }
 }
 
