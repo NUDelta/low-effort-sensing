@@ -42,23 +42,21 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         tableView.delegate = self
         
         // set preliminary text
-        let tag = self.currentHotspot["tag"] as! String
-        let locationCommonName = self.currentHotspot["locationCommonName"] as! String
-        let scaffoldedMessage = self.currentHotspot["scaffoldedMessage"] as! String
+        let locationType = self.currentHotspot["locationType"] as! String
+        var preferredInfo = self.currentHotspot["preferredInfo"] as! String
+        var locationName = self.currentHotspot["locationName"] as! String
         
-        if locationCommonName == "" {
-            locationCategory.text = createTitleFromTag(tag)
-        } else {
-            locationCategory.text = locationCommonName
+        if locationName == "" {
+            locationName = "Unnamed Location"
         }
 
-        // special case: free/sold food 
-        if tag == "food" {
-            locationCategory.text = "Free/Sold Food"
+        if preferredInfo == "" {
+            preferredInfo = "No information is currently available. Come back later!"
         }
-        
+
+        locationCategory.text = locationName
         distanceToLocationLabel.text = self.distanceToHotspot + " from current location"
-        locationInformationMessage.text = scaffoldedMessage
+        locationInformationMessage.text = preferredInfo
         locationInformationMessage.sizeToFit()
         
         locationCategory.adjustsFontSizeToFitWidth = true
@@ -141,27 +139,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
     func getAnswerForKey(_ answerKey: String) -> String {
         let info = self.currentHotspot["info"] as! [String : String]
         return info[answerKey]!
-    }
-    
-    func createTitleFromTag(_ tag: String) -> String {
-        switch tag {
-        case "food":
-            return "Free/Sold Food"
-//        case "queue":
-//            return "How Long is the Line?"
-//        case "space":
-//            return "How Busy is the Space?"
-//        case "surprising":
-//            return "Something Surprising is Happening!"
-//        case "guestevent":
-//            return "Guest Event Happening"
-//        case "dtrdonut":
-//            return "Donuts for DTR!"
-//        case "windowdrawing":
-//            return "What's on the windows?"
-        default:
-            return ""
-        }
     }
     
     // MARK: - Table View Functions

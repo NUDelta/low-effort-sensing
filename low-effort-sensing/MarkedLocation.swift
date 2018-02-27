@@ -14,14 +14,14 @@ class MarkedLocation: NSObject, MKAnnotation {
     let locationName: String
     let discipline: String
     let coordinate: CLLocationCoordinate2D
-    let hotspotId: String
+    let taskLocationId: String
     
-    init(title: String, locationName: String, discipline: String, coordinate: CLLocationCoordinate2D, hotspotId: String) {
+    init(title: String, locationName: String, discipline: String, coordinate: CLLocationCoordinate2D, taskLocationId: String) {
         self.title = title
         self.locationName = locationName
         self.discipline = discipline
         self.coordinate = coordinate
-        self.hotspotId = hotspotId
+        self.taskLocationId = taskLocationId
         
         super.init()
     }
