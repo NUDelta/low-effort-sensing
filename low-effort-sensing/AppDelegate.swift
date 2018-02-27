@@ -393,7 +393,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             }
 
             // setup response object and push to parse
-            let newResponse = PFObject(className: "AtDistanceResponses")
+            let newResponse = PFObject(className: "AtDistanceNotificationResponses")
             newResponse["vendorId"] = vendorId
             newResponse["taskLocationId"] = notificationId
             newResponse["locationType"] = locationTypeString
