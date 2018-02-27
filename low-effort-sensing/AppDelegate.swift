@@ -317,7 +317,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         }
     }
     
-    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("\(userInfo)")
         
         // refresh data when notification is received
@@ -361,6 +362,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
     //MARK: - Contextual Notification Handler
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        // TODO: check if there is a categoryIdentifier when user responds with a DefaultAction (swipe right)
+
         // check if expand-outer ping, exploit ping, or ping at expand location
         if (response.notification.request.content.categoryIdentifier == "atdistance") {
             print("AtDistance Response")
@@ -443,7 +446,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             if newResponse["questionResponse"] as! String != "" {
                 newResponse.saveInBackground()
             }
-        } else {
+        } else if (response.notification.request.content.categoryIdentifier == "atlocation") {
             // setup response object to push to parse
             var notificationId = ""
             if let unwrappedNotificationId = response.notification.request.content.userInfo["id"] {
