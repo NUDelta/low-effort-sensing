@@ -378,6 +378,12 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         if (lastLocation.horizontalAccuracy < 0 || lastLocation.horizontalAccuracy > 65.0 || age > 20) {
             return
         }
+
+        // check speed at last location
+        // walking = 1.4, running = 3.7 -> set to 5 to only capture biking and driving
+        if (lastLocation.speed > 5) {
+            return
+        }
         
         for region in locationManager!.monitoredRegions {
             if !(region is CLBeaconRegion) {
@@ -804,8 +810,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
             let lastlocation = manager.location!
             let age = -lastlocation.timestamp.timeIntervalSinceNow
-
             if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 65.0 || age > 20) {
+                return
+            }
+
+            // check speed at last location
+            // walking = 1.4, running = 3.7 -> set to 5 to only capture biking and driving
+            if (lastlocation.speed > 5) {
                 return
             }
 
