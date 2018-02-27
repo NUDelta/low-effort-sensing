@@ -43,7 +43,28 @@ class ForYouViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        var numberOfSections: Int = 0
+        if self.tableData.count > 0 {
+            tableView.separatorStyle = .singleLine
+            numberOfSections = 1
+            tableView.backgroundView = nil
+        } else {
+            let attrs = [NSAttributedStringKey.font : UIFont.boldSystemFont(ofSize: 40)]
+            let attributedString = NSMutableAttributedString(string: "\u{1F62D}", attributes:attrs)
+            let normalString = NSMutableAttributedString(string:
+                "\n\nThere aren't any locations with information you may like currently. Check back later!")
+            attributedString.append(normalString)
+
+            let noDataLabel: UILabel = UILabel(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+            noDataLabel.attributedText = attributedString
+            noDataLabel.textColor = UIColor.black
+            noDataLabel.textAlignment = .center
+            noDataLabel.numberOfLines = 0
+            tableView.backgroundView = noDataLabel
+            tableView.separatorStyle = .none
+        }
+
+        return numberOfSections
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
