@@ -28,10 +28,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     let distanceUpdate = 30.0
 
     // date objects holding last time user was notified
-    // TODO: use these to determine if should notify
-    var lastNotifiedAtLocation: Date = Date()
-    var lastNotifiedAtDistance: Date = Date()
-    var timeThreshold: Int = 60 * 30 // 60 seconds * 30 mins = 1800 seconds
+    var lastNotifiedAtLocation: Date? = nil
+    var lastNotifiedAtDistance: Date? = nil
+    var timeThreshold: Double = 60.0 // 60 seconds
+    // TODO: switch to this one var timeThreshold: Double = 60.0 * 30.0 // 60 seconds * 30 mins = 1800 seconds
 
     // used to determine when to notify for AtDistance and EnRoute
     var currentlyUnderAtDistance: Bool = false
@@ -395,9 +395,18 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                         let monitorLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
                         let distanceToLocation = lastLocation.distance(from: monitorLocation)
 
-                        // make sure not a expand-outer region before looking to ping or not
+                        // notify if within condition distance but NOT a geofence trip
                         if regionType == "atdistance" {
-                            // notify if within condition distance but NOT a geofence trip
+                            // check if time is correct for notifying
+                            if self.lastNotifiedAtDistance != nil {
+                                let currentDate = Date()
+                                let oldDatePlusThreshold = self.lastNotifiedAtDistance!.addingTimeInterval(self.timeThreshold)
+
+                                // currentDate must be later than lastNotifiedAtDistance + threshold
+                                if oldDatePlusThreshold > currentDate {
+                                    continue
+                                }
+                            }
 
                             // compute angle between heading and location
                             let bearing = getBearingBetweenTwoPoints(point1: lastLocation, point2: monitorLocation)
@@ -418,6 +427,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
                                 if !self.currentlyUnderAtDistance && !(shouldNotifyAtDistance as! Bool) &&
                                     (!(notifiedAtDistanceForLocation as! Bool) && validDistance) {
+                                    // update notification time
+                                    self.lastNotifiedAtDistance = Date()
+
+                                    // update location dict
                                     self.locationDic[regionId]?["notifiedAtDistance"] = true
 
                                     // log notification to parse
@@ -530,6 +543,19 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 return
             }
 
+            // if atLocation, check if time is correct
+            if regionType == "atlocation" {
+                if self.lastNotifiedAtLocation != nil {
+                    let currentDate = Date()
+                    let oldDatePlusThreshold = self.lastNotifiedAtLocation!.addingTimeInterval(self.timeThreshold)
+
+                    // currentDate must be later than lastNotifiedAtLocation + threshold
+                    if oldDatePlusThreshold > currentDate {
+                        return
+                    }
+                }
+            }
+
             print("notify for region id \(regionId)")
 
             // get NSUserDefaults
@@ -559,6 +585,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["notificationString"] = notificationString
                     newResponse["distanceToLocation"] = distanceToLocation
                     newResponse.saveInBackground()
+
+                    // update notification time
+                    self.lastNotifiedAtLocation = Date()
                 } else {
                     // EnRoute Notifications
                     let newResponse = PFObject(className: "EnRouteNotificationsSent")
@@ -805,6 +834,20 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                         return
                     }
                 }
+
+                // check if time is correct for notifying
+                if self.lastNotifiedAtDistance != nil {
+                    let currentDate = Date()
+                    let oldDatePlusThreshold = self.lastNotifiedAtDistance!.addingTimeInterval(self.timeThreshold)
+
+                    // currentDate must be later than lastNotifiedAtDistance + threshold
+                    if oldDatePlusThreshold > currentDate {
+                        return
+                    }
+                }
+
+                // update notification time and location dict
+                self.lastNotifiedAtDistance = Date()
                 self.locationDic[regionId]?["notifiedAtDistance"] = true
 
                 // calculate angle to location
