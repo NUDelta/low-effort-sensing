@@ -42,7 +42,6 @@ class DataForLocationViewController: UIViewController, UITableViewDelegate, UITa
         tableView.delegate = self
         
         // set preliminary text
-        let locationType = self.currentHotspot["locationType"] as! String
         var preferredInfo = self.currentHotspot["preferredInfo"] as! String
         var locationName = self.currentHotspot["locationName"] as! String
         

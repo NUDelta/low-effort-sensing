@@ -137,9 +137,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             self.window?.rootViewController = homeViewController
             self.window?.makeKeyAndVisible()
-
-//            // DEBUG NOTIFICATION
-//            Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(AppDelegate.sendNotification), userInfo: nil, repeats: true)
         }
         
         // show light-colored status bar on each page
@@ -148,40 +145,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
   
         return performShortcutDelegate
     }
-
-    
-//    // USED FOR DEBUGGING
-//    func sendNotification() {
-//        print("Preparing notification")
-//        // Get NSUserDefaults
-//        var monitoredHotspotDictionary = UserDefaults.init(suiteName: appGroup)?.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
-//        print(monitoredHotspotDictionary)
-//        
-//        // Get first region in mo nitored regions to use
-//        if  monitoredHotspotDictionary.keys.count > 0 {
-//            let currentRegion = monitoredHotspotDictionary["8C9gvBLjIR"] as! [String : AnyObject]
-//            let newNotification = NotificationCreator(scenario: currentRegion["tag"] as! String, hotspotInfo: currentRegion["info"] as! [String : String], currentHotspot: currentRegion)
-//            let notificationContent = newNotification.createNotificationForTag()
-//            
-//            print(notificationContent)
-//            
-//            // Display notification with context
-//            let content = UNMutableNotificationContent()
-//            content.body = notificationContent["message"]!
-//            content.sound = UNNotificationSound.default()
-//            content.categoryIdentifier = notificationContent["notificationCategory"]!
-//            content.userInfo = currentRegion
-//            
-//            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 3, repeats: false)
-//            let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
-//            
-//            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-//                if let error = error {
-//                    print("Error in notifying from Pre-Tracker: \(error)")
-//                }
-//            })
-//        }
-//    }
     
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
