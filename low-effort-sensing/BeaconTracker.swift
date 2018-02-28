@@ -77,7 +77,10 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                                                            major: object["major"] as! UInt16,
                                                            minor: object["minor"] as! UInt16,
                                                            identifier: object.objectId! as String)
+                        currentRegion.notifyEntryStateOnDisplay = true
+
                         self.beaconManager?.startMonitoring(for: currentRegion)
+                        self.beaconManager?.requestState(for: currentRegion) // check if within beacon region at start
                     }
                 }
             } else {
@@ -88,21 +91,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     }
 
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
-        // set current beacon value
-        appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
-
-        // iterate through all monitored regions and find any that match the beaconId
-        let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
-
-        // notify only if expand response has been done
-        for (_, info) in monitoredHotspotDictionary {
-            let parsedInfo = info as! [String : AnyObject]
-            let beaconId = parsedInfo["beaconId"] as! String
-
-            if beaconId == region.identifier {
-                self.notifyPeople(parsedInfo, regionId: region.identifier)
-            }
-        }
+        print("Entered Region \(region.identifier)")
     }
     
     public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
@@ -118,8 +107,6 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     public func notifyPeople(_ currentRegion: [String : AnyObject], regionId: String) {
         if (!prevNotifiedSet.contains(regionId)) {
             print("notify for beacon region id \(regionId)")
-            
-
             
             // Log notification to parse
             let epochTimestamp = Int(Date().timeIntervalSince1970)
@@ -192,15 +179,31 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
 
         return actionsForAnswers
     }
-    
-    //MARK: - Location Manager Delegate Error Functions
+
     public func beaconManager(_ manager: Any, didDetermineState state: CLRegionState, for region: CLBeaconRegion) {
         switch state {
         case CLRegionState.unknown:
             print("Unknown beacon state")
+            break
         case CLRegionState.inside:
             print("inside region: \(region.identifier)")
+
+            // set currentBeaconRegion
             appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
+
+            // check if should notify by iterating through all monitored regions and find any that match the beaconId
+            let monitoredHotspotDictionary = appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) as [String : AnyObject]? ?? [:]
+
+            // notify only if region matches a beacon
+            for (_, info) in monitoredHotspotDictionary {
+                let parsedInfo = info as! [String : AnyObject]
+                let beaconId = parsedInfo["beaconId"] as! String
+
+                if beaconId == region.identifier {
+                    self.notifyPeople(parsedInfo, regionId: region.identifier)
+                }
+            }
+            break
         case CLRegionState.outside:
             print("outside region: \(region.identifier)")
             if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
@@ -208,9 +211,11 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                     appUserDefaults?.set(nil, forKey: "currentBeaconRegion")
                 }
             }
+            break
         }
     }
-    
+
+    //MARK: - Location Manager Delegate Error Functions
     public func beaconManager(_ manager: Any, didFailWithError error: Error) {
         print(error)
     }

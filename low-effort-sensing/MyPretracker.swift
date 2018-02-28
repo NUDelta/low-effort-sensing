@@ -159,7 +159,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                         if error == nil {
                                             // parse response
                                             if let foundObjs = foundObjs as? [AnyObject] {
-                                                print(foundObjs);
                                                 var monitoredHotspotDictionary: [String : AnyObject] = [String : AnyObject]()
 
                                                 // track all valid locations, both TaskLocations and EnRouteLocations
@@ -230,6 +229,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                         self.locationDic.removeValue(forKey: key)
                                                     }
                                                 }
+
+                                                // clear previously notified for beacons
+                                                BeaconTracker.sharedBeaconManager.prevNotifiedSet.removeAll()
 
                                                 // update user defaults
                                                 self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
