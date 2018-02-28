@@ -427,6 +427,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                 let shouldNotifyAtDistance = self.locationDic[regionId]?["shouldNotifyAtDistance"],
                                 let atDistanceDistance = self.locationDic[regionId]?["atDistanceDistance"],
                                 let atLocationDistance = self.locationDic[regionId]?["atLocationDistance"] {
+
                                 // distance should be between AtLocation and AtDistance distances
                                 let validDistance = (distanceToLocation <= (atDistanceDistance as! Double)) &&
                                     (distanceToLocation > (atLocationDistance as! Double))
@@ -455,6 +456,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                     newResponse["gmtOffset"] = gmtOffset
                                     newResponse["distanceToLocation"] = distanceToLocation
                                     newResponse["bearingToLocation"] = angle
+                                    newResponse["sentBy"] = "location updates"
                                     newResponse.saveInBackground()
 
                                     // Show alert if app active, else local notification
@@ -827,6 +829,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             let monitorRegionLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
             let distanceToLocation = lastlocation.distance(from: monitorRegionLocation)
 
+
             // split region identifier into id and type
             let regionComponents = region.identifier.components(separatedBy: "_")
             let regionId = regionComponents[0]
@@ -834,6 +837,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
             // only notify for geofence if atDistance. all others will be handled through pre-tracking
             if regionType == "atdistance" {
+                // check if distance is greater than what the radius should be with 15% leeway
+                let desiredNotificationDistance = self.locationDic[regionId]?["atDistanceDistance"] as! Double
+                let maxThresholdDistance = desiredNotificationDistance * 1.15 // give 15% leeway
+                if distanceToLocation > maxThresholdDistance {
+                    return
+                }
+
                 // check if user has currently been notified for at atDistance location
                 if self.currentlyUnderAtDistance {
                     return
@@ -879,12 +889,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["vendorId"] = vendorId
                     newResponse["taskLocationId"] = currentRegion["id"] as! String
                     newResponse["locationType"] = currentRegion["locationType"] as! String
-                    newResponse["notificationDistance"] = self.locationDic[regionId]?["atDistanceDistance"] as! Double
+                    newResponse["notificationDistance"] = desiredNotificationDistance
                     newResponse["infoIncluded"] = didIncludeInfoAtDistance
                     newResponse["timestamp"] = epochTimestamp
                     newResponse["gmtOffset"] = gmtOffset
                     newResponse["distanceToLocation"] = distanceToLocation
                     newResponse["bearingToLocation"] = angle
+                    newResponse["sentBy"] = "geofence trip"
                     newResponse.saveInBackground()
 
                     // Show alert if app active, else local notification
