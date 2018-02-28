@@ -7,15 +7,9 @@
 //
 
 import UIKit
+import Parse
 
 class ForYouViewController: UITableViewController {
-    var tempData = [["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"],
-                    ["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"],
-                    ["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"],
-                    ["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"],
-                    ["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"],
-                    ["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"],
-                    ["info": "There is private seating (tables) to work at (near outlets and windows) at Coffee Lab.", "name": "coffee lab", "distance": "5 minutes"]]
     // MARK: Class Variables
     var tableData: [[String : String]] = []
     let appUserDefaults = UserDefaults.init(suiteName: appGroup)
@@ -33,6 +27,17 @@ class ForYouViewController: UITableViewController {
 
         // create data array
         generateDataArray()
+
+        // log that user has seen the view
+        let epochTimestamp = Int(Date().timeIntervalSince1970)
+        let gmtOffset = NSTimeZone.local.secondsFromGMT()
+
+        let newLog = PFObject(className: "ForYouViewLog")
+        newLog["vendorId"] = vendorId
+        newLog["timestamp"] = epochTimestamp
+        newLog["logString"] = "User has viewed For You view on iOS."
+        newLog["gmtOffset"] = gmtOffset
+        newLog.saveInBackground()
     }
 
     override func didReceiveMemoryWarning() {
