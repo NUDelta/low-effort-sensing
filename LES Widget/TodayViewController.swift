@@ -28,7 +28,7 @@ import Parse
 #if DEBUG
     let parseServer = "http://10.0.129.102:5000/parse/"
 #else
-    let parseServer = "https://les-expand.herokuapp.com/parse/"
+    let parseServer = "https://les-oppdistance.herokuapp.com/parse/"
 #endif
 
 let savedHotspotsRegionKey = "savedMonitoredHotspots" // for saving currently monitored locations to NSUserDefaults
