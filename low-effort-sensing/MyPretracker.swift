@@ -30,8 +30,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // date objects holding last time user was notified
     var lastNotifiedAtLocation: Date? = nil
     var lastNotifiedAtDistance: Date? = nil
-    let timeThreshold: Double = 60.0 * 30.0 // 60 seconds * 30 mins = 1800 seconds
-    // let timeThreshold: Double = 10.0 // DEBUG: 10 seconds
+//    let timeThreshold: Double = 60.0 * 30.0 // 60 seconds * 30 mins = 1800 seconds
+     let timeThreshold: Double = 10.0 // DEBUG: 10 seconds
 
     // used to determine when to notify for AtDistance and EnRoute
     var currentlyUnderAtDistance: Bool = false
@@ -459,7 +459,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                     newResponse["distanceToLocation"] = distanceToLocation
                                     newResponse["bearingToLocation"] = angle
                                     newResponse["sentBy"] = "location updates"
-                                    newResponse.saveInBackground()
+                                    newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                                        // if save is unsuccessful (due to network issues) saveEventually when network is available
+                                        if !saved {
+                                            print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                                            newResponse.saveEventually()
+                                        }
+                                    })
 
                                     // Show alert if app active, else local notification
                                     if UIApplication.shared.applicationState == .active {
@@ -594,7 +600,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["gmtOffset"] = gmtOffset
                     newResponse["notificationString"] = notificationString
                     newResponse["distanceToLocation"] = distanceToLocation
-                    newResponse.saveInBackground()
+                    newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                        // if save is unsuccessful (due to network issues) saveEventually when network is available
+                        if !saved {
+                            print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                            newResponse.saveEventually()
+                        }
+                    })
 
                     // update notification time
                     self.lastNotifiedAtLocation = Date()
@@ -607,7 +619,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["gmtOffset"] = gmtOffset
                     newResponse["notificationString"] = notificationString
                     newResponse["distanceToLocation"] = distanceToLocation
-                    newResponse.saveInBackground()
+                    newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                        // if save is unsuccessful (due to network issues) saveEventually when network is available
+                        if !saved {
+                            print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                            newResponse.saveEventually()
+                        }
+                    })
                 }
 
                 // Show alert if app active, else local notification
@@ -929,7 +947,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                         newResponse["distanceToLocation"] = distanceToLocation
                         newResponse["bearingToLocation"] = angle
                         newResponse["sentBy"] = "geofence trip"
-                        newResponse.saveInBackground()
+                        newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                            // if save is unsuccessful (due to network issues) saveEventually when network is available
+                            if !saved {
+                                print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                                newResponse.saveEventually()
+                            }
+                        })
 
                         // Show alert if app active, else local notification
                         if UIApplication.shared.applicationState == .active {

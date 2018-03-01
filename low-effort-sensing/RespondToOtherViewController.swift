@@ -238,7 +238,13 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
             }
             break
         }
-        newResponse.saveInBackground()
+        newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+            // if save is unsuccessful (due to network issues) saveEventually when network is available
+            if !saved {
+                print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                newResponse.saveEventually()
+            }
+        })
     }
 }
 

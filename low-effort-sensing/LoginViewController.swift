@@ -43,7 +43,12 @@ class LoginViewController: UIViewController {
                         let currentDateString = dateFormatter.string(from: date)
                         
                         currentUser["lastLoggedIn"] = currentDateString
-                        currentUser.saveInBackground()
+                        currentUser.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
+                            if (!success) {
+                                print("Error in saving new location to Parse: \(String(describing: error)). Attempting eventually.")
+                                currentUser.saveEventually()
+                            }
+                        }))
                     }
 
                     self.performSegue(withIdentifier: "LoginSegue", sender: self)

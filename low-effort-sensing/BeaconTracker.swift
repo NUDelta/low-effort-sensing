@@ -120,7 +120,13 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                 newResponse["timestamp"] = epochTimestamp
                 newResponse["gmtOffset"] = gmtOffset
                 newResponse["notificationString"] = "Notified for beacon region \(regionId)"
-                newResponse.saveInBackground()
+                newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                    // if save is unsuccessful (due to network issues) saveEventually when network is available
+                    if !saved {
+                        print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                        newResponse.saveEventually()
+                    }
+                })
             } else {
                 // EnRoute Notifications
                 let newResponse = PFObject(className: "EnRouteNotificationsSent")
@@ -129,7 +135,13 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
                 newResponse["timestamp"] = epochTimestamp
                 newResponse["gmtOffset"] = gmtOffset
                 newResponse["notificationString"] = "Notified for beacon region \(regionId)"
-                newResponse.saveInBackground()
+                newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                    // if save is unsuccessful (due to network issues) saveEventually when network is available
+                    if !saved {
+                        print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                        newResponse.saveEventually()
+                    }
+                })
             }
             
             // create contextual responses

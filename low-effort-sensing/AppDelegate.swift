@@ -31,7 +31,7 @@ var vendorId: String = ""
 
 // Server to use for local vs. deployed
 #if DEBUG
-//    let parseServer = "http://10.0.129.102:5000/parse/" // home
+    //    let parseServer = "http://10.0.129.102:5000/parse/" // home
     let parseServer = "http://10.105.102.63:5000/parse/" // nu
 #else
     let parseServer = "https://les-expand.herokuapp.com/parse/"
@@ -100,9 +100,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         
         // location manager and setting up monitored locations
         MyPretracker.sharedManager.setupParameters(distanceFromTarget,
-                                                     radius: geofenceRadius,
-                                                     accuracy: kCLLocationAccuracyHundredMeters,
-                                                     distanceFilter: nil)
+                                                   radius: geofenceRadius,
+                                                   accuracy: kCLLocationAccuracyHundredMeters,
+                                                   distanceFilter: nil)
         
         // setup beacon manager
         BeaconTracker.sharedBeaconManager.initBeaconManager()
@@ -142,7 +142,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         // show light-colored status bar on each page
         UIApplication.shared.isStatusBarHidden = false
         UIApplication.shared.statusBarStyle = .lightContent
-  
+
         return performShortcutDelegate
     }
     
@@ -274,7 +274,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         if let currentUser = currentUser {
             currentUser["vendorId"] = vendorId
             currentUser["pushToken"] = deviceTokenString
-            currentUser.saveInBackground()
+            currentUser.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
+                if (!success) {
+                    print("Error in saving new location to Parse: \(String(describing: error)). Attempting eventually.")
+                    currentUser.saveEventually()
+                }
+            }))
 
             // print token for debugging
             print("updating push token for current user: \(deviceTokenString)")
@@ -339,7 +344,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // setup data
             respondToOtherViewController.setCurrentVariables((response.notification.request.content.userInfo as? [String : AnyObject])!,
-                categoryIdentifier: response.notification.request.content.categoryIdentifier)
+                                                             categoryIdentifier: response.notification.request.content.categoryIdentifier)
 
             // open view
             self.window?.rootViewController = respondToOtherViewController
@@ -387,7 +392,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["emaResponse"] as! String != "" {
-                newResponse.saveInBackground()
+                newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                    // if save is unsuccessful (due to network issues) saveEventually when network is available
+                    if !saved {
+                        print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                        newResponse.saveEventually()
+                    }
+                })
             }
 
             // set variables to notify for EnRoute and AtDistance
@@ -423,7 +434,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["questionResponse"] as! String != "" {
-                newResponse.saveInBackground()
+                newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                    // if save is unsuccessful (due to network issues) saveEventually when network is available
+                    if !saved {
+                        print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                        newResponse.saveEventually()
+                    }
+                })
             }
         } else if (response.notification.request.content.categoryIdentifier != "") {
             // setup response object to push to parse
@@ -453,7 +470,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["response"] as! String != "" {
-                newResponse.saveInBackground()
+                newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
+                    // if save is unsuccessful (due to network issues) saveEventually when network is available
+                    if !saved {
+                        print("Error in saveInBackground: \(String(describing: error)). Attempting eventually.")
+                        newResponse.saveEventually()
+                    }
+                })
             }
 
             // reset EnRoute and UnderAtDistance if the id of the current response matches last AtDistance
@@ -477,77 +500,77 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     
     func handleShortcut( _ shortcutItem:UIApplicationShortcutItem ) -> Bool {
         print("Handling \(shortcutItem.type)")
-//        PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
-//            (geoPoint: PFGeoPoint?, error: Error?) -> Void in
-//            if error == nil {
-//                // create tag based on shortcut
-//                var tag = ""
-//                var tagDescription = ""
-//                switch shortcutItem.type {
-//                case "com.delta.low-effort-sensing.mark-food-location":
-//                    tag = "food"
-//                    tagDescription = "Free/Sold Food"
-//                default:
-//                    return
-//                }
-//
-//                // get UTC timestamp and timezone of notification
-//                let epochTimestamp = Int(Date().timeIntervalSince1970)
-//                let gmtOffset = NSTimeZone.local.secondsFromGMT()
-//
-//                // Get location and push to Parse
-//                let newMonitoredLocation = PFObject(className: "hotspot")
-//                newMonitoredLocation["vendorId"] = vendorId
-//                newMonitoredLocation["location"] = geoPoint
-//                newMonitoredLocation["tag"] = tag
-//                newMonitoredLocation["archived"] = false
-//                newMonitoredLocation["timestampCreated"] = epochTimestamp
-//                newMonitoredLocation["gmtOffset"] = gmtOffset
-//                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
-//                newMonitoredLocation["submissionMethod"] = "3d_touch"
-//                newMonitoredLocation["locationCommonName"] = ""
-//
-//                if let currBeaconRegion = self.appUserDefaults?.object(forKey: "currentBeaconRegion") {
-//                    if currBeaconRegion as? String != nil {
-//                        newMonitoredLocation["beaconId"] = currBeaconRegion as? String
-//                    } else {
-//                        newMonitoredLocation["beaconId"] = ""
-//                    }
-//                } else {
-//                    newMonitoredLocation["beaconId"] = ""
-//                }
-//
-//                // set info dict and saveTimeForQuestion based on tag
-//                switch tag {
-////                case "food":
-////                    newMonitoredLocation["info"] = foodInfo
-////                    newMonitoredLocation["saveTimeForQuestion"] = ["type": epochTimestamp,
-////                                                                   "quantity": epochTimestamp,
-////                                                                   "freesold": epochTimestamp,
-////                                                                   "cost": epochTimestamp,
-////                                                                   "sellingreason": epochTimestamp]
-////                    break
-//                default:
-//                    break
-//                }
-//
-//                // push to parse
-//                newMonitoredLocation.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
-//                    if (!success) {
-//                        print("Error in saving new location to Parse: \(String(describing: error)).")
-//                    }
-//                }))
-//
-//                // present feedback to user letting them know it worked
-//                let title = "Location Marked for \(tagDescription) Tracking"
-//                let message = "Your current location has been marked for \(tagDescription) tracking. Check back later to see if someone has contributed information to it!"
-//
-//                let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-//                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-//
-//                self.window?.rootViewController?.present(alert, animated: true, completion: nil)
-//            }
-//        }))
+        //        PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
+        //            (geoPoint: PFGeoPoint?, error: Error?) -> Void in
+        //            if error == nil {
+        //                // create tag based on shortcut
+        //                var tag = ""
+        //                var tagDescription = ""
+        //                switch shortcutItem.type {
+        //                case "com.delta.low-effort-sensing.mark-food-location":
+        //                    tag = "food"
+        //                    tagDescription = "Free/Sold Food"
+        //                default:
+        //                    return
+        //                }
+        //
+        //                // get UTC timestamp and timezone of notification
+        //                let epochTimestamp = Int(Date().timeIntervalSince1970)
+        //                let gmtOffset = NSTimeZone.local.secondsFromGMT()
+        //
+        //                // Get location and push to Parse
+        //                let newMonitoredLocation = PFObject(className: "hotspot")
+        //                newMonitoredLocation["vendorId"] = vendorId
+        //                newMonitoredLocation["location"] = geoPoint
+        //                newMonitoredLocation["tag"] = tag
+        //                newMonitoredLocation["archived"] = false
+        //                newMonitoredLocation["timestampCreated"] = epochTimestamp
+        //                newMonitoredLocation["gmtOffset"] = gmtOffset
+        //                newMonitoredLocation["timestampLastUpdate"] = epochTimestamp
+        //                newMonitoredLocation["submissionMethod"] = "3d_touch"
+        //                newMonitoredLocation["locationCommonName"] = ""
+        //
+        //                if let currBeaconRegion = self.appUserDefaults?.object(forKey: "currentBeaconRegion") {
+        //                    if currBeaconRegion as? String != nil {
+        //                        newMonitoredLocation["beaconId"] = currBeaconRegion as? String
+        //                    } else {
+        //                        newMonitoredLocation["beaconId"] = ""
+        //                    }
+        //                } else {
+        //                    newMonitoredLocation["beaconId"] = ""
+        //                }
+        //
+        //                // set info dict and saveTimeForQuestion based on tag
+        //                switch tag {
+        ////                case "food":
+        ////                    newMonitoredLocation["info"] = foodInfo
+        ////                    newMonitoredLocation["saveTimeForQuestion"] = ["type": epochTimestamp,
+        ////                                                                   "quantity": epochTimestamp,
+        ////                                                                   "freesold": epochTimestamp,
+        ////                                                                   "cost": epochTimestamp,
+        ////                                                                   "sellingreason": epochTimestamp]
+        ////                    break
+        //                default:
+        //                    break
+        //                }
+        //
+        //                // push to parse
+        //                newMonitoredLocation.saveInBackground(block: ({ (success: Bool, error: Error?) -> Void in
+        //                    if (!success) {
+        //                        print("Error in saving new location to Parse: \(String(describing: error)).")
+        //                    }
+        //                }))
+        //
+        //                // present feedback to user letting them know it worked
+        //                let title = "Location Marked for \(tagDescription) Tracking"
+        //                let message = "Your current location has been marked for \(tagDescription) tracking. Check back later to see if someone has contributed information to it!"
+        //
+        //                let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        //                alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+        //
+        //                self.window?.rootViewController?.present(alert, animated: true, completion: nil)
+        //            }
+        //        }))
 
         return true
     }
@@ -555,107 +578,107 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     // MARK: - WatchSession Communication Handler
     private func session(_ session: WCSession, didReceiveMessage message: [String : AnyObject],
                          replyHandler: @escaping ([String : AnyObject]) -> Void) {
-//        guard let command = message["command"] as! String! else {return}
+        //        guard let command = message["command"] as! String! else {return}
 
-//        // Run command and return data to watch
-//        switch (command) {
-//            case "reportLocation":
-//                PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
-//                    (geoPoint: PFGeoPoint?, error: Error?) -> Void in
-//                    if error == nil {
-//                        // Get current date to make debug string
-//                        let dateFormatter = DateFormatter()
-//                        dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
-//
-//                        // Get location and push to Parse
-//                        let newMonitoredLocation = PFObject(className: "hotspot")
-//                        newMonitoredLocation["location"] = geoPoint
-//                        newMonitoredLocation["tag"] = "free food!"
-//                        newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
-//
-//                        newMonitoredLocation.saveInBackground(block: ({
-//                            (success: Bool, error: Error?) -> Void in
-//                            if (success) {
-//                                // add new location to monitored regions
-//                                let newRegionLat = (newMonitoredLocation["location"] as! PFGeoPoint).latitude
-//                                let newRegionLong = (newMonitoredLocation["location"] as! PFGeoPoint).longitude
-//                                let newRegionId = newMonitoredLocation.objectId!
-//                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong,
-//                                                                       radius: geofenceRadius, id: newRegionId,
-//                                                                       expandRadius: 0, locationType: "exploit", hasBeacon: false)
-//
-//                                // Add new region to user defaults
-//                                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-//
-//                                // Add data to user defaults
-//                                var unwrappedEntry = [String : AnyObject]()
-//                                unwrappedEntry["latitude"] = newRegionLat as AnyObject
-//                                unwrappedEntry["longitude"] = newRegionLong as AnyObject
-//                                unwrappedEntry["id"] = newMonitoredLocation.objectId as AnyObject
-//                                unwrappedEntry["tag"] = newMonitoredLocation["tag"] as AnyObject
-//                                let info : [String : AnyObject]? = newMonitoredLocation["info"] as? [String : AnyObject]
-//                                unwrappedEntry["info"] = info as AnyObject
-//
-//                                monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
-//                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-//                                self.appUserDefaults?.synchronize()
-//
-//                                // return information to apple watch
-//                                replyHandler(["response": unwrappedEntry as AnyObject])
-//                            }
-//                        }))
-//                    }
-//                }))
-//                break
-//            case "pushToParse":
-//                // Get dictionary from Watch app
-//                guard let watchDict = message["value"] as! [String : AnyObject]? else {return}
-//                let currentHotspotId = watchDict["id"] as! String
-//
-//                // Get current hotspot from stored hotspots
-//                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-//                var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
-//
-//                currentHotspot["info"] = watchDict["info"]
-//                monitoredHotspotDictionary[currentHotspotId] = currentHotspot
-//                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
-//                self.appUserDefaults?.synchronize()
-//
-//                // Push data to parse
-//                let query = PFQuery(className: "hotspot")
-//                query.getObjectInBackground(withId: currentHotspotId, block: ({
-//                    (hotspot: PFObject?, error: Error?) -> Void in
-//                    if error != nil {
-//                        print("Error in pushing data to Parse: \(String(describing: error))")
-//
-//                        // return information to apple watch
-//                        replyHandler(["response": false as AnyObject])
-//                    } else if let hotspot = hotspot {
-//                        hotspot["info"] = watchDict["info"]
-//                        hotspot.saveInBackground()
-//
-//                        print("Pushing data to parse")
-//                        print(hotspot)
-//
-//                        // return information to apple watch
-//                        replyHandler(["response": true as AnyObject])
-//                    }
-//                }))
-//                break
-//            case "notificationOccured":
-//                // Get location id from Watch app
-//                guard let locationID = message["value"] as! String? else {return}
-//
-//                // Get current hotspot from stored hotspots
-//                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
-//                let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
-//
-//                // return information to apple watch
-//                replyHandler(["response": currentHotspot as AnyObject])
-//                break
-//            default:
-//                break
-//        }
+        //        // Run command and return data to watch
+        //        switch (command) {
+        //            case "reportLocation":
+        //                PFGeoPoint.geoPointForCurrentLocation(inBackground: ({
+        //                    (geoPoint: PFGeoPoint?, error: Error?) -> Void in
+        //                    if error == nil {
+        //                        // Get current date to make debug string
+        //                        let dateFormatter = DateFormatter()
+        //                        dateFormatter.dateFormat = "dd-MM-YY_HH:mm"
+        //
+        //                        // Get location and push to Parse
+        //                        let newMonitoredLocation = PFObject(className: "hotspot")
+        //                        newMonitoredLocation["location"] = geoPoint
+        //                        newMonitoredLocation["tag"] = "free food!"
+        //                        newMonitoredLocation["info"] = ["foodType": "", "foodDuration": "", "stillFood": ""]
+        //
+        //                        newMonitoredLocation.saveInBackground(block: ({
+        //                            (success: Bool, error: Error?) -> Void in
+        //                            if (success) {
+        //                                // add new location to monitored regions
+        //                                let newRegionLat = (newMonitoredLocation["location"] as! PFGeoPoint).latitude
+        //                                let newRegionLong = (newMonitoredLocation["location"] as! PFGeoPoint).longitude
+        //                                let newRegionId = newMonitoredLocation.objectId!
+        //                                MyPretracker.sharedManager.addLocation(distanceFromTarget, latitude: newRegionLat, longitude: newRegionLong,
+        //                                                                       radius: geofenceRadius, id: newRegionId,
+        //                                                                       expandRadius: 0, locationType: "exploit", hasBeacon: false)
+        //
+        //                                // Add new region to user defaults
+        //                                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
+        //
+        //                                // Add data to user defaults
+        //                                var unwrappedEntry = [String : AnyObject]()
+        //                                unwrappedEntry["latitude"] = newRegionLat as AnyObject
+        //                                unwrappedEntry["longitude"] = newRegionLong as AnyObject
+        //                                unwrappedEntry["id"] = newMonitoredLocation.objectId as AnyObject
+        //                                unwrappedEntry["tag"] = newMonitoredLocation["tag"] as AnyObject
+        //                                let info : [String : AnyObject]? = newMonitoredLocation["info"] as? [String : AnyObject]
+        //                                unwrappedEntry["info"] = info as AnyObject
+        //
+        //                                monitoredHotspotDictionary[newMonitoredLocation.objectId!] = unwrappedEntry
+        //                                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+        //                                self.appUserDefaults?.synchronize()
+        //
+        //                                // return information to apple watch
+        //                                replyHandler(["response": unwrappedEntry as AnyObject])
+        //                            }
+        //                        }))
+        //                    }
+        //                }))
+        //                break
+        //            case "pushToParse":
+        //                // Get dictionary from Watch app
+        //                guard let watchDict = message["value"] as! [String : AnyObject]? else {return}
+        //                let currentHotspotId = watchDict["id"] as! String
+        //
+        //                // Get current hotspot from stored hotspots
+        //                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
+        //                var currentHotspot = monitoredHotspotDictionary[currentHotspotId] as! Dictionary<String, AnyObject>
+        //
+        //                currentHotspot["info"] = watchDict["info"]
+        //                monitoredHotspotDictionary[currentHotspotId] = currentHotspot
+        //                self.appUserDefaults?.set(monitoredHotspotDictionary, forKey: savedHotspotsRegionKey)
+        //                self.appUserDefaults?.synchronize()
+        //
+        //                // Push data to parse
+        //                let query = PFQuery(className: "hotspot")
+        //                query.getObjectInBackground(withId: currentHotspotId, block: ({
+        //                    (hotspot: PFObject?, error: Error?) -> Void in
+        //                    if error != nil {
+        //                        print("Error in pushing data to Parse: \(String(describing: error))")
+        //
+        //                        // return information to apple watch
+        //                        replyHandler(["response": false as AnyObject])
+        //                    } else if let hotspot = hotspot {
+        //                        hotspot["info"] = watchDict["info"]
+        //                        hotspot.saveInBackground()
+        //
+        //                        print("Pushing data to parse")
+        //                        print(hotspot)
+        //
+        //                        // return information to apple watch
+        //                        replyHandler(["response": true as AnyObject])
+        //                    }
+        //                }))
+        //                break
+        //            case "notificationOccured":
+        //                // Get location id from Watch app
+        //                guard let locationID = message["value"] as! String? else {return}
+        //
+        //                // Get current hotspot from stored hotspots
+        //                var monitoredHotspotDictionary = self.appUserDefaults?.dictionary(forKey: savedHotspotsRegionKey) ?? Dictionary()
+        //                let currentHotspot = monitoredHotspotDictionary[locationID] as! Dictionary<String, AnyObject>
+        //
+        //                // return information to apple watch
+        //                replyHandler(["response": currentHotspot as AnyObject])
+        //                break
+        //            default:
+        //                break
+        //        }
     }
     
     @available(iOS 9.3, *)
