@@ -91,11 +91,11 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
     }
 
     public func beaconManager(_ manager: Any, didEnter region: CLBeaconRegion) {
-        print("Entered Region \(region.identifier)")
+        print("Entered Beacon Region \(region.identifier)")
     }
     
     public func beaconManager(_ manager: Any, didExitRegion region: CLBeaconRegion) {
-        print("Exited Region \(region.identifier)")
+        print("Exited Beacon Region \(region.identifier)")
         
         if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
             if currBeaconRegion as? String == region.identifier {
@@ -186,7 +186,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             print("Unknown beacon state")
             break
         case CLRegionState.inside:
-            print("inside region: \(region.identifier)")
+            print("inside beacon region: \(region.identifier)")
 
             // set currentBeaconRegion
             appUserDefaults?.set(region.identifier, forKey: "currentBeaconRegion")
@@ -205,7 +205,7 @@ public class BeaconTracker: NSObject, ESTBeaconManagerDelegate {
             }
             break
         case CLRegionState.outside:
-            print("outside region: \(region.identifier)")
+            print("outside beacon region: \(region.identifier)")
             if let currBeaconRegion = appUserDefaults?.object(forKey: "currentBeaconRegion") {
                 if currBeaconRegion as? String == region.identifier {
                     appUserDefaults?.set(nil, forKey: "currentBeaconRegion")

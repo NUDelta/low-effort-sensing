@@ -109,13 +109,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         let locDistance = locationManager!.distanceFilter
         let locationManagerParametersDebugString = "Manager Activity = \(locActivity)\n" +
             "Manager Accuracy = \(locAccuracy)\n" +
-            "Manager Distance Filter = \(locDistance)\n"
+        "Manager Distance Filter = \(locDistance)\n"
         
         let authStatus = CLLocationManager.authorizationStatus() == .authorizedAlways
         let locServicesEnabled = CLLocationManager.locationServicesEnabled()
         let locationManagerPermissionsDebugString = "Location manager setup with following parameters:\n" +
             "Authorization = \(authStatus)\n" +
-            "Location Services Enabled = \(locServicesEnabled)\n"
+        "Location Services Enabled = \(locServicesEnabled)\n"
         
         print("Initialized Location Manager Information:\n" + locationManagerPermissionsDebugString + locationManagerParametersDebugString)
     }
@@ -566,7 +566,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 }
             }
 
-            print("notify for region id \(regionId)")
+            print("notify for location region id \(regionId)")
 
             // get NSUserDefaults
             var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
@@ -804,155 +804,15 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         return true
     }
     
-    // check if user has entered a region. if AtDistance region, notify them if they have not already received a notification. else, pre-track.
+    // check if user has entered a region
+    // all other processing is done within didDetermineState since that will also run
     public func locationManager(_ manager: CLLocationManager, didEnterRegion region: CLRegion) {
-        if !(region is CLBeaconRegion) {
-            // check if major GPS bounce has occured, if so don't go any further
-            if manager.location == nil || self.previousLocation == nil || self.currentLocation == nil{
-                return
-            }
-
-            let lastlocation = manager.location!
-            let age = -lastlocation.timestamp.timeIntervalSinceNow
-            if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 65.0 || age > 20) {
-                return
-            }
-
-            // check speed at last location
-            // walking = 1.4, running = 3.7 -> set to 5 to only capture biking and driving
-            if (lastlocation.speed > 5) {
-                return
-            }
-
-            print("did enter region \(region.identifier)")
-
-            // compute distance to region from current location
-            let monitorRegion = region as! CLCircularRegion
-            let monitorRegionLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
-            let distanceToLocation = lastlocation.distance(from: monitorRegionLocation)
-
-
-            // split region identifier into id and type
-            let regionComponents = region.identifier.components(separatedBy: "_")
-            let regionId = regionComponents[0]
-            let regionType = regionComponents[1] // enroute, atdistance, atlocation
-
-            // only notify for geofence if atDistance. all others will be handled through pre-tracking
-            if regionType == "atdistance" {
-                // check if distance is greater than what the radius should be with 15% leeway
-                let desiredNotificationDistance = self.locationDic[regionId]?["atDistanceDistance"] as! Double
-                let maxThresholdDistance = desiredNotificationDistance * 1.15 // give 15% leeway
-                if distanceToLocation > maxThresholdDistance {
-                    return
-                }
-
-                // check if user has currently been notified for at atDistance location
-                if self.currentlyUnderAtDistance {
-                    return
-                }
-
-                // check if we have already asked the user atDistance
-                if let alreadyAskedAtDistance = self.locationDic[regionId]?["notifiedAtDistance"] {
-                    if alreadyAskedAtDistance as! Bool {
-                        return
-                    }
-                }
-
-                // check if time is correct for notifying
-                if self.lastNotifiedAtDistance != nil {
-                    let currentDate = Date()
-                    let oldDatePlusThreshold = self.lastNotifiedAtDistance!.addingTimeInterval(self.timeThreshold)
-
-                    // currentDate must be later than lastNotifiedAtDistance + threshold
-                    if oldDatePlusThreshold > currentDate {
-                        return
-                    }
-                }
-
-                // update notification time and location dict
-                self.lastNotifiedAtDistance = Date()
-                self.locationDic[regionId]?["notifiedAtDistance"] = true
-
-                // calculate angle to location
-                let bearing = getBearingBetweenTwoPoints(point1: lastlocation, point2: monitorRegionLocation)
-                let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
-                let angle = angleCourseBearing(course: course, bearing: bearing)
-
-                // get location object from NSUserDefaults
-                var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
-                if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject] {
-                    // log notification to Parse
-                    let epochTimestamp = Int(Date().timeIntervalSince1970)
-                    let gmtOffset = NSTimeZone.local.secondsFromGMT()
-                    let didIncludeInfoAtDistance: Bool = !(currentRegion["preferredInfo"] as! String == "") &&
-                        (currentRegion["shouldNotifyAtDistance"] as! Bool)
-
-                    let newResponse = PFObject(className: "AtDistanceNotificationsSent")
-                    newResponse["vendorId"] = vendorId
-                    newResponse["taskLocationId"] = currentRegion["id"] as! String
-                    newResponse["locationType"] = currentRegion["locationType"] as! String
-                    newResponse["notificationDistance"] = desiredNotificationDistance
-                    newResponse["infoIncluded"] = didIncludeInfoAtDistance
-                    newResponse["timestamp"] = epochTimestamp
-                    newResponse["gmtOffset"] = gmtOffset
-                    newResponse["distanceToLocation"] = distanceToLocation
-                    newResponse["bearingToLocation"] = angle
-                    newResponse["sentBy"] = "geofence trip"
-                    newResponse.saveInBackground()
-
-                    // Show alert if app active, else local notification
-                    if UIApplication.shared.applicationState == .active {
-                        print("Application is active")
-                        if let viewController = window?.rootViewController {
-                            let alert = UIAlertController(title: "Region Entered", message: "You are near \(regionId).", preferredStyle: .alert)
-                            let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                            alert.addAction(action)
-                            viewController.present(alert, animated: true, completion: nil)
-                        }
-                    } else {
-                        // create contextual responses
-                        var currNotificationSet = Set<UNNotificationCategory>()
-                        let currCategory = UNNotificationCategory(identifier: "atdistance",
-                                                                  actions: createActionsForAnswers(currentRegion["atDistanceResponses"] as! [String],
-                                                                                                   includeIdk: false),
-                                                                  intentIdentifiers: [],
-                                                                  options: [.customDismissAction])
-                        currNotificationSet.insert(currCategory)
-                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
-
-                        // Display notification with context
-                        let content = UNMutableNotificationContent()
-                        content.body = currentRegion["atDistanceMessage"] as! String
-                        content.sound = UNNotificationSound.default()
-                        content.categoryIdentifier = "atdistance"
-                        content.userInfo = currentRegion
-
-                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String,
-                                                                        content: content, trigger: trigger)
-
-                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                            if let error = error {
-                                print("Error in notifying from Pre-Tracker: \(error)")
-                            }
-                        })
-
-                        print("asking expand for region based on geofence \(region.identifier)")
-                    }
-                }
-
-                self.locationDic[regionId]?["withinAtDistance"] = true
-            } else {
-                // pretrack for any locations that are not AtDistance
-                locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-                locationManager!.distanceFilter = kCLDistanceFilterNone
-            }
-        }
+        print("Entered Geofence Region \(region.identifier)")
     }
     
     public func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
         if !(region is CLBeaconRegion) {
-            print("did exit region \(region.identifier)")
+            print("Exited Geofence Region \(region.identifier)")
 
             // split region identifier into id and type
             let regionComponents = region.identifier.components(separatedBy: "_")
@@ -970,6 +830,158 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
             if outOfAllRegions() {
                 locationManager!.desiredAccuracy = self.accuracy
                 locationManager!.distanceFilter = self.distanceFilter
+            }
+        }
+    }
+
+    public func locationManager(_ manager: CLLocationManager, didDetermineState state: CLRegionState, for region: CLRegion) {
+        if !(region is CLBeaconRegion) {
+            if state == CLRegionState.inside {
+                // make sure not a CLBeaconRegion before processing
+                print("inside geofence region: \(region.identifier)")
+                
+                // check if major GPS bounce has occured, if so don't go any further
+                if manager.location == nil || self.previousLocation == nil || self.currentLocation == nil{
+                    return
+                }
+
+                let lastlocation = manager.location!
+                let age = -lastlocation.timestamp.timeIntervalSinceNow
+                if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 65.0 || age > 20) {
+                    return
+                }
+
+                // check speed at last location
+                // walking = 1.4, running = 3.7 -> set to 5 to only capture biking and driving
+                if (lastlocation.speed > 5) {
+                    return
+                }
+
+                // compute distance to region from current location
+                let monitorRegion = region as! CLCircularRegion
+                let monitorRegionLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
+                let distanceToLocation = lastlocation.distance(from: monitorRegionLocation)
+
+
+                // split region identifier into id and type
+                let regionComponents = region.identifier.components(separatedBy: "_")
+                let regionId = regionComponents[0]
+                let regionType = regionComponents[1] // enroute, atdistance, atlocation
+
+                // only notify for geofence if atDistance. all others will be handled through pre-tracking
+                if regionType == "atdistance" {
+                    // check if distance is greater than what the radius should be with 15% leeway
+                    let desiredNotificationDistance = self.locationDic[regionId]?["atDistanceDistance"] as! Double
+                    let maxThresholdDistance = desiredNotificationDistance * 1.15 // give 15% leeway
+                    if distanceToLocation > maxThresholdDistance {
+                        return
+                    }
+
+                    // check if user has currently been notified for at atDistance location
+                    if self.currentlyUnderAtDistance {
+                        return
+                    }
+
+                    // check if we have already asked the user atDistance
+                    if let alreadyAskedAtDistance = self.locationDic[regionId]?["notifiedAtDistance"] {
+                        if alreadyAskedAtDistance as! Bool {
+                            return
+                        }
+                    }
+
+                    // check if time is correct for notifying
+                    if self.lastNotifiedAtDistance != nil {
+                        let currentDate = Date()
+                        let oldDatePlusThreshold = self.lastNotifiedAtDistance!.addingTimeInterval(self.timeThreshold)
+
+                        // currentDate must be later than lastNotifiedAtDistance + threshold
+                        if oldDatePlusThreshold > currentDate {
+                            return
+                        }
+                    }
+
+                    // update notification time and location dict
+                    self.lastNotifiedAtDistance = Date()
+                    self.locationDic[regionId]?["notifiedAtDistance"] = true
+
+                    // calculate angle to location
+                    let bearing = getBearingBetweenTwoPoints(point1: lastlocation, point2: monitorRegionLocation)
+                    let course = getBearingBetweenTwoPoints(point1: self.previousLocation!, point2: self.currentLocation!)
+                    let angle = angleCourseBearing(course: course, bearing: bearing)
+
+                    // get location object from NSUserDefaults
+                    var monitoredHotspotDictionary = appUserDefaults!.dictionary(forKey: savedHotspotsRegionKey) ?? [:]
+                    if let currentRegion = monitoredHotspotDictionary[regionId] as? [String : AnyObject] {
+                        // log notification to Parse
+                        let epochTimestamp = Int(Date().timeIntervalSince1970)
+                        let gmtOffset = NSTimeZone.local.secondsFromGMT()
+                        let didIncludeInfoAtDistance: Bool = !(currentRegion["preferredInfo"] as! String == "") &&
+                            (currentRegion["shouldNotifyAtDistance"] as! Bool)
+
+                        let newResponse = PFObject(className: "AtDistanceNotificationsSent")
+                        newResponse["vendorId"] = vendorId
+                        newResponse["taskLocationId"] = currentRegion["id"] as! String
+                        newResponse["locationType"] = currentRegion["locationType"] as! String
+                        newResponse["notificationDistance"] = desiredNotificationDistance
+                        newResponse["infoIncluded"] = didIncludeInfoAtDistance
+                        newResponse["timestamp"] = epochTimestamp
+                        newResponse["gmtOffset"] = gmtOffset
+                        newResponse["distanceToLocation"] = distanceToLocation
+                        newResponse["bearingToLocation"] = angle
+                        newResponse["sentBy"] = "geofence trip"
+                        newResponse.saveInBackground()
+
+                        // Show alert if app active, else local notification
+                        if UIApplication.shared.applicationState == .active {
+                            print("Application is active")
+                            if let viewController = window?.rootViewController {
+                                let alert = UIAlertController(title: "Region Entered", message: "You are near \(regionId).", preferredStyle: .alert)
+                                let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+                                alert.addAction(action)
+                                viewController.present(alert, animated: true, completion: nil)
+                            }
+                        } else {
+                            // create contextual responses
+                            var currNotificationSet = Set<UNNotificationCategory>()
+                            let currCategory = UNNotificationCategory(identifier: "atdistance",
+                                                                      actions: createActionsForAnswers(currentRegion["atDistanceResponses"] as! [String],
+                                                                                                       includeIdk: false),
+                                                                      intentIdentifiers: [],
+                                                                      options: [.customDismissAction])
+                            currNotificationSet.insert(currCategory)
+                            UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                            // Display notification with context
+                            let content = UNMutableNotificationContent()
+                            content.body = currentRegion["atDistanceMessage"] as! String
+                            content.sound = UNNotificationSound.default()
+                            content.categoryIdentifier = "atdistance"
+                            content.userInfo = currentRegion
+
+                            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                            let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String,
+                                                                            content: content, trigger: trigger)
+
+                            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                                if let error = error {
+                                    print("Error in notifying from Pre-Tracker: \(error)")
+                                }
+                            })
+
+                            print("asking expand for region based on geofence \(region.identifier)")
+                        }
+                    }
+
+                    self.locationDic[regionId]?["withinAtDistance"] = true
+                } else {
+                    // pretrack for any locations that are not AtDistance
+                    locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+                    locationManager!.distanceFilter = kCLDistanceFilterNone
+                }
+            } else if state == CLRegionState.outside {
+                print("outside geofence region: \(region.identifier)")
+            } else {
+                print("unknown state for geofence region: \(region.identifier)")
             }
         }
     }
