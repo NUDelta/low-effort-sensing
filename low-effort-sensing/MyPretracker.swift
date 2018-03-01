@@ -30,8 +30,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // date objects holding last time user was notified
     var lastNotifiedAtLocation: Date? = nil
     var lastNotifiedAtDistance: Date? = nil
-//    let timeThreshold: Double = 60.0 * 30.0 // 60 seconds * 30 mins = 1800 seconds
-     let timeThreshold: Double = 10.0 // DEBUG: 10 seconds
+    let timeThreshold: Double = 60.0 * 30.0 // 60 seconds * 30 mins = 1800 seconds
+//     let timeThreshold: Double = 10.0 // DEBUG: 10 seconds
 
     // used to determine when to notify for AtDistance and EnRoute
     var currentlyUnderAtDistance: Bool = false
