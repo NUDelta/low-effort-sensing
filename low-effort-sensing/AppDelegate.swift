@@ -83,6 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         if let _ = launchOptions?[UIApplicationLaunchOptionsKey.location] {
             MyPretracker.sharedManager.locationManager!.stopUpdatingLocation()
             MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
+            MyPretracker.sharedManager.locationManager!.startMonitoringSignificantLocationChanges()
         }
         
         // reset badge, if applicable
@@ -317,6 +318,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     newLog["gmtOffset"] = gmtOffset
                     newLog.saveInBackground()
                 } else if (updateType == "location") {
+                    MyPretracker.sharedManager.locationManager!.stopUpdatingLocation()
                     MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
 //                    MyPretracker.sharedManager.locationManager!.requestLocation()
                 } else if (updateType == "resetatdistance") {

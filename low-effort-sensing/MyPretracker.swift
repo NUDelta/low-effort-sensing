@@ -25,7 +25,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // logging location data
     var previousLocation: CLLocation?
     var currentLocation: CLLocation?
-    let distanceLoggingThreshold = 30.0
+    let distanceLoggingThreshold = 10.0
 
     // date objects holding last time user was notified
     var lastNotifiedAtLocation: Date? = nil
@@ -112,8 +112,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
         // begin location tracking
         locationManager!.allowsBackgroundLocationUpdates = true
         locationManager!.pausesLocationUpdatesAutomatically = false
-        locationManager!.startUpdatingLocation()
         locationManager!.startMonitoringSignificantLocationChanges()
+        locationManager!.startUpdatingLocation()
     }
     
     public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
@@ -687,17 +687,13 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         // set past and current locations
         let mostRecentLocation = locations.last!
-        self.previousLocation = currentLocation
+        self.previousLocation = self.currentLocation
         self.currentLocation = mostRecentLocation
 
         // save location to DB if distance is greater than threhold
-        if let currLocation = self.currentLocation {
+        if let currLocation = self.currentLocation, let prevLocation = self.previousLocation {
             // if previous location is valid, check if new update is further than distance threshold before saving. else, save the current location.
-            if let prevLocation = self.previousLocation {
-                if calculateDistanceBetweenLocations(previousLocation: prevLocation, currentLocation: currLocation) > self.distanceLoggingThreshold {
-                    saveLocationToParse(currLocation)
-                }
-            } else {
+            if calculateDistanceBetweenLocations(previousLocation: prevLocation, currentLocation: currLocation) > self.distanceLoggingThreshold {
                 saveLocationToParse(currLocation)
             }
         }
@@ -822,7 +818,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
 
                 let lastlocation = manager.location!
                 let age = -lastlocation.timestamp.timeIntervalSinceNow
-                if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 65.0 || age > 20) {
+                if (lastlocation.horizontalAccuracy < 0 || lastlocation.horizontalAccuracy > 75.0 || age > 20) {
                     return
                 }
 
@@ -836,7 +832,6 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                 let monitorRegion = region as! CLCircularRegion
                 let monitorRegionLocation = CLLocation(latitude: monitorRegion.center.latitude, longitude: monitorRegion.center.longitude)
                 let distanceToLocation = lastlocation.distance(from: monitorRegionLocation)
-
 
                 // split region identifier into id and type
                 let regionComponents = region.identifier.components(separatedBy: "_")
@@ -960,7 +955,8 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     self.locationDic[regionId]?["withinAtDistance"] = true
                 } else {
                     // pretrack for any locations that are not AtDistance
-                    locationManager!.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+                    print("beginning pretracking for region: \(region.identifier)")
+                    locationManager!.desiredAccuracy = kCLLocationAccuracyBest
                     locationManager!.distanceFilter = kCLDistanceFilterNone
                 }
             } else if state == CLRegionState.outside {
