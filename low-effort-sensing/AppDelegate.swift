@@ -31,10 +31,11 @@ var vendorId: String = ""
 
 // Server to use for local vs. deployed
 #if DEBUG
-    let parseServer = "http://10.0.129.102:5000/parse/" // home
+//    let parseServer = "http://10.0.129.102:5000/parse/" // home
 //    let parseServer = "http://10.105.102.63:5000/parse/" // nu
+    let parseServer = "https://les-expand.herokuapp.com/parse/"
 #else
-    let parseServer = "https://les-4x.herokuapp.com/parse/"
+    let parseServer = "https://les-expand.herokuapp.com/parse/"
 #endif
 
 // extension used to dismiss keyboard, from Esqarrouth
@@ -76,6 +77,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             self.shortcutItem = shortcutItem
             
             performShortcutDelegate = false
+        }
+
+        // check for launch from significant location change and restart location tracking
+        if let _ = launchOptions?[UIApplicationLaunchOptionsKey.location] {
+            MyPretracker.sharedManager.locationManager!.stopUpdatingLocation()
+            MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
         }
         
         // reset badge, if applicable
@@ -310,8 +317,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     newLog["gmtOffset"] = gmtOffset
                     newLog.saveInBackground()
                 } else if (updateType == "location") {
-                    MyPretracker.sharedManager.locationManager!.requestLocation()
-                    MyPretracker.sharedManager.saveCurrentLocationToParse()
+                    MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
+//                    MyPretracker.sharedManager.locationManager!.requestLocation()
                 } else if (updateType == "resetatdistance") {
                     // reset variables to ping for expand locations only
                     MyPretracker.sharedManager.resetAtDistanceEnRoute()

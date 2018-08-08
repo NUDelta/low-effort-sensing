@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class AuthorizationViewController: UIViewController {
     @IBOutlet weak var authLabel: UILabel!

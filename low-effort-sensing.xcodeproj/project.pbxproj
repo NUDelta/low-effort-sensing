@@ -36,7 +36,6 @@
 		001A90231C55D260009F964C /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
 		001F5CF41C80387900CD0045 /* GetInformationInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */; };
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
-		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		004213341EBB1171006B31EE /* les-simulation.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 004213331EBB1171006B31EE /* les-simulation.gpx */; };
 		0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
@@ -188,8 +187,6 @@
 		001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetInformationInterfaceController.swift; sourceTree = "<group>"; };
 		001F5CF51C803A8900CD0045 /* QuestionRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionRowController.swift; sourceTree = "<group>"; };
 		0026F54A1CEA9B75004C20F2 /* low-effort-sensing-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "low-effort-sensing-Bridging-Header.h"; sourceTree = "<group>"; };
-		0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
-		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
 		004213331EBB1171006B31EE /* les-simulation.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "les-simulation.gpx"; sourceTree = "<group>"; };
 		0044402B1DED685300B64AD1 /* BeaconTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconTracker.swift; sourceTree = "<group>"; };
 		004FDD602045229F00CE0EC9 /* LocationInfoViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoViewCell.swift; sourceTree = "<group>"; };
@@ -356,8 +353,6 @@
 				0092F78F1CFA7AFC006A9C2C /* MapView */,
 				0092F7901CFA7BD8006A9C2C /* LocationAndNotification */,
 				004FDD5F20451CA000CE0EC9 /* ForYou */,
-				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
-				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
 				00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */,
 				001A8FCC1C55CE6E009F964C /* AppDelegate.swift */,
@@ -879,7 +874,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */,
-				0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */,
 				0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */,
 				006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */,
 				004FDD632045234700CE0EC9 /* ForYouViewController.swift in Sources */,

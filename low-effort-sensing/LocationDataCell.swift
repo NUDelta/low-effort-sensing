@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class LocationDataCell: UITableViewCell {
     @IBOutlet weak var questionLabel: UILabel!
