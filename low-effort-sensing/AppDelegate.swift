@@ -31,9 +31,9 @@ var vendorId: String = ""
 
 // Server to use for local vs. deployed
 #if DEBUG
-//    let parseServer = "http://10.0.129.102:5000/parse/" // home
+    let parseServer = "http://10.0.129.101:5000/parse/" // home
 //    let parseServer = "http://10.105.102.63:5000/parse/" // nu
-    let parseServer = "https://les-expand.herokuapp.com/parse/"
+//    let parseServer = "https://les-expand.herokuapp.com/parse/"
 #else
     let parseServer = "https://les-expand.herokuapp.com/parse/"
 #endif

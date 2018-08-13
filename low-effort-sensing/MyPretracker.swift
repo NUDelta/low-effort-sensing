@@ -30,7 +30,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // date objects holding last time user was notified
     var lastNotifiedAtLocation: Date? = nil
     var lastNotifiedAtDistance: Date? = nil
-    let timeThreshold: Double = 60.0 * 30.0 // 60 seconds * 30 mins = 1800 seconds
+    let timeThreshold: Double = 60.0 * 10.0 // 60 seconds * 30 mins = 1800 seconds
 //     let timeThreshold: Double = 10.0 // DEBUG: 10 seconds
 
     // used to determine when to notify for AtDistance and EnRoute
@@ -251,8 +251,10 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                                 self.locationManager!.distanceFilter = self.distanceFilter
                                             }
                                         } else {
-                                            print("Error in querying regions from Parse: \(String(describing: error)). Trying again.")
-                                            self.beginMonitoringParseRegions()
+                                            print("Error in querying regions from Parse: \(String(describing: error)). Trying again in 5s.")
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
+                                                self.beginMonitoringParseRegions()
+                                            })
                                         }
                                      }))
             }
