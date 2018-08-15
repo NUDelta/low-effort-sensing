@@ -238,6 +238,18 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
             }
             break
         }
+
+        // add current location data before saving
+        var currLocation: PFGeoPoint
+        if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+            currLocation = PFGeoPoint.init(location: managerCurrLocation)
+        } else {
+            currLocation = PFGeoPoint.init()
+        }
+
+        newResponse["location"] = currLocation
+
+        // save logic
         newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
             // if save is unsuccessful (due to network issues) saveEventually when network is available
             if !saved {

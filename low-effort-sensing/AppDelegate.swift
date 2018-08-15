@@ -191,7 +191,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         newLog["logString"] = "App entering foreground"
         newLog["gmtOffset"] = gmtOffset
         newLog.saveInBackground()
-
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -320,7 +319,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                 } else if (updateType == "location") {
                     MyPretracker.sharedManager.locationManager!.stopUpdatingLocation()
                     MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
-//                    MyPretracker.sharedManager.locationManager!.requestLocation()
                 } else if (updateType == "resetatdistance") {
                     // reset variables to ping for expand locations only
                     MyPretracker.sharedManager.resetAtDistanceEnRoute()
@@ -401,6 +399,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["emaResponse"] as! String != "" {
+                // add current location data before saving
+                var currLocation: PFGeoPoint
+                if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+                    currLocation = PFGeoPoint.init(location: managerCurrLocation)
+                } else {
+                    currLocation = PFGeoPoint.init()
+                }
+
+                newResponse["location"] = currLocation
+
+                // save logic
                 newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                     // if save is unsuccessful (due to network issues) saveEventually when network is available
                     if !saved {
@@ -443,6 +452,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["questionResponse"] as! String != "" {
+                // add current location data before saving
+                var currLocation: PFGeoPoint
+                if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+                    currLocation = PFGeoPoint.init(location: managerCurrLocation)
+                } else {
+                    currLocation = PFGeoPoint.init()
+                }
+
+                newResponse["location"] = currLocation
+
+                // save logic
                 newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                     // if save is unsuccessful (due to network issues) saveEventually when network is available
                     if !saved {
@@ -479,6 +499,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["response"] as! String != "" {
+                // add current location data before saving
+                var currLocation: PFGeoPoint
+                if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+                    currLocation = PFGeoPoint.init(location: managerCurrLocation)
+                } else {
+                    currLocation = PFGeoPoint.init()
+                }
+
+                newResponse["location"] = currLocation
+
+                // save logic
                 newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                     // if save is unsuccessful (due to network issues) saveEventually when network is available
                     if !saved {
