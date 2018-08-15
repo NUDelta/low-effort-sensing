@@ -30,7 +30,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
     // date objects holding last time user was notified
     var lastNotifiedAtLocation: Date? = nil
     var lastNotifiedAtDistance: Date? = nil
-    let timeThreshold: Double = 60.0 * 10.0 // 60 seconds * 30 mins = 1800 seconds
+    let timeThreshold: Double = 60.0 * 10.0 // 60 seconds * 10 mins = 1800 seconds
 //     let timeThreshold: Double = 10.0 // DEBUG: 10 seconds
 
     // used to determine when to notify for AtDistance and EnRoute
@@ -465,47 +465,35 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                         }
                                     })
 
-                                    // Show alert if app active, else local notification
-                                    if UIApplication.shared.applicationState == .active {
-                                        print("Application is active")
-                                        if let viewController = window?.rootViewController {
-                                            let alert = UIAlertController(title: "Region Entered", message: "You are near \(regionId).",
-                                                preferredStyle: .alert)
-                                            let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                                            alert.addAction(action)
-                                            viewController.present(alert, animated: true, completion: nil)
+                                    // present local notification
+                                    // create contextual responses
+                                    var currNotificationSet = Set<UNNotificationCategory>()
+                                    let currCategory = UNNotificationCategory(identifier: "atdistance",
+                                                                              actions: createActionsForAnswers(currentRegion["atDistanceResponses"] as! [String],
+                                                                                                               includeIdk: false),
+                                                                              intentIdentifiers: [],
+                                                                              options: [.customDismissAction])
+                                    currNotificationSet.insert(currCategory)
+                                    UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                                    // Display notification with context
+                                    let content = UNMutableNotificationContent()
+                                    content.body = currentRegion["atDistanceMessage"] as! String
+                                    content.sound = UNNotificationSound.default()
+                                    content.categoryIdentifier = "atdistance"
+                                    content.userInfo = currentRegion
+
+                                    let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                                    let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String,
+                                                                                    content: content, trigger: trigger)
+
+                                    UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                                        if let error = error {
+                                            print("Error in notifying from Pre-Tracker: \(error)")
                                         }
-                                    } else {
-                                        // create contextual responses
-                                        var currNotificationSet = Set<UNNotificationCategory>()
-                                        let currCategory = UNNotificationCategory(identifier: "atdistance",
-                                                                                  actions: createActionsForAnswers(currentRegion["atDistanceResponses"] as! [String],
-                                                                                                                   includeIdk: false),
-                                                                                  intentIdentifiers: [],
-                                                                                  options: [.customDismissAction])
-                                        currNotificationSet.insert(currCategory)
-                                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+                                    })
 
-                                        // Display notification with context
-                                        let content = UNMutableNotificationContent()
-                                        content.body = currentRegion["atDistanceMessage"] as! String
-                                        content.sound = UNNotificationSound.default()
-                                        content.categoryIdentifier = "atdistance"
-                                        content.userInfo = currentRegion
-
-                                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String,
-                                                                                        content: content, trigger: trigger)
-
-                                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                                            if let error = error {
-                                                print("Error in notifying from Pre-Tracker: \(error)")
-                                            }
-                                        })
-                                        
-                                        print("asking atDistance for region based on location \(region.identifier)")
-                                    }
-
+                                    print("asking atDistance for region based on location \(region.identifier)")
                                 }
                             }
                         } else {
@@ -626,42 +614,32 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     })
                 }
 
-                // Show alert if app active, else local notification
-                if UIApplication.shared.applicationState == .active {
-                    print("Application is active")
-                    if let viewController = window?.rootViewController {
-                        let alert = UIAlertController(title: "Region Entered", message: "You are near \(regionId).", preferredStyle: .alert)
-                        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                        alert.addAction(action)
-                        viewController.present(alert, animated: true, completion: nil)
+                // present local notification
+                // create contextual responses
+                var currNotificationSet = Set<UNNotificationCategory>()
+                let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
+                                                          actions: createActionsForAnswers(currentRegion["atLocationResponses"] as! [String],
+                                                                                           includeIdk: false),
+                                                          intentIdentifiers: [],
+                                                          options: [.customDismissAction])
+                currNotificationSet.insert(currCategory)
+                UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                // Display notification with context
+                let content = UNMutableNotificationContent()
+                content.body = currentRegion["atLocationMessage"] as! String
+                content.sound = UNNotificationSound.default()
+                content.categoryIdentifier = currentRegion["notificationCategory"] as! String
+                content.userInfo = currentRegion
+
+                let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
+
+                UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                    if let error = error {
+                        print("Error in notifying from Pre-Tracker: \(error)")
                     }
-                } else {
-                    // create contextual responses
-                    var currNotificationSet = Set<UNNotificationCategory>()
-                    let currCategory = UNNotificationCategory(identifier: currentRegion["notificationCategory"] as! String,
-                                                              actions: createActionsForAnswers(currentRegion["atLocationResponses"] as! [String],
-                                                                                               includeIdk: false),
-                                                              intentIdentifiers: [],
-                                                              options: [.customDismissAction])
-                    currNotificationSet.insert(currCategory)
-                    UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
-
-                    // Display notification with context
-                    let content = UNMutableNotificationContent()
-                    content.body = currentRegion["atLocationMessage"] as! String
-                    content.sound = UNNotificationSound.default()
-                    content.categoryIdentifier = currentRegion["notificationCategory"] as! String
-                    content.userInfo = currentRegion
-
-                    let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                    let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String, content: content, trigger: trigger)
-
-                    UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                        if let error = error {
-                            print("Error in notifying from Pre-Tracker: \(error)")
-                        }
-                    })
-                }
+                })
             }  else {
                 print("Notify People: Data currently being refreshed...waiting until finished.")
             }
@@ -913,45 +891,35 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                             }
                         })
 
-                        // Show alert if app active, else local notification
-                        if UIApplication.shared.applicationState == .active {
-                            print("Application is active")
-                            if let viewController = window?.rootViewController {
-                                let alert = UIAlertController(title: "Region Entered", message: "You are near \(regionId).", preferredStyle: .alert)
-                                let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
-                                alert.addAction(action)
-                                viewController.present(alert, animated: true, completion: nil)
+                        // present notification
+                        // create contextual responses
+                        var currNotificationSet = Set<UNNotificationCategory>()
+                        let currCategory = UNNotificationCategory(identifier: "atdistance",
+                                                                  actions: createActionsForAnswers(currentRegion["atDistanceResponses"] as! [String],
+                                                                                                   includeIdk: false),
+                                                                  intentIdentifiers: [],
+                                                                  options: [.customDismissAction])
+                        currNotificationSet.insert(currCategory)
+                        UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+
+                        // Display notification with context
+                        let content = UNMutableNotificationContent()
+                        content.body = currentRegion["atDistanceMessage"] as! String
+                        content.sound = UNNotificationSound.default()
+                        content.categoryIdentifier = "atdistance"
+                        content.userInfo = currentRegion
+
+                        let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+                        let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String,
+                                                                        content: content, trigger: trigger)
+
+                        UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
+                            if let error = error {
+                                print("Error in notifying from Pre-Tracker: \(error)")
                             }
-                        } else {
-                            // create contextual responses
-                            var currNotificationSet = Set<UNNotificationCategory>()
-                            let currCategory = UNNotificationCategory(identifier: "atdistance",
-                                                                      actions: createActionsForAnswers(currentRegion["atDistanceResponses"] as! [String],
-                                                                                                       includeIdk: false),
-                                                                      intentIdentifiers: [],
-                                                                      options: [.customDismissAction])
-                            currNotificationSet.insert(currCategory)
-                            UNUserNotificationCenter.current().setNotificationCategories(currNotificationSet)
+                        })
 
-                            // Display notification with context
-                            let content = UNMutableNotificationContent()
-                            content.body = currentRegion["atDistanceMessage"] as! String
-                            content.sound = UNNotificationSound.default()
-                            content.categoryIdentifier = "atdistance"
-                            content.userInfo = currentRegion
-
-                            let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
-                            let notificationRequest = UNNotificationRequest(identifier: currentRegion["id"]! as! String,
-                                                                            content: content, trigger: trigger)
-
-                            UNUserNotificationCenter.current().add(notificationRequest, withCompletionHandler: { (error) in
-                                if let error = error {
-                                    print("Error in notifying from Pre-Tracker: \(error)")
-                                }
-                            })
-
-                            print("asking expand for region based on geofence \(region.identifier)")
-                        }
+                        print("asking expand for region based on geofence \(region.identifier)")
                     }
 
                     self.locationDic[regionId]?["withinAtDistance"] = true

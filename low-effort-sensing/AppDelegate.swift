@@ -247,7 +247,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             print("Error")
         }
     }
-    
+
+    // MARK: - Notification Setup Functions
     func registerForNotifications() {
         print("Registering categories for local notifications")
 
@@ -334,6 +335,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         // Print the error to console (you should alert the user that registration failed)
         print("APNs registration failed: \(error)")
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
     }
 
     //MARK: - Contextual Notification Handler
