@@ -455,6 +455,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                     newResponse["timestamp"] = epochTimestamp
                                     newResponse["gmtOffset"] = gmtOffset
                                     newResponse["distanceToLocation"] = distanceToLocation
+                                    newResponse["location"] = PFGeoPoint.init(location: lastLocation)
                                     newResponse["bearingToLocation"] = angle
                                     newResponse["sentBy"] = "location updates"
                                     newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
@@ -586,6 +587,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["gmtOffset"] = gmtOffset
                     newResponse["notificationString"] = notificationString
                     newResponse["distanceToLocation"] = distanceToLocation
+                    newResponse["location"] = PFGeoPoint.init(location: locationWhenNotified)
                     newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                         // if save is unsuccessful (due to network issues) saveEventually when network is available
                         if !saved {
@@ -605,6 +607,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                     newResponse["gmtOffset"] = gmtOffset
                     newResponse["notificationString"] = notificationString
                     newResponse["distanceToLocation"] = distanceToLocation
+                    newResponse["location"] = PFGeoPoint.init(location: locationWhenNotified)
                     newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                         // if save is unsuccessful (due to network issues) saveEventually when network is available
                         if !saved {
@@ -881,6 +884,7 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                         newResponse["timestamp"] = epochTimestamp
                         newResponse["gmtOffset"] = gmtOffset
                         newResponse["distanceToLocation"] = distanceToLocation
+                        newResponse["location"] = PFGeoPoint.init(location: lastlocation)
                         newResponse["bearingToLocation"] = angle
                         newResponse["sentBy"] = "geofence trip"
                         newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
