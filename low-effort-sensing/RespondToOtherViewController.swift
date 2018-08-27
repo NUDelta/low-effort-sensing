@@ -199,7 +199,7 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
 
             // check whether to update Pretracker AtDistance and EnRoute states
             let responseAcceptSet: Set = [
-                "Yes! This info is useful, I'm going now.",
+                "Yes! This info is useful. I'm going to go there.",
                 "Yes. This info is useful but I'm already going there.",
                 "Sure! I would be happy to go out of my way!",
                 "Sure, but I was going to walk past it anyway."
