@@ -432,8 +432,9 @@ public class MyPretracker: NSObject, CLLocationManagerDelegate {
                                 let validDistance = (distanceToLocation <= (atDistanceDistance as! Double)) &&
                                     (distanceToLocation > (atLocationDistance as! Double))
 
-                                if !self.currentlyUnderAtDistance && !(shouldNotifyAtDistance as! Bool) &&
+                                if !self.currentlyUnderAtDistance && (shouldNotifyAtDistance as! Bool) &&
                                     (!(notifiedAtDistanceForLocation as! Bool) && validDistance) {
+
                                     // update notification time
                                     self.lastNotifiedAtDistance = Date()
 
