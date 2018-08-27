@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.2</string>
+	<string>3.1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -27,11 +27,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
+	<string>LES requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
+	<string>LES requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Low-Effort Sensing requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
+	<string>LES requires access to your phone's location and Bluetooth to notify you when you enter or leave a monitored region. </string>
 	<key>UIApplicationShortcutItems</key>
 	<array>
 		<dict>

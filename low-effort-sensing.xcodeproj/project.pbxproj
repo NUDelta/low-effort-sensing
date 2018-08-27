@@ -36,7 +36,6 @@
 		001A90231C55D260009F964C /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 001A90221C55D260009F964C /* libsqlite3.tbd */; };
 		001F5CF41C80387900CD0045 /* GetInformationInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */; };
 		001F5CF61C803A8900CD0045 /* QuestionRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F5CF51C803A8900CD0045 /* QuestionRowController.swift */; };
-		0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */; };
 		004213341EBB1171006B31EE /* les-simulation.gpx in Resources */ = {isa = PBXBuildFile; fileRef = 004213331EBB1171006B31EE /* les-simulation.gpx */; };
 		0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
 		0044402D1DEF377A00B64AD1 /* BeaconTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0044402B1DED685300B64AD1 /* BeaconTracker.swift */; };
@@ -188,8 +187,6 @@
 		001F5CF31C80387900CD0045 /* GetInformationInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GetInformationInterfaceController.swift; sourceTree = "<group>"; };
 		001F5CF51C803A8900CD0045 /* QuestionRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuestionRowController.swift; sourceTree = "<group>"; };
 		0026F54A1CEA9B75004C20F2 /* low-effort-sensing-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "low-effort-sensing-Bridging-Header.h"; sourceTree = "<group>"; };
-		0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
-		0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
 		004213331EBB1171006B31EE /* les-simulation.gpx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "les-simulation.gpx"; sourceTree = "<group>"; };
 		0044402B1DED685300B64AD1 /* BeaconTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconTracker.swift; sourceTree = "<group>"; };
 		004FDD602045229F00CE0EC9 /* LocationInfoViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationInfoViewCell.swift; sourceTree = "<group>"; };
@@ -356,8 +353,6 @@
 				0092F78F1CFA7AFC006A9C2C /* MapView */,
 				0092F7901CFA7BD8006A9C2C /* LocationAndNotification */,
 				004FDD5F20451CA000CE0EC9 /* ForYou */,
-				0026F54B1CEA9B76004C20F2 /* BackgroundTaskManager.h */,
-				0026F54C1CEA9B76004C20F2 /* BackgroundTaskManager.m */,
 				00EF7FCD1C6B39FC00FE51E8 /* low-effort-sensing.entitlements */,
 				00AFE2281CF6551200753DC7 /* low-effort-sensing Debug.entitlements */,
 				001A8FCC1C55CE6E009F964C /* AppDelegate.swift */,
@@ -528,7 +523,6 @@
 				001A90071C55CE6E009F964C /* Embed Watch Content */,
 				00D06D801CE1A92B002E8CCA /* Embed App Extensions */,
 				379A9D91E6381B3703A64267 /* [CP] Embed Pods Frameworks */,
-				0CA0A9139DF0FE9EFF73EC99 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -550,7 +544,6 @@
 				001A8FD91C55CE6E009F964C /* Resources */,
 				001A90031C55CE6E009F964C /* Embed App Extensions */,
 				3965693C7FECBF3E5F89FBD1 /* Frameworks */,
-				6A85B30757E8978E955A9085 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -570,8 +563,6 @@
 				001A8FE61C55CE6E009F964C /* Sources */,
 				001A8FE71C55CE6E009F964C /* Frameworks */,
 				001A8FE81C55CE6E009F964C /* Resources */,
-				DB93F6F76AB2DFE615E4E887 /* [CP] Embed Pods Frameworks */,
-				64A65AAF88012D099BAC893A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -590,7 +581,6 @@
 				006709C21D89AB5F001E4528 /* Sources */,
 				006709C31D89AB5F001E4528 /* Frameworks */,
 				006709C41D89AB5F001E4528 /* Resources */,
-				199D1E2C6C6F405FC7D5846D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -609,7 +599,6 @@
 				00D06D6C1CE1A92A002E8CCA /* Sources */,
 				00D06D6D1CE1A92A002E8CCA /* Frameworks */,
 				00D06D6E1CE1A92A002E8CCA /* Resources */,
-				914C81F32343DF0D5AA4574F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -627,7 +616,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Kapil Garg";
 				TargetAttributes = {
 					001A8FC81C55CE6E009F964C = {
@@ -803,21 +792,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		0CA0A9139DF0FE9EFF73EC99 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		0EA8C89E4202E45AED24A764 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -834,21 +808,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		199D1E2C6C6F405FC7D5846D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CustomNotification/Pods-CustomNotification-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		379A9D91E6381B3703A64267 /* [CP] Embed Pods Frameworks */ = {
@@ -871,36 +830,6 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing/Pods-low-effort-sensing-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		64A65AAF88012D099BAC893A /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		6A85B30757E8978E955A9085 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing WatchKit App/Pods-low-effort-sensing WatchKit App-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		8F547A4CFC332FC8CCFC77E5 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -917,36 +846,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		914C81F32343DF0D5AA4574F /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LES Widget/Pods-LES Widget-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DB93F6F76AB2DFE615E4E887 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-low-effort-sensing WatchKit Extension/Pods-low-effort-sensing WatchKit Extension-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E21B19A0B2A641B01C35DE95 /* [CP] Check Pods Manifest.lock */ = {
@@ -975,7 +874,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				001627D21CF297A70049107E /* AuthorizationViewController.swift in Sources */,
-				0026F54D1CEA9B76004C20F2 /* BackgroundTaskManager.m in Sources */,
 				0044402C1DED685300B64AD1 /* BeaconTracker.swift in Sources */,
 				006527C61CF7444C005B77BA /* RespondToOtherViewController.swift in Sources */,
 				004FDD632045234700CE0EC9 /* ForYouViewController.swift in Sources */,
@@ -1104,12 +1002,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -1157,12 +1057,14 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

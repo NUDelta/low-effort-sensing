@@ -199,7 +199,7 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
 
             // check whether to update Pretracker AtDistance and EnRoute states
             let responseAcceptSet: Set = [
-                "Yes! This info is useful, I'm going now.",
+                "Yes! This info is useful. I'm going to go there.",
                 "Yes. This info is useful but I'm already going there.",
                 "Sure! I would be happy to go out of my way!",
                 "Sure, but I was going to walk past it anyway."
@@ -238,6 +238,18 @@ class RespondToOtherViewController: UIViewController, UITextFieldDelegate, UIPic
             }
             break
         }
+
+        // add current location data before saving
+        var currLocation: PFGeoPoint
+        if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+            currLocation = PFGeoPoint.init(location: managerCurrLocation)
+        } else {
+            currLocation = PFGeoPoint.init()
+        }
+
+        newResponse["location"] = currLocation
+
+        // save logic
         newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
             // if save is unsuccessful (due to network issues) saveEventually when network is available
             if !saved {

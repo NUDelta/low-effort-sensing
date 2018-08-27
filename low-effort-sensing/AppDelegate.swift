@@ -31,10 +31,11 @@ var vendorId: String = ""
 
 // Server to use for local vs. deployed
 #if DEBUG
-    let parseServer = "http://10.0.129.102:5000/parse/" // home
+    let parseServer = "http://10.0.129.101:5000/parse/" // home
 //    let parseServer = "http://10.105.102.63:5000/parse/" // nu
+//    let parseServer = "https://les-expand.herokuapp.com/parse/"
 #else
-    let parseServer = "https://les-4x.herokuapp.com/parse/"
+    let parseServer = "https://les-expand.herokuapp.com/parse/"
 #endif
 
 // extension used to dismiss keyboard, from Esqarrouth
@@ -76,6 +77,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             self.shortcutItem = shortcutItem
             
             performShortcutDelegate = false
+        }
+
+        // check for launch from significant location change and restart location tracking
+        if let _ = launchOptions?[UIApplicationLaunchOptionsKey.location] {
+            MyPretracker.sharedManager.locationManager!.stopUpdatingLocation()
+            MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
+            MyPretracker.sharedManager.locationManager!.startMonitoringSignificantLocationChanges()
         }
         
         // reset badge, if applicable
@@ -183,7 +191,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
         newLog["logString"] = "App entering foreground"
         newLog["gmtOffset"] = gmtOffset
         newLog.saveInBackground()
-
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -240,7 +247,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
             print("Error")
         }
     }
-    
+
+    // MARK: - Notification Setup Functions
     func registerForNotifications() {
         print("Registering categories for local notifications")
 
@@ -310,8 +318,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
                     newLog["gmtOffset"] = gmtOffset
                     newLog.saveInBackground()
                 } else if (updateType == "location") {
-                    MyPretracker.sharedManager.locationManager!.requestLocation()
-                    MyPretracker.sharedManager.saveCurrentLocationToParse()
+                    MyPretracker.sharedManager.locationManager!.stopUpdatingLocation()
+                    MyPretracker.sharedManager.locationManager!.startUpdatingLocation()
                 } else if (updateType == "resetatdistance") {
                     // reset variables to ping for expand locations only
                     MyPretracker.sharedManager.resetAtDistanceEnRoute()
@@ -327,6 +335,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         // Print the error to console (you should alert the user that registration failed)
         print("APNs registration failed: \(error)")
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
     }
 
     //MARK: - Contextual Notification Handler
@@ -392,6 +404,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["emaResponse"] as! String != "" {
+                // add current location data before saving
+                var currLocation: PFGeoPoint
+                if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+                    currLocation = PFGeoPoint.init(location: managerCurrLocation)
+                } else {
+                    currLocation = PFGeoPoint.init()
+                }
+
+                newResponse["location"] = currLocation
+
+                // save logic
                 newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                     // if save is unsuccessful (due to network issues) saveEventually when network is available
                     if !saved {
@@ -403,7 +426,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // set variables to notify for EnRoute and AtDistance
             let responseAcceptSet: Set = [
-                "Yes! This info is useful, I'm going now.",
+                "Yes! This info is useful. I'm going to go there.",
                 "Yes. This info is useful but I'm already going there.",
                 "Sure! I would be happy to go out of my way!",
                 "Sure, but I was going to walk past it anyway."
@@ -434,6 +457,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["questionResponse"] as! String != "" {
+                // add current location data before saving
+                var currLocation: PFGeoPoint
+                if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+                    currLocation = PFGeoPoint.init(location: managerCurrLocation)
+                } else {
+                    currLocation = PFGeoPoint.init()
+                }
+
+                newResponse["location"] = currLocation
+
+                // save logic
                 newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                     // if save is unsuccessful (due to network issues) saveEventually when network is available
                     if !saved {
@@ -470,6 +504,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, WCSessionDelegate, UNUser
 
             // if response field is not blank, save to parse
             if newResponse["response"] as! String != "" {
+                // add current location data before saving
+                var currLocation: PFGeoPoint
+                if let managerCurrLocation = MyPretracker.sharedManager.currentLocation {
+                    currLocation = PFGeoPoint.init(location: managerCurrLocation)
+                } else {
+                    currLocation = PFGeoPoint.init()
+                }
+
+                newResponse["location"] = currLocation
+
+                // save logic
                 newResponse.saveInBackground(block: { (saved: Bool, error: Error?) -> Void in
                     // if save is unsuccessful (due to network issues) saveEventually when network is available
                     if !saved {

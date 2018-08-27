@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class CompletionViewController: UIViewController {
     @IBOutlet weak var viewLabel: UILabel!
